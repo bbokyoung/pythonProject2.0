@@ -5407,11 +5407,54 @@ class MyApp(QWidget):
         elif self.checkF3.isChecked() and not (self.checkP3.isChecked()):
             sql = '''
                        SET NOCOUNT ON;
-                       SELECT JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01
+                       SELECT TOP 100 JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]'''.format(field=self.selected_project_id)
 
-            self.dataframe = pd.read_sql(sql, self.cnxn)
-            if self.dataframe['Segment01'].isnull().sum() == len(self.dataframe):
+            try:
+                self.dataframe = pd.read_sql(sql, self.cnxn)
+                if self.dataframe['Segment01'].isnull().sum() == len(self.dataframe):
+                    self.alertbox_open20()
+
+                else:
+                    if self.tempCost == '': self.tempCost = 0
+                    try:
+                        int(self.tempCost)
+
+                        # 계정 A
+                        if ((self.checkC2.isChecked()) and (self.checkD2.isChecked())) or (
+                                not (self.checkC2.isChecked()) and not (self.checkD2.isChecked())):
+                            self.tempStateA = 'LVL4.GL_Account_Position IN (' + "'" + 'Credit' + "'" + "," + "'" + 'Debit' + "'" + ')'
+                        elif self.checkC2.isChecked():
+                            self.tempStateA = 'LVL4.GL_Account_Position =' + "'" + 'Credit' + "'"
+                        elif self.checkD2.isChecked():
+                            self.tempStateA = 'LVL4.GL_Account_Position =' + "'" + 'Debit' + "'"
+
+                        # 계정 B
+                        if ((self.checkC22.isChecked()) and (self.checkD22.isChecked())) or (
+                                not (self.checkC22.isChecked()) and not (self.checkD22.isChecked())):
+                            self.tempStateB = 'AND LVL4.Analysis_Position IN (' + "'" + 'Credit' + "'" + "," + "'" + 'Debit' + "')"
+                        elif self.checkC22.isChecked():
+                            self.tempStateB = 'AND LVL4.Analysis_Position IN (' + "'" + 'Credit' + "')"
+                        elif self.checkD22.isChecked():
+                            self.tempStateB = 'AND LVL4.Analysis_Position IN (' + "'" + 'Debit' + "')"
+
+                        # 계정 A
+                        if checked_account_A == 'AND LVL4.GL_Account_Number IN ()' or checked_account_B == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()':
+                            self.MessageBox_Open("계정트리가 선택되어 있지 않습니다.")
+                            return
+                        else:
+                            self.checked_accountA = checked_account_A
+                            self.checked_accountB = checked_account_B
+
+                        self.doAction()
+                        self.th11 = Thread(target=self.extButtonClicked11)
+                        self.th11.daemon = True
+                        self.th11.start()
+
+                    except ValueError:
+                        self.alertbox_open2('중요성 금액')
+
+            except ValueError:
                 self.alertbox_open20()
 
         else:
@@ -5473,12 +5516,43 @@ class MyApp(QWidget):
         elif self.checkF.isChecked() and not (self.checkP.isChecked()):
             sql = '''
                        SET NOCOUNT ON;
-                       SELECT JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01
+                       SELECT TOP 100 JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]'''.format(field=self.selected_project_id)
 
-            self.dataframe = pd.read_sql(sql, self.cnxn)
-            if self.dataframe['Segment01'].isnull().sum() == len(self.dataframe):
+            try :
+                self.dataframe = pd.read_sql(sql, self.cnxn)
+                if self.dataframe['Segment01'].isnull().sum() == len(self.dataframe):
+                    self.alertbox_open20()
+
+                else:
+                    try:
+                        int(self.tempCost)
+                        if ((self.checkC1.isChecked()) and (self.checkD1.isChecked())) or (
+                                not (self.checkC1.isChecked()) and not (self.checkD1.isChecked())):
+                            self.tempState12 = 'LVL4.GL_Account_Position IN (' + "'" + 'Credit' + "'" + "," + "'" + 'Debit' + "'" + ')'
+                        elif self.checkC1.isChecked():
+                            self.tempState12 = 'LVL4.GL_Account_Position =' + "'" + 'Credit' + "'"
+                        elif self.checkD1.isChecked():
+                            self.tempState12 = 'LVL4.GL_Account_Position =' + "'" + 'Debit' + "'"
+
+                        ##Unselect all인 경우
+                        if checked_account_12 == 'AND LVL4.GL_Account_Number IN ()':
+                            self.MessageBox_Open("계정트리가 선택되어 있지 않습니다.")
+                            return
+                        else:
+                            self.checked_account12 = checked_account_12
+
+                        self.doAction()
+                        self.th12 = Thread(target=self.extButtonClicked12)
+                        self.th12.daemon = True
+                        self.th12.start()
+
+                    except ValueError:
+                        self.alertbox_open2('중요성 금액')
+
+            except ValueError:
                 self.alertbox_open20()
+
 
         else:
             try:
@@ -5597,11 +5671,43 @@ class MyApp(QWidget):
         elif self.checkF2.isChecked() and not (self.checkP2.isChecked()):
             sql = '''
                        SET NOCOUNT ON;
-                       SELECT JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01
+                       SELECT TOP 100 JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]'''.format(field=self.selected_project_id)
 
-            self.dataframe = pd.read_sql(sql, self.cnxn)
-            if self.dataframe['Segment01'].isnull().sum() == len(self.dataframe):
+            try :
+                self.dataframe = pd.read_sql(sql, self.cnxn)
+                if self.dataframe['Segment01'].isnull().sum() == len(self.dataframe):
+                    self.alertbox_open20()
+
+                else:
+                    self.wbC = self.wb2.parse(self.listCursor.currentText())
+
+                    if self.tempSheet == '' or self.cursorpath == '':
+                        self.alertbox_open()
+                        # 시트명 중복 확인
+                    elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
+                        self.alertbox_open5()
+
+                    elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
+                        self.alertbox_open5()
+
+                    elif os.path.isfile(self.cursorpath) == False:
+                        self.MessageBox_Open("경로에 해당 파일이 존재하지 않습니다.")
+                    elif len(self.wbC.columns) <= 12:
+                        self.alertbox_open4('Cursor 필드가 존재하지 않습니다.')
+                    elif self.wbC.iloc[:, 12].empty == True:
+                        self.alertbox_open4('Check된 조건이 없습니다.')
+                    elif self.wbC.iloc[:, [0, 3, 5, 8]].isnull().any().any() == True:
+                        self.alertbox_open4('필요 조건 필드를 충족하지 않습니다.')
+                    else:
+                        try:
+                            self.doAction()
+                            self.thC = Thread(target=self.extButtonClickedC)
+                            self.thC.start()
+                        except ValueError:
+                            self.alertbox_open4('필요 조건필드의 데이터 타입을 확인 바랍니다.')
+
+            except:
                 self.alertbox_open20()
 
         else:
