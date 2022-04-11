@@ -5984,7 +5984,7 @@ class MyApp(QWidget):
                                         , JournalEntries.JEDescription			
                                         , JournalEntries.JELineDescription			
                                         , JournalEntries.PreparerID			
-                                        , JournalEntries.ApproverID			
+                                        , JournalEntries.Source			
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.GLAccountNumber IN 				
                                         (			
@@ -6038,7 +6038,7 @@ class MyApp(QWidget):
                                     , JournalEntries.JEDescription			
                                     , JournalEntries.JELineDescription			
                                     , JournalEntries.PreparerID			
-                                    , JournalEntries.ApproverID			
+                                    , JournalEntries.Source			
                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN (				
                                     SELECT DISTINCT JournalEntries.JENumber			
@@ -6153,7 +6153,7 @@ class MyApp(QWidget):
                                 , JournalEntries.JEDescription
                                 , JournalEntries.JELineDescription
                                 , JournalEntries.PreparerID
-                                , JournalEntries.ApproverID
+                                , JournalEntries.Source	
                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                             WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 
                                     AND JournalEntries.GLAccountNumber IN ({CODE})
@@ -6200,7 +6200,7 @@ class MyApp(QWidget):
                                     , JournalEntries.JEDescription
                                     , JournalEntries.JELineDescription
                                     , JournalEntries.PreparerID
-                                    , JournalEntries.ApproverID
+                                    , JournalEntries.Source	
                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN	
                                     (
@@ -6302,7 +6302,7 @@ class MyApp(QWidget):
                                         , JournalEntries.JEDescription
                                         , JournalEntries.JELineDescription
                                         , JournalEntries.PreparerID
-                                        , JournalEntries.ApproverID
+                                        , JournalEntries.Source	
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 
                                             AND JournalEntries.GLAccountNumber IN ({CODE})
@@ -6351,7 +6351,7 @@ class MyApp(QWidget):
                                                 , JournalEntries.JEDescription
                                                 , JournalEntries.JELineDescription
                                                 , JournalEntries.PreparerID
-                                                , JournalEntries.ApproverID
+                                                , JournalEntries.Source	
                                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries,#TMPCOA
                                             WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN	
                                                 (
@@ -6452,7 +6452,7 @@ class MyApp(QWidget):
                            , JournalEntries.JEDescription											
                            , JournalEntries.JELineDescription											
                            , JournalEntries.PreparerID											
-                           , JournalEntries.ApproverID											
+                           , JournalEntries.Source												
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA											
                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber
                                AND (JournalEntries.EntryDate BETWEEN {first_date} AND {second_date})
@@ -6502,7 +6502,7 @@ class MyApp(QWidget):
                            , JournalEntries.JEDescription											
                            , JournalEntries.JELineDescription											
                            , JournalEntries.PreparerID											
-                           , JournalEntries.ApproverID											
+                           , JournalEntries.Source											
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN		
                         (
@@ -6599,7 +6599,7 @@ class MyApp(QWidget):
                            , JournalEntries.JELineDescription											
                            , JournalEntries.Source											
                            , JournalEntries.PreparerID											
-                           , JournalEntries.ApproverID											
+                           , JournalEntries.Source												
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA						
                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 
                             {Date}
@@ -6649,7 +6649,7 @@ class MyApp(QWidget):
                            , JournalEntries.JELineDescription											
                            , JournalEntries.Source											
                            , JournalEntries.PreparerID											
-                           , JournalEntries.ApproverID											
+                           , JournalEntries.Source												
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA											
                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN (		
                            SELECT DISTINCT JENumber
@@ -6746,7 +6746,7 @@ class MyApp(QWidget):
                                 , JournalEntries.JEDescription	
                                 , JournalEntries.JELineDescription	
                                 , JournalEntries.PreparerID	
-                                , JournalEntries.ApproverID	
+                                , JournalEntries.Source	
                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                             WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber
                                 AND ABS(DATEDIFF(dd, JournalEntries.EntryDate ,JournalEntries.EffectiveDate)) >= {realNDate}
@@ -6796,7 +6796,7 @@ class MyApp(QWidget):
                                 , JournalEntries.JEDescription	
                                 , JournalEntries.JELineDescription	
                                 , JournalEntries.PreparerID	
-                                , JournalEntries.ApproverID	
+                                , JournalEntries.Source		
                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                             WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN 
                                 (
@@ -6894,7 +6894,7 @@ class MyApp(QWidget):
                                   , JournalEntries.JEDescription			
                                   , JournalEntries.JELineDescription			
                                   , JournalEntries.PreparerID			
-                                  , JournalEntries.ApproverID			
+                                  , JournalEntries.Source			
                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.PreparerID IN 				
                                   (			
@@ -6965,7 +6965,7 @@ class MyApp(QWidget):
                                , JournalEntries.JEDescription			
                                , JournalEntries.JELineDescription			
                                , JournalEntries.PreparerID			
-                               , JournalEntries.ApproverID			
+                               , JournalEntries.Source				
                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND 				
                                JournalEntries.JENumber IN 			
@@ -7058,7 +7058,7 @@ class MyApp(QWidget):
                                        , JournalEntries.JEDescription		
                                        , JournalEntries.JELineDescription		
                                        , JournalEntries.PreparerID		
-                                       , JournalEntries.ApproverID		
+                                       , JournalEntries.Source			
                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 			
                                            {Preparer}
@@ -7108,7 +7108,7 @@ class MyApp(QWidget):
                                                 , JournalEntries.JEDescription		
                                                 , JournalEntries.JELineDescription		
                                                 , JournalEntries.PreparerID		
-                                                , JournalEntries.ApproverID		
+                                                , JournalEntries.Source		
                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND 			
                                                 JournalEntries.JENumber IN 		
@@ -8802,7 +8802,7 @@ class MyApp(QWidget):
                                             , JournalEntries.JEDescription
                                             , JournalEntries.JELineDescription
                                             , JournalEntries.PreparerID
-                                            , JournalEntries.ApproverID
+                                            , JournalEntries.Source	
                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 
                                         {CONTI}
@@ -8850,7 +8850,7 @@ class MyApp(QWidget):
                                 , JournalEntries.JEDescription
                                 , JournalEntries.JELineDescription
                                 , JournalEntries.PreparerID
-                                , JournalEntries.ApproverID
+                                , JournalEntries.Source	
 
                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
 
@@ -8955,7 +8955,7 @@ class MyApp(QWidget):
                         , JournalEntries.JEDescription	
                         , JournalEntries.JELineDescription	
                         , JournalEntries.PreparerID	
-                        , JournalEntries.ApproverID	
+                        , JournalEntries.Source		
                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 		
                           AND ({KEY})	
@@ -9002,7 +9002,7 @@ class MyApp(QWidget):
                         , JournalEntries.JEDescription		
                         , JournalEntries.JELineDescription		
                         , JournalEntries.PreparerID		
-                        , JournalEntries.ApproverID		
+                        , JournalEntries.Source		
                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN			
                          (		
