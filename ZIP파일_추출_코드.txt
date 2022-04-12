@@ -1,0 +1,2 @@
+pyinstaller --windowed --add-data "dark_gray.png;." --add-data "bar.png;." --add-data "EY_logo.png;." --add-data "Loading.png;." --ad
+d-data "title.png;." main.py
