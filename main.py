@@ -6702,8 +6702,7 @@ class MyApp(QWidget):
                            , JournalEntries.Amount											
                            , JournalEntries.FunctionalCurrencyCode											
                            , JournalEntries.JEDescription											
-                           , JournalEntries.JELineDescription											
-                           , JournalEntries.Source											
+                           , JournalEntries.JELineDescription																				
                            , JournalEntries.PreparerID											
                            , JournalEntries.Source												
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA						
@@ -6752,8 +6751,7 @@ class MyApp(QWidget):
                            , JournalEntries.Amount											
                            , JournalEntries.FunctionalCurrencyCode											
                            , JournalEntries.JEDescription											
-                           , JournalEntries.JELineDescription											
-                           , JournalEntries.Source											
+                           , JournalEntries.JELineDescription																					
                            , JournalEntries.PreparerID											
                            , JournalEntries.Source												
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA											
@@ -8951,6 +8949,9 @@ class MyApp(QWidget):
                                 , #TMPCOA.GLAccountName
                                 , JournalEntries.Debit
                                 , JournalEntries.Credit
+                                , CASE
+                                                WHEN JournalEntries.Debit = 0 THEN 'Credit' ELSE 'Debit'
+                                                END AS DebitCredit
                                 , JournalEntries.Amount
                                 , JournalEntries.FunctionalCurrencyCode
                                 , JournalEntries.JEDescription
