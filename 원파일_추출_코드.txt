@@ -1,0 +1,4 @@
+pyinstaller --windowed --noconfirm -F --add-data "dark_gray.png;." --add-data "bar.png;." --add-data "EY_logo.png;." --add-data "Load
+ing.png;." --add-data "title.png;." --add-data "add_date.png;." --add-data "clear_files.png;." --add-data "close.png;." --add-data "delete.png;." --add-data "delete_all.png;." --add-data
+"extract_data.png;." --add-data "file_open.png;." --add-data "input_conditions.png;." --add-data "project_connect.png;." --add-data "remove_sheets.png;." --add-data "save.png;." --add-dat
+a "date.png;." main.py
