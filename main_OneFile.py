@@ -6060,7 +6060,7 @@ class MyApp(QWidget):
                                         SELECT 
                                             JournalEntries.GLAccountNumber
                                             , MAX(#TMPCOA.GLAccountName) AS GLAccountName
-                                            , COUNT(JournalEntries.GLAccountNumber) AS CNT
+                                            , COUNT(JournalEntries.GLAccountNumber) AS Account_Cnt
                                             , SUM(Debit) Sum_of_Debit
                                             , SUM(Credit) Sum_of_Credit				
                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
