@@ -757,7 +757,9 @@ class MyApp(QWidget):
     def connectButtonClicked(self):
 
         password = ''
-        ecode = self.line_ecode.text().strip()  ##leading/trailing space 포함시 제거
+        ecode = self.line_ecode.text().strip()
+        ecode = "'" + ecode + "'"
+
         user = 'guest'
         server = self.selected_server_name
         db = 'master'
@@ -767,12 +769,12 @@ class MyApp(QWidget):
             self.MessageBox_Open("서버가 선택되어 있지 않습니다.")
             return
 
-        # 예외처리 - Ecode 이상
-        elif ecode.isdigit() is False:
-            self.MessageBox_Open("Engagement Code가 잘못되었습니다.")
-            self.ProjectCombobox.clear()
-            self.ProjectCombobox.addItem("프로젝트가 없습니다.")
-            return
+        # 예외처리 - Ecode 이상 (앞으로 Ecode에 문자가 포함되어 해당 예외처리는 삭제 예정)
+        #elif ecode.isdigit() is False:
+        #    self.MessageBox_Open("Engagement Code가 잘못되었습니다.")
+        #    self.ProjectCombobox.clear()
+        #    self.ProjectCombobox.addItem("프로젝트가 없습니다.")
+        #    return
 
         server_path = f"DRIVER={{SQL Server}};SERVER={server};uid={user};pwd={password};DATABASE={db};trusted_connection=yes"
 
@@ -784,6 +786,8 @@ class MyApp(QWidget):
             return
 
         cursor = self.cnxn.cursor()
+
+
 
         sql_query = f"""
                            SELECT ProjectName
@@ -842,6 +846,8 @@ class MyApp(QWidget):
             return
 
         ecode = self.line_ecode.text().strip()  # leading/trailing space 제거
+        ecode = "'" + ecode + "'"
+
         pname = text
         self.pname_year = "20" + str(pname)[2:4]  # str
         cursor = self.cnxn.cursor()
