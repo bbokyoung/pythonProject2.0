@@ -24,7 +24,6 @@ import numpy as np
 import openpyxl
 from threading import Thread
 
-
 class Communicate(QObject):
     def resource_path(self, relative_path):
         try:
@@ -36,7 +35,6 @@ class Communicate(QObject):
 
     closeApp = pyqtSignal()
     closeApp2 = pyqtSignal(str)
-
 
 class Calendar(QDialog):
     def resource_path(self, relative_path):
