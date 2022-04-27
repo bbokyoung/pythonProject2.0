@@ -754,6 +754,8 @@ class MyApp(QWidget):
 
         password = ''
         ecode = self.line_ecode.text().strip()  ##leading/trailing space 포함시 제거
+        ecode = "'" + ecode + "'"
+
         user = 'guest'
         server = self.selected_server_name
         db = 'master'
@@ -764,11 +766,11 @@ class MyApp(QWidget):
             return
 
         # 예외처리 - Ecode 이상
-        elif ecode.isdigit() is False:
-            self.MessageBox_Open("Engagement Code가 잘못되었습니다.")
-            self.ProjectCombobox.clear()
-            self.ProjectCombobox.addItem("프로젝트가 없습니다.")
-            return
+        #elif ecode.isdigit() is False:
+        #    self.MessageBox_Open("Engagement Code가 잘못되었습니다.")
+        #    self.ProjectCombobox.clear()
+        #    self.ProjectCombobox.addItem("프로젝트가 없습니다.")
+        #    return
 
         server_path = f"DRIVER={{SQL Server}};SERVER={server};uid={user};pwd={password};DATABASE={db};trusted_connection=yes"
 
@@ -838,6 +840,7 @@ class MyApp(QWidget):
             return
 
         ecode = self.line_ecode.text().strip()  # leading/trailing space 제거
+        ecode = "'" + ecode + "'"
         pname = text
         self.pname_year = "20" + str(pname)[2:4]  # str
         cursor = self.cnxn.cursor()
