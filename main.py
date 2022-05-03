@@ -24,6 +24,59 @@ import numpy as np
 import openpyxl
 from threading import Thread
 
+class AddForm(QGroupBox):
+    def __init__(self):
+        SegmentLabel = QLabel('Segment :        ')
+        SegmentLabel.setStyleSheet("color: white; font-weight : bold")
+        SegmentBox1 = QLineEdit()
+        SegmentBox2 = QLineEdit()
+        SegmentBox3 = QLineEdit()
+        SegmentBox4 = QLineEdit()
+        SegmentBox5 = QLineEdit()
+        SegmentBox1.setStyleSheet("background-color: white;")
+        SegmentBox2.setStyleSheet("background-color: white;")
+        SegmentBox3.setStyleSheet("background-color: white;")
+        SegmentBox4.setStyleSheet("background-color: white;")
+        SegmentBox5.setStyleSheet("background-color: white;")
+        SegmentBox1.setPlaceholderText('※ Segment01')
+        SegmentBox2.setPlaceholderText('※ Segment02')
+        SegmentBox3.setPlaceholderText('※ Segment03')
+        SegmentBox4.setPlaceholderText('※ Segment04')
+        SegmentBox5.setPlaceholderText('※ Segment05')
+
+        UserDefineLabel = QLabel('UserDefine :        ')
+        UserDefineLabel.setStyleSheet("color: white; font-weight : bold")
+        UserDefine1 = QLineEdit()
+        UserDefine2 = QLineEdit()
+        UserDefine3 = QLineEdit()
+        UserDefine1.setStyleSheet("background-color: white;")
+        UserDefine2.setStyleSheet("background-color: white;")
+        UserDefine3.setStyleSheet("background-color: white;")
+        UserDefine1.setPlaceholderText('※ UserDefine01')
+        UserDefine2.setPlaceholderText('※ UserDefine02')
+        UserDefine3.setPlaceholderText('※ UserDefine03')
+
+        self.UserLabel = QLabel('전표입력자 :        ')
+        self.UserLabel.setStyleSheet("color: white; font-weight : bold")
+        self.User = QLineEdit()
+        self.User.setStyleSheet("background-color: white;")
+        self.User.setPlaceholderText('※ 전표입력자를 입력하세요')
+        self.Acount = QTextEdit()
+        self.Acount.setStyleSheet("background-color: white;")
+
+        self.sublayout1 = QGridLayout()
+        self.sublayout1.addWidget(SegmentLabel, 0, 0)
+        self.sublayout1.addWidget(SegmentBox1, 0, 1)
+        self.sublayout1.addWidget(SegmentBox2, 0, 2)
+        self.sublayout1.addWidget(SegmentBox3, 0, 3)
+        self.sublayout1.addWidget(SegmentBox4, 0, 4)
+        self.sublayout1.addWidget(SegmentBox5, 0, 5)
+
+        self.sublayout1.addWidget(UserDefineLabel, 1, 0)
+        self.sublayout1.addWidget(UserDefine1, 1, 1)
+        self.sublayout1.addWidget(UserDefine2, 1, 2)
+        self.sublayout1.addWidget(UserDefine3, 1, 3)
+
 class Communicate(QObject):
     def resource_path(self, relative_path):
         try:
@@ -1026,6 +1079,10 @@ class MyApp(QWidget):
                 self.MessageBox_Open("접근 권한이 없는 프로젝트 입니다.")
 
     def Dialog4(self):
+        Addnew = AddForm()
+        Titlelabel = QLabel('1. 계정 사용빈도 N번 이하인 계정이 포함된 전표리스트\n')
+        Titlelabel.setStyleSheet("color: white; font-weight : bold")
+
         self.dialoglist.add(4)
         self.dialog4 = QDialog()
         self.dialog4.setStyleSheet('background-color: #2E2E38')
@@ -1170,6 +1227,13 @@ class MyApp(QWidget):
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
+        labelManual = QLabel('수동/자동 : ', self.dialog4)
+        labelManual.setStyleSheet("color: white; font-weight : bold")
+        self.Manual = QCheckBox('수동', self.dialog4)
+        self.Auto = QCheckBox('자동', self.dialog4)
+        self.Manual.setStyleSheet("color: white;")
+        self.Auto.setStyleSheet("color: white;")
+
         self.D4_N.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
         self.D4_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
         self.D4_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
@@ -1178,14 +1242,18 @@ class MyApp(QWidget):
         layout1 = QGridLayout()
         layout1.addWidget(self.rbtn1, 0, 0)
         layout1.addWidget(self.rbtn2, 0, 1)
-        layout1.addWidget(label_freq, 1, 0)
-        layout1.addWidget(self.D4_N, 1, 1)
-        layout1.addWidget(label_TE, 2, 0)
-        layout1.addWidget(self.D4_TE, 2, 1)
-        layout1.addWidget(label_tree, 3, 0)
-        layout1.addWidget(self.new_tree, 3, 1)
-        layout1.addWidget(labelSheet, 4, 0)
-        layout1.addWidget(self.D4_Sheet, 4, 1)
+        layout1.addWidget(labelSheet, 1, 0)
+        layout1.addWidget(self.D4_Sheet, 1, 1)
+        layout1.addWidget(label_freq, 2, 0)
+        layout1.addWidget(self.D4_N, 2, 1)
+        layout1.addWidget(label_TE, 3, 0)
+        layout1.addWidget(self.D4_TE, 3, 1)
+        layout1.addWidget(label_tree, 4, 0)
+        layout1.addWidget(self.new_tree, 4, 1)
+        layout1.addWidget(Addnew.Acount, 5, 1)
+        layout1.addWidget(Addnew.UserLabel, 6, 0)
+        layout1.addWidget(Addnew.User, 6, 1)
+
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
@@ -1199,13 +1267,22 @@ class MyApp(QWidget):
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
 
+        layout_am = QHBoxLayout()
+        layout_am.addWidget(labelManual)
+        layout_am.addWidget(self.Manual)
+        layout_am.addWidget(self.Auto)
+
+
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
+        main_layout.addWidget(Titlelabel)
         main_layout.addLayout(layout1)
+        main_layout.addLayout(Addnew.sublayout1)
         main_layout.addLayout(layout_dc)
+        main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
         self.dialog4.setLayout(main_layout)
-        self.dialog4.setGeometry(300, 300, 600, 400)
+        self.dialog4.setGeometry(300, 300, 1000, 600)
 
         # ? 제거
         self.dialog4.setWindowFlags(Qt.WindowCloseButtonHint)
