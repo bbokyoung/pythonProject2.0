@@ -909,16 +909,16 @@ class MyApp(QWidget):
         self.comboScenario = QComboBox(self)
 
         self.comboScenario.addItem('--시나리오 목록--')
-        self.comboScenario.addItem('04 : 계정 사용빈도 N번 이하인 계정이 포함된 전표리스트')
-        self.comboScenario.addItem('05 : 당기 생성된 계정리스트 추출')
-        self.comboScenario.addItem('06 : 결산일 전후 T일 입력 전표')
-        self.comboScenario.addItem('07 : 비영업일 전기/입력 전표')
-        self.comboScenario.addItem('08 : 효력, 입력 일자 간 차이가 N일 이상인 전표')
-        self.comboScenario.addItem('09 : 전표 작성 빈도수가 N회 이하인 작성자에 의한 생성된 전표')
-        self.comboScenario.addItem('10 : 특정 전표 입력자(W)에 의해 생성된 전표')
-        self.comboScenario.addItem('11-12 : 특정 계정(A) 상대계정 리스트 검토')
-        self.comboScenario.addItem('13 : 연속된 숫자로 끝나는 금액 검토')
-        self.comboScenario.addItem('14 : 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (중요성 금액 제시 가능)')
+        self.comboScenario.addItem('01 : 계정 사용빈도 N번 이하인 계정이 포함된 전표리스트')
+        self.comboScenario.addItem('02 : 당기 생성된 계정리스트 추출')
+        self.comboScenario.addItem('03 : 결산일 전후 T일 입력 전표')
+        self.comboScenario.addItem('04 : 비영업일 전기/입력 전표')
+        self.comboScenario.addItem('05 : 효력, 입력 일자 간 차이가 N일 이상인 전표')
+        self.comboScenario.addItem('06 : 전표 작성 빈도수가 N회 이하인 작성자에 의한 생성된 전표')
+        self.comboScenario.addItem('07 : 특정 전표 입력자(W)에 의해 생성된 전표')
+        self.comboScenario.addItem('08 : 특정 계정(A) 상대계정 리스트 검토')
+        self.comboScenario.addItem('09 : 연속된 숫자로 끝나는 금액 검토')
+        self.comboScenario.addItem('10 : 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (중요성 금액 제시 가능)')
 
         self.ProjectCombobox = QComboBox(self)
 
@@ -6059,7 +6059,7 @@ class MyApp(QWidget):
                                             WHERE Year = {year}
                                             GROUP BY GLAccountNumber
                                             HAVING COUNT(GLAccountNumber) <= {N}
-                                        ) AND ABS(JournalEntries.Amount) > {TE}
+                                        ) AND ABS(JournalEntries.Amount) >= {TE}
                                         {Account}
                                         {CD}
                                         AND JournalEntries.Year = {year}
@@ -6103,7 +6103,7 @@ class MyApp(QWidget):
                                         WHERE Year = {year}
                                         GROUP BY GLAccountNumber			
                                         HAVING COUNT(GLAccountNumber) <= {N}			
-                                        ) AND ABS(JournalEntries.Amount) > {TE}
+                                        ) AND ABS(JournalEntries.Amount) >= {TE}
                                         {Account}
                                         AND JournalEntries.Year = {year}
                                     ORDER BY JENumber,JELineNumber				
@@ -6161,7 +6161,7 @@ class MyApp(QWidget):
                                                 AND JournalEntries.Year = {year}
                                             GROUP BY JournalEntries.GLAccountNumber	
                                             HAVING COUNT(JournalEntries.GLAccountNumber) <= {N}	
-                                            ) AND ABS(JournalEntries.Amount) > {TE}
+                                            ) AND ABS(JournalEntries.Amount) >= {TE}
                                             {Account}
                                             AND JournalEntries.Year = {year}
                                         ) AND JournalEntries.Year = {year}		
@@ -6566,7 +6566,7 @@ class MyApp(QWidget):
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA											
                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber
                                AND (JournalEntries.EntryDate BETWEEN {first_date} AND {second_date})
-                               AND ABS(JournalEntries.Amount) > {TE}
+                               AND ABS(JournalEntries.Amount) >= {TE}
                                {Preparer}
                                {Account}
                                AND JournalEntries.Year = {year}
@@ -6621,7 +6621,7 @@ class MyApp(QWidget):
                             WHERE (JournalEntries.EntryDate BETWEEN {first_date} AND {second_date})
                                     {Account}
                                     {Preparer}
-                                    AND ABS(JournalEntries.Amount) > {TE}
+                                    AND ABS(JournalEntries.Amount) >= {TE}
                                     AND Year = {year}
                         ) AND JournalEntries.Year = {year}
                         ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber		
@@ -6714,7 +6714,7 @@ class MyApp(QWidget):
                             {Date}
                             {Account}
                             {Preparer}
-                            AND ABS(JournalEntries.Amount) > {TE}
+                            AND ABS(JournalEntries.Amount) >= {TE}
                             AND JournalEntries.Year = {year}
                        ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                        DROP TABLE #TMPCOA
@@ -6762,7 +6762,7 @@ class MyApp(QWidget):
                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN (		
                            SELECT DISTINCT JENumber
                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
-                           WHERE ABS(JournalEntries.Amount) > {TE}
+                           WHERE ABS(JournalEntries.Amount) >= {TE}
                                 {Account}
                                 {Preparer}
                                 {Date}
@@ -6859,7 +6859,7 @@ class MyApp(QWidget):
                             WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber
                                 AND ABS(DATEDIFF(dd, JournalEntries.EntryDate ,JournalEntries.EffectiveDate)) >= {realNDate}
                                 {Preparer}
-                                AND ABS(JournalEntries.Amount) > {TE}
+                                AND ABS(JournalEntries.Amount) >= {TE}
                                 {Account}
                                 AND JournalEntries.Year = {year}
                             ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
@@ -6912,7 +6912,7 @@ class MyApp(QWidget):
                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries	
                                 WHERE ABS(DATEDIFF(dd, JournalEntries.EntryDate ,JournalEntries.EffectiveDate)) >= {realNDate}
                                     {Preparer}
-                                    AND ABS(JournalEntries.Amount) > {TE}
+                                    AND ABS(JournalEntries.Amount) >= {TE}
                                     {Account}
                                     AND Year = {year}
                                 ) AND JournalEntries.Year = {year}
@@ -7011,7 +7011,7 @@ class MyApp(QWidget):
                                   WHERE Year = {year}		
                                   GROUP BY PreparerID			
                                   HAVING COUNT(PreparerID) <= {N}			
-                                  )	AND ABS(JournalEntries.Amount) > {TE} {Account}	AND JournalEntries.Year = {year}	
+                                  )	AND ABS(JournalEntries.Amount) >= {TE} {Account}	AND JournalEntries.Year = {year}	
                            ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                            DROP TABLE #TMPCOA			
                         '''.format(field=self.selected_project_id, TE=self.tempTE, N=self.tempN,
@@ -7027,7 +7027,7 @@ class MyApp(QWidget):
                                   WHERE Year = {year}			
                                   GROUP BY PreparerID			
                                   HAVING COUNT(PreparerID) <= {N}			
-                                  ) AND ABS(JournalEntries.Amount) > {TE}
+                                  ) AND ABS(JournalEntries.Amount) >= {TE}
                                   {Account}
                                   AND JournalEntries.Year = {year}
                                   {CD}		
@@ -7092,7 +7092,7 @@ class MyApp(QWidget):
                                            HAVING COUNT(PreparerID) <= {N}
                                            ) AS LVL1
                                        WHERE LVL1.PreparerID = JournalEntries.PreparerID	
-                                       ) AND ABS(JournalEntries.Amount) > {TE} AND JournalEntries.Year = {year}	{Account} 
+                                       ) AND ABS(JournalEntries.Amount) >= {TE} AND JournalEntries.Year = {year}	{Account} 
                                    ) AND JournalEntries.Year = {year}	
                            ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                            DROP TABLE #TMPCOA				
@@ -7171,7 +7171,7 @@ class MyApp(QWidget):
                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 			
                                            {Preparer}
                                            AND JournalEntries.EntryDate BETWEEN '{Point1}' AND '{Point2}'			        	
-                                           AND ABS(JournalEntries.Amount) > {TE} {Account}
+                                           AND ABS(JournalEntries.Amount) >= {TE} {Account}
                                            AND JournalEntries.Year = {year}	
                                ORDER BY JENumber,JELineNumber
                                DROP TABLE #TMPCOA			
@@ -7223,7 +7223,7 @@ class MyApp(QWidget):
                                                     (	
                                                     SELECT DISTINCT JENumber	
                                                     FROM  [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries	
-                                                    WHERE ABS(JournalEntries.Amount) > {TE}	
+                                                    WHERE ABS(JournalEntries.Amount) >= {TE}	
                                                     AND JournalEntries.EntryDate BETWEEN '{Point1}' AND '{Point2}'
                                                     {Preparer} AND JournalEntries.Year = {year} {Account}
                                                     ) 
@@ -7275,7 +7275,7 @@ class MyApp(QWidget):
                                     SET NOCOUNT ON;
                                     SELECT JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount INTO #tmp
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                                    WHERE Year = {YEAR} AND ABS(Amount) > {TE}
+                                    WHERE Year = {YEAR} AND ABS(Amount) >= {TE}
 
 
                                     SELECT *                                                                                                       														
@@ -7388,7 +7388,7 @@ class MyApp(QWidget):
                                    SET NOCOUNT ON;
                                    SELECT JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01 INTO #tmp
                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                                   WHERE Year = {YEAR} AND ABS(Amount) > {TE}
+                                   WHERE Year = {YEAR} AND ABS(Amount) >= {TE}
 
                                     SELECT *                                                                                                       														
                                     FROM                                                                                                    														
@@ -7500,7 +7500,7 @@ class MyApp(QWidget):
                                     SET NOCOUNT ON;
                                     SELECT CONCAT(JENumber,'-',Effectivedate) AS JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount INTO #tmp
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                                    WHERE Year = {YEAR} AND ABS(Amount) > {TE}
+                                    WHERE Year = {YEAR} AND ABS(Amount) >= {TE}
 
 
                                     SELECT *                                                                                                       														
@@ -7639,7 +7639,7 @@ class MyApp(QWidget):
                         SET NOCOUNT ON;
                         SELECT JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount INTO #tmp
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                        WHERE Year = {YEAR} AND ABS(Amount) > {TE}
+                        WHERE Year = {YEAR} AND ABS(Amount) >= {TE}
 
 
                         SELECT *                                                                                                       														
@@ -7748,7 +7748,7 @@ class MyApp(QWidget):
                        SET NOCOUNT ON;
                        SELECT JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01 INTO #tmp
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                       WHERE Year = {year} AND ABS(Amount) > {TE}
+                       WHERE Year = {year} AND ABS(Amount) >= {TE}
 
                         SELECT *                                                                                                       														
                         FROM                                                                                                    														
@@ -7856,7 +7856,7 @@ class MyApp(QWidget):
                         SET NOCOUNT ON;
                         SELECT CONCAT(JENumber,'-',Effectivedate) AS JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount INTO #tmp
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                        WHERE Year = {year} AND ABS(Amount) > {TE}
+                        WHERE Year = {year} AND ABS(Amount) >= {TE}
 
 
                         SELECT *                                                                                                       														
@@ -8033,7 +8033,7 @@ class MyApp(QWidget):
                     PreparerID,						
                     ApproverID  INTO #JEData						
                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JE
-                WHERE JE.Year = {year} AND ABS(JE.Amount) > {TE} 
+                WHERE JE.Year = {year} AND ABS(JE.Amount) >= {TE} 
                 SELECT * INTO #COAData							
                 FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts]						
                 --****************************************************Result Table***************************************************							
@@ -8159,7 +8159,7 @@ class MyApp(QWidget):
                     PreparerID,		
                     ApproverID  INTO #JEData		
                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JE
-                WHERE JE.Year = {year} AND ABS(JE.Amount) > {TE}
+                WHERE JE.Year = {year} AND ABS(JE.Amount) >= {TE}
 
                 SELECT JENumber,							
                     JELineNumber,						
@@ -8179,7 +8179,7 @@ class MyApp(QWidget):
                 WHERE JE.JENumber IN (
                                      SELECT DISTINCT JENumber
                                      FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                                     WHERE ABS(Amount) > {TE}
+                                     WHERE ABS(Amount) >= {TE}
                                      ) AND JE.Year = {year}
 
                 SELECT * INTO #COAData			
@@ -8312,7 +8312,7 @@ class MyApp(QWidget):
                     PreparerID,						
                     ApproverID  INTO #JEData						
                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JE
-                WHERE JE.Year = {year} AND ABS(JE.Amount) > {TE}
+                WHERE JE.Year = {year} AND ABS(JE.Amount) >= {TE}
                 SELECT * INTO #COAData							
                 FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts]						
                 --****************************************************Result Table***************************************************							
@@ -8438,7 +8438,7 @@ class MyApp(QWidget):
                     PreparerID,		
                     ApproverID  INTO #JEData		
                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JE
-                WHERE JE.Year = {year} AND ABS(JE.Amount) > {TE}
+                WHERE JE.Year = {year} AND ABS(JE.Amount) >= {TE}
 
 
                 SELECT Concat(JENumber,'-',Effectivedate) AS JENumber,							
@@ -8459,7 +8459,7 @@ class MyApp(QWidget):
                 WHERE JE.JENumber IN (
                                      SELECT DISTINCT JENumber
                                      FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                                     WHERE ABS(Amount) > {TE}
+                                     WHERE ABS(Amount) >= {TE}
                                      ) AND JE.Year = {year}
 
 
@@ -8594,7 +8594,7 @@ class MyApp(QWidget):
                     PreparerID,						
                     ApproverID  INTO #JEData						
                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JE
-                WHERE JE.Year = {year} AND ABS(JE.Amount) > {TE}
+                WHERE JE.Year = {year} AND ABS(JE.Amount) >= {TE}
                 SELECT GLAccountNumber, MAX(GLAccountName) AS GLAccountName INTO #COAData							
                 FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts]		
                 GROUP BY GLAccountNumber
@@ -8722,7 +8722,7 @@ class MyApp(QWidget):
                     PreparerID,		
                     ApproverID  INTO #JEData		
                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JE
-                WHERE JE.Year = {year} AND ABS(JE.Amount) > {TE}
+                WHERE JE.Year = {year} AND ABS(JE.Amount) >= {TE}
 
                 SELECT JENumber,							
                     JELineNumber,						
@@ -8742,7 +8742,7 @@ class MyApp(QWidget):
                 WHERE JE.JENumber IN (
                                      SELECT DISTINCT JENumber
                                      FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                                     WHERE ABS(Amount) > {TE}
+                                     WHERE ABS(Amount) >= {TE}
                                      ) AND JE.Year = {year}
 
                 SELECT GLAccountNumber, MAX(GLAccountName) AS GLAccountName INTO #COAData							
@@ -8915,7 +8915,7 @@ class MyApp(QWidget):
                                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 
                                         {CONTI}
                                         {Account}
-                                        AND ABS(JournalEntries.Amount) > {TE}
+                                        AND ABS(JournalEntries.Amount) >= {TE}
                                         AND JournalEntries.Year = {year}
                                         ORDER BY JENumber, JELineNumber
                                         DROP TABLE #TMPCOA
@@ -8970,7 +8970,7 @@ class MyApp(QWidget):
                                                 (
                                                 SELECT DISTINCT JENumber
                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                                                WHERE ABS(JournalEntries.Amount) > {TE}
+                                                WHERE ABS(JournalEntries.Amount) >= {TE}
                                                     {CONTI}
                                                     {Account}
                                                     AND Year = {year}
@@ -9070,7 +9070,7 @@ class MyApp(QWidget):
                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries, #TMPCOA
                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 		
                           AND ({KEY})	
-                          AND ABS(JournalEntries.Amount) > {TE} {Account}
+                          AND ABS(JournalEntries.Amount) >= {TE} {Account}
                           AND JournalEntries.Year = {year}
                    ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                    DROP TABLE #TMPCOA		
@@ -9119,7 +9119,7 @@ class MyApp(QWidget):
                          (		
                             SELECT DISTINCT JournalEntries.JENumber		
                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries		
-                            WHERE ({KEY})  AND Year = {year} AND ABS(JournalEntries.Amount) > {TE} {Account}		
+                            WHERE ({KEY})  AND Year = {year} AND ABS(JournalEntries.Amount) >= {TE} {Account}		
                          )   AND JournalEntries.Year = {year}
                    ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                    DROP TABLE #TMPCOA			
