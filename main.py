@@ -969,9 +969,12 @@ class MyApp(QWidget):
         self.comboScenario.addItem('05 : 효력, 입력 일자 간 차이가 N일 이상인 전표')
         self.comboScenario.addItem('06 : 전표 작성 빈도수가 N회 이하인 작성자에 의한 생성된 전표')
         self.comboScenario.addItem('07 : 특정 전표 입력자(W)에 의해 생성된 전표')
-        self.comboScenario.addItem('08 : 특정 계정(A) 상대계정 리스트 검토')
-        self.comboScenario.addItem('09 : 연속된 숫자로 끝나는 금액 검토')
-        self.comboScenario.addItem('10 : 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (중요성 금액 제시 가능)')
+        self.comboScenario.addItem('08-09 : 특정 계정(A) 상대계정 리스트 검토')
+        self.comboScenario.addItem('10 : 연속된 숫자로 끝나는 금액 검토')
+        self.comboScenario.addItem('11 : 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (중요성 금액 제시 가능)')
+        self.comboScenario.addItem('12 : 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토')
+        self.comboScenario.addItem('13 : 차/대변 합계가 중요성금액 이상인 전표')
+        self.comboScenario.addItem('14 : 전표 입력자와 승인자가 동일한 전표')
 
         self.ProjectCombobox = QComboBox(self)
 
@@ -1072,6 +1075,15 @@ class MyApp(QWidget):
 
                 elif self.selected_scenario_subclass_index == 10:
                     self.Dialog14()
+
+                elif self.selected_scenario_subclass_index == 11:
+                    self.Dialog15()
+
+                elif self.selected_scenario_subclass_index == 12:
+                    self.Dialog16()
+
+                elif self.selected_scenario_subclass_index == 13:
+                    self.Dialog17()
 
                 gc.collect()
 
@@ -1254,7 +1266,6 @@ class MyApp(QWidget):
         layout1.addWidget(Addnew.UserLabel, 6, 0)
         layout1.addWidget(Addnew.User, 6, 1)
 
-
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
         layout2.addWidget(self.btn2)
@@ -1287,7 +1298,7 @@ class MyApp(QWidget):
         # ? 제거
         self.dialog4.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog4.setWindowTitle('Scenario4')
+        self.dialog4.setWindowTitle('Scenario1')
         self.dialog4.setWindowModality(Qt.NonModal)
         self.dialog4.show()
 
@@ -1663,7 +1674,7 @@ class MyApp(QWidget):
         ### 공통 지정
         self.dialog5.setLayout(layout)
         self.dialog5.setGeometry(300, 300, 700, 570)
-        self.dialog5.setWindowTitle('Scenario5')
+        self.dialog5.setWindowTitle('Scenario2')
         self.dialog5.setWindowModality(Qt.NonModal)
         self.dialog5.show()
 
@@ -1980,7 +1991,7 @@ class MyApp(QWidget):
 
         self.dialog6.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog6.setWindowTitle("Scenario6")
+        self.dialog6.setWindowTitle("Scenario3")
         self.dialog6.setWindowModality(Qt.NonModal)
         self.dialog6.show()
 
@@ -2300,7 +2311,7 @@ class MyApp(QWidget):
 
         self.dialog7.setWindowFlags(Qt.WindowCloseButtonHint)  # ? 제거
 
-        self.dialog7.setWindowTitle("Scenario7")
+        self.dialog7.setWindowTitle("Scenario4")
         self.dialog7.setWindowModality(Qt.NonModal)
         self.dialog7.show()
 
@@ -2563,7 +2574,7 @@ class MyApp(QWidget):
 
         self.dialog8.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog8.setWindowTitle("Scenario8")
+        self.dialog8.setWindowTitle("Scenario5")
         self.dialog8.setWindowModality(Qt.NonModal)
         self.dialog8.show()
 
@@ -2748,7 +2759,7 @@ class MyApp(QWidget):
         # ? 제거
         self.dialog9.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog9.setWindowTitle("Scenario9")
+        self.dialog9.setWindowTitle("Scenario6")
         self.dialog9.setWindowModality(Qt.NonModal)
         self.dialog9.show()
 
@@ -3039,7 +3050,7 @@ class MyApp(QWidget):
         # ? 제거
         self.dialog10.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog10.setWindowTitle("Scenario10")
+        self.dialog10.setWindowTitle("Scenario7")
         self.dialog10.setWindowModality(Qt.NonModal)
         self.dialog10.show()
 
@@ -3636,7 +3647,7 @@ class MyApp(QWidget):
         # ? 제거
         self.dialog12.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog12.setWindowTitle('Scenario')
+        self.dialog12.setWindowTitle('Scenario8-9')
         self.dialog12.setWindowModality(Qt.NonModal)
         self.dialog12.show()
 
@@ -3835,7 +3846,7 @@ class MyApp(QWidget):
 
         # ? 제거
         self.dialog13.setWindowFlags(Qt.WindowCloseButtonHint)
-        self.dialog13.setWindowTitle('Scenario13')
+        self.dialog13.setWindowTitle('Scenario10')
         self.dialog13.setWindowModality(Qt.NonModal)
         self.dialog13.show()
 
@@ -4037,9 +4048,582 @@ class MyApp(QWidget):
         # ? 제거
         self.dialog14.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog14.setWindowTitle("Scenario14")
+        self.dialog14.setWindowTitle("Scenario11")
         self.dialog14.setWindowModality(Qt.NonModal)
         self.dialog14.show()
+
+    def Dialog15(self):
+        Addnew15 = AddForm()
+        Titlelabel15 = QLabel('12. 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토\n')
+        Titlelabel15.setStyleSheet("color: white; font-weight : bold")
+
+        self.dialoglist.add(15)
+        self.dialog15 = QDialog()
+        self.dialog15.setStyleSheet('background-color: #2E2E38')
+        self.dialog15.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
+
+        # 트리 작업
+        cursor = self.cnxn.cursor()
+        sql = '''
+                         SELECT 											
+                                *
+                         FROM  [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] COA											
+                    '''.format(field=self.selected_project_id)
+        accountsname = pd.read_sql(sql, self.cnxn)
+
+        self.new_tree = Form(self)
+        self.new_tree.tree.clear()
+        accountType = accountsname.AccountType.unique()
+        accountType.sort()
+        for n, i in enumerate(accountType):
+            self.new_tree.parent = QTreeWidgetItem(self.new_tree.tree)
+            self.new_tree.parent.setText(0, "{}".format(i))
+            self.new_tree.parent.setFlags(self.new_tree.parent.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+            child_items = accountsname.AccountSubType[
+                accountsname.AccountType == accountType[n]].unique()
+            child_items.sort()
+
+            for m, x in enumerate(child_items):
+
+                self.new_tree.child = QTreeWidgetItem(self.new_tree.parent)
+
+                self.new_tree.child.setText(0, "{}".format(x))
+                self.new_tree.child.setFlags(self.new_tree.child.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+                grandchild_items = accountsname.AccountClass[accountsname.AccountSubType == child_items[m]].unique()
+                grandchild_items.sort()
+                for o, y in enumerate(grandchild_items):
+                    self.new_tree.grandchild = QTreeWidgetItem(self.new_tree.child)
+
+                    self.new_tree.grandchild.setText(0, "{}".format(y))
+                    self.new_tree.grandchild.setFlags(
+                        self.new_tree.grandchild.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+                    num_name = accountsname[accountsname.AccountClass == grandchild_items[o]].iloc[:, 2:4]
+                    full_name = num_name["GLAccountNumber"].map(str) + ' ' + num_name["GLAccountName"]
+                    full_name.sort_values(inplace=True)
+                    for z in full_name:
+                        self.new_tree.grandgrandchild = QTreeWidgetItem(self.new_tree.grandchild)
+
+                        self.new_tree.grandgrandchild.setText(0, "{}".format(z))
+                        self.new_tree.grandgrandchild.setFlags(
+                            self.new_tree.grandgrandchild.flags() | Qt.ItemIsUserCheckable)
+                        self.new_tree.grandgrandchild.setCheckState(0, Qt.Unchecked)
+        self.new_tree.get_selected_leaves()  # 초기값 모두 선택 (추가)
+
+        ### 버튼 1 - Extract Data
+        self.btn2 = QPushButton('   Extract Data', self.dialog15)
+        self.btn2.setStyleSheet('color:white; background-image : url(./bar.png)')
+        font9 = self.btn2.font()
+        font9.setBold(True)
+        self.btn2.setFont(font9)
+
+        # 추후 Thread15 함수 추가 예정 (기능 연결 시)
+        # self.btn2.clicked.connect(self.Thread15)
+
+        ### 버튼 2 - Close
+        self.btnDialog = QPushButton('   Close', self.dialog15)
+        self.btnDialog.setStyleSheet('color:white;  background-image : url(./bar.png)')
+        self.btnDialog.clicked.connect(self.dialog_close15)
+
+        font10 = self.btnDialog.font()
+        font10.setBold(True)
+        self.btnDialog.setFont(font10)
+
+        # JE Line / JE 라디오 버튼
+        self.rbtn1 = QRadioButton('JE Line', self.dialog15)
+        self.rbtn1.setStyleSheet("color: white;")
+        font11 = self.rbtn1.font()
+        font11.setBold(True)
+        self.rbtn1.setFont(font11)
+        self.rbtn1.setChecked(True)
+
+        self.rbtn2 = QRadioButton('JE', self.dialog15)
+        self.rbtn2.setStyleSheet("color: white;")
+        font12 = self.rbtn2.font()
+        font12.setBold(True)
+        self.rbtn2.setFont(font12)
+
+        ### LineEdit 2 - 중요성 금액
+        label_TE = QLabel('중요성 금액 : ', self.dialog15)
+        label_TE.setStyleSheet("color: white;")
+        font1 = label_TE.font()
+        font1.setBold(True)
+        label_TE.setFont(font1)
+
+        self.D15_TE = QLineEdit(self.dialog15)
+        self.D15_TE.setStyleSheet('background-color: white;')
+        self.D15_TE.setPlaceholderText('중요성 금액을 입력하세요')
+
+        ### 라벨 3 - 시트명
+        labelSheet = QLabel('시나리오 번호* : ', self.dialog15)
+        labelSheet.setStyleSheet("color: white;")
+
+        font5 = labelSheet.font()
+        font5.setBold(True)
+        labelSheet.setFont(font5)
+
+        ### LineEdit 3 - 시트명
+        self.D15_Sheet = QLineEdit(self.dialog15)
+        self.D15_Sheet.setStyleSheet("background-color: white;")
+        self.D15_Sheet.setPlaceholderText('※ 입력 예시 : F01')
+
+        label_tree = QLabel('특정 계정명 : ', self.dialog15)
+        label_tree.setStyleSheet("color: white;")
+        font4 = label_tree.font()
+        font4.setBold(True)
+        label_tree.setFont(font4)
+
+        # 차변/대변 체크박스로 구현
+        labelDC = QLabel('차변/대변 : ', self.dialog15)
+        labelDC.setStyleSheet("color: white;")
+        font1 = labelDC.font()
+        font1.setBold(True)
+        labelDC.setFont(font1)
+        self.checkC = QCheckBox('Credit', self.dialog15)
+        self.checkD = QCheckBox('Debit', self.dialog15)
+        self.checkC.setStyleSheet("color: white;")
+        self.checkD.setStyleSheet("color: white;")
+
+        labelManual = QLabel('수동/자동 : ', self.dialog15)
+        labelManual.setStyleSheet("color: white; font-weight : bold")
+        self.Manual = QCheckBox('수동', self.dialog15)
+        self.Auto = QCheckBox('자동', self.dialog15)
+        self.Manual.setStyleSheet("color: white;")
+        self.Auto.setStyleSheet("color: white;")
+
+        self.D15_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+        self.D15_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+
+        ### 요소 배치
+        layout1 = QGridLayout()
+        layout1.addWidget(self.rbtn1, 0, 0)
+        layout1.addWidget(self.rbtn2, 0, 1)
+        layout1.addWidget(labelSheet, 1, 0)
+        layout1.addWidget(self.D15_Sheet, 1, 1)
+        layout1.addWidget(label_TE, 2, 0)
+        layout1.addWidget(self.D15_TE, 2, 1)
+        layout1.addWidget(label_tree, 3, 0)
+        layout1.addWidget(self.new_tree, 3, 1)
+        layout1.addWidget(Addnew15.Acount, 4, 1)
+        layout1.addWidget(Addnew15.UserLabel, 5, 0)
+        layout1.addWidget(Addnew15.User, 5, 1)
+
+        layout2 = QHBoxLayout()
+        layout2.addStretch(2)
+        layout2.addWidget(self.btn2)
+        layout2.addWidget(self.btnDialog)
+
+        layout2.setContentsMargins(-1, 10, -1, -1)
+
+        layout_dc = QHBoxLayout()
+        layout_dc.addWidget(labelDC)
+        layout_dc.addWidget(self.checkD)
+        layout_dc.addWidget(self.checkC)
+
+        layout_am = QHBoxLayout()
+        layout_am.addWidget(labelManual)
+        layout_am.addWidget(self.Manual)
+        layout_am.addWidget(self.Auto)
+
+        main_layout = QVBoxLayout()
+        main_layout.setAlignment(Qt.AlignTop)
+        main_layout.addWidget(Titlelabel15)
+        main_layout.addLayout(layout1)
+        main_layout.addLayout(Addnew15.sublayout1)
+        main_layout.addLayout(layout_dc)
+        main_layout.addLayout(layout_am)
+        main_layout.addLayout(layout2)
+        self.dialog15.setLayout(main_layout)
+
+        self.dialog15.setGeometry(300, 300, 1000, 600)
+
+        # ? 제거
+        self.dialog15.setWindowFlags(Qt.WindowCloseButtonHint)
+
+        self.dialog15.setWindowTitle('Scenario12')
+        self.dialog15.setWindowModality(Qt.NonModal)
+        self.dialog15.show()
+
+    def Dialog16(self):
+        Addnew16 = AddForm()
+        Titlelabel16 = QLabel('13. 차/대변 합계가 중요성금액 이상인 전표\n')
+        Titlelabel16.setStyleSheet("color: white; font-weight : bold")
+
+        self.dialoglist.add(16)
+        self.dialog16 = QDialog()
+        self.dialog16.setStyleSheet('background-color: #2E2E38')
+        self.dialog16.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
+
+        # 트리 작업
+        cursor = self.cnxn.cursor()
+        sql = '''
+                                 SELECT 											
+                                        *
+                                 FROM  [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] COA											
+                            '''.format(field=self.selected_project_id)
+        accountsname = pd.read_sql(sql, self.cnxn)
+
+        self.new_tree = Form(self)
+        self.new_tree.tree.clear()
+        accountType = accountsname.AccountType.unique()
+        accountType.sort()
+        for n, i in enumerate(accountType):
+            self.new_tree.parent = QTreeWidgetItem(self.new_tree.tree)
+            self.new_tree.parent.setText(0, "{}".format(i))
+            self.new_tree.parent.setFlags(self.new_tree.parent.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+            child_items = accountsname.AccountSubType[
+                accountsname.AccountType == accountType[n]].unique()
+            child_items.sort()
+
+            for m, x in enumerate(child_items):
+
+                self.new_tree.child = QTreeWidgetItem(self.new_tree.parent)
+
+                self.new_tree.child.setText(0, "{}".format(x))
+                self.new_tree.child.setFlags(self.new_tree.child.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+                grandchild_items = accountsname.AccountClass[accountsname.AccountSubType == child_items[m]].unique()
+                grandchild_items.sort()
+                for o, y in enumerate(grandchild_items):
+                    self.new_tree.grandchild = QTreeWidgetItem(self.new_tree.child)
+
+                    self.new_tree.grandchild.setText(0, "{}".format(y))
+                    self.new_tree.grandchild.setFlags(
+                        self.new_tree.grandchild.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+                    num_name = accountsname[accountsname.AccountClass == grandchild_items[o]].iloc[:, 2:4]
+                    full_name = num_name["GLAccountNumber"].map(str) + ' ' + num_name["GLAccountName"]
+                    full_name.sort_values(inplace=True)
+                    for z in full_name:
+                        self.new_tree.grandgrandchild = QTreeWidgetItem(self.new_tree.grandchild)
+
+                        self.new_tree.grandgrandchild.setText(0, "{}".format(z))
+                        self.new_tree.grandgrandchild.setFlags(
+                            self.new_tree.grandgrandchild.flags() | Qt.ItemIsUserCheckable)
+                        self.new_tree.grandgrandchild.setCheckState(0, Qt.Unchecked)
+        self.new_tree.get_selected_leaves()  # 초기값 모두 선택 (추가)
+
+        ### 버튼 1 - Extract Data
+        self.btn2 = QPushButton('   Extract Data', self.dialog16)
+        self.btn2.setStyleSheet('color:white; background-image : url(./bar.png)')
+        font9 = self.btn2.font()
+        font9.setBold(True)
+        self.btn2.setFont(font9)
+
+        # 추후 Thread16 함수 추가 예정 (기능 연결 시)
+        # self.btn2.clicked.connect(self.Thread16)
+
+        ### 버튼 2 - Close
+        self.btnDialog = QPushButton('   Close', self.dialog16)
+        self.btnDialog.setStyleSheet('color:white;  background-image : url(./bar.png)')
+        self.btnDialog.clicked.connect(self.dialog_close16)
+
+        font10 = self.btnDialog.font()
+        font10.setBold(True)
+        self.btnDialog.setFont(font10)
+
+        # JE Line / JE 라디오 버튼
+        self.rbtn1 = QRadioButton('JE Line', self.dialog16)
+        self.rbtn1.setStyleSheet("color: white;")
+        font11 = self.rbtn1.font()
+        font11.setBold(True)
+        self.rbtn1.setFont(font11)
+        self.rbtn1.setChecked(True)
+
+        self.rbtn2 = QRadioButton('JE', self.dialog16)
+        self.rbtn2.setStyleSheet("color: white;")
+        font12 = self.rbtn2.font()
+        font12.setBold(True)
+        self.rbtn2.setFont(font12)
+
+        ### LineEdit 2 - 중요성 금액
+        label_TE = QLabel('중요성 금액* : ', self.dialog16)
+        label_TE.setStyleSheet("color: white;")
+        font1 = label_TE.font()
+        font1.setBold(True)
+        label_TE.setFont(font1)
+
+        self.D16_TE = QLineEdit(self.dialog16)
+        self.D16_TE.setStyleSheet('background-color: white;')
+        self.D16_TE.setPlaceholderText('중요성 금액을 입력하세요')
+
+        ### 라벨 3 - 시트명
+        labelSheet = QLabel('시나리오 번호* : ', self.dialog16)
+        labelSheet.setStyleSheet("color: white;")
+
+        font5 = labelSheet.font()
+        font5.setBold(True)
+        labelSheet.setFont(font5)
+
+        ### LineEdit 3 - 시트명
+        self.D16_Sheet = QLineEdit(self.dialog16)
+        self.D16_Sheet.setStyleSheet("background-color: white;")
+        self.D16_Sheet.setPlaceholderText('※ 입력 예시 : F01')
+
+        label_tree = QLabel('특정 계정명 : ', self.dialog16)
+        label_tree.setStyleSheet("color: white;")
+        font4 = label_tree.font()
+        font4.setBold(True)
+        label_tree.setFont(font4)
+
+        # 차변/대변 체크박스로 구현
+        labelDC = QLabel('차변/대변 : ', self.dialog16)
+        labelDC.setStyleSheet("color: white;")
+        font1 = labelDC.font()
+        font1.setBold(True)
+        labelDC.setFont(font1)
+        self.checkC = QCheckBox('Credit', self.dialog16)
+        self.checkD = QCheckBox('Debit', self.dialog16)
+        self.checkC.setStyleSheet("color: white;")
+        self.checkD.setStyleSheet("color: white;")
+
+        labelManual = QLabel('수동/자동 : ', self.dialog16)
+        labelManual.setStyleSheet("color: white; font-weight : bold")
+        self.Manual = QCheckBox('수동', self.dialog16)
+        self.Auto = QCheckBox('자동', self.dialog16)
+        self.Manual.setStyleSheet("color: white;")
+        self.Auto.setStyleSheet("color: white;")
+
+        self.D16_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+        self.D16_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+
+        ### 요소 배치
+        layout1 = QGridLayout()
+        layout1.addWidget(self.rbtn1, 0, 0)
+        layout1.addWidget(self.rbtn2, 0, 1)
+        layout1.addWidget(labelSheet, 1, 0)
+        layout1.addWidget(self.D16_Sheet, 1, 1)
+        layout1.addWidget(label_TE, 2, 0)
+        layout1.addWidget(self.D16_TE, 2, 1)
+        layout1.addWidget(label_tree, 3, 0)
+        layout1.addWidget(self.new_tree, 3, 1)
+        layout1.addWidget(Addnew16.Acount, 4, 1)
+        layout1.addWidget(Addnew16.UserLabel, 5, 0)
+        layout1.addWidget(Addnew16.User, 5, 1)
+
+        layout2 = QHBoxLayout()
+        layout2.addStretch(2)
+        layout2.addWidget(self.btn2)
+        layout2.addWidget(self.btnDialog)
+
+        layout2.setContentsMargins(-1, 10, -1, -1)
+
+        layout_dc = QHBoxLayout()
+        layout_dc.addWidget(labelDC)
+        layout_dc.addWidget(self.checkD)
+        layout_dc.addWidget(self.checkC)
+
+        layout_am = QHBoxLayout()
+        layout_am.addWidget(labelManual)
+        layout_am.addWidget(self.Manual)
+        layout_am.addWidget(self.Auto)
+
+        main_layout = QVBoxLayout()
+        main_layout.setAlignment(Qt.AlignTop)
+        main_layout.addWidget(Titlelabel16)
+        main_layout.addLayout(layout1)
+        main_layout.addLayout(Addnew16.sublayout1)
+        main_layout.addLayout(layout_dc)
+        main_layout.addLayout(layout_am)
+        main_layout.addLayout(layout2)
+        self.dialog16.setLayout(main_layout)
+
+        self.dialog16.setGeometry(300, 300, 1000, 600)
+
+        # ? 제거
+        self.dialog16.setWindowFlags(Qt.WindowCloseButtonHint)
+
+        self.dialog16.setWindowTitle('Scenario13')
+        self.dialog16.setWindowModality(Qt.NonModal)
+        self.dialog16.show()
+
+    def Dialog17(self):
+        Addnew17 = AddForm()
+        Titlelabel17 = QLabel('14. 전표 입력자와 승인자가 동일한 전표\n')
+        Titlelabel17.setStyleSheet("color: white; font-weight : bold")
+
+        self.dialoglist.add(17)
+        self.dialog17 = QDialog()
+        self.dialog17.setStyleSheet('background-color: #2E2E38')
+        self.dialog17.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
+
+        # 트리 작업
+        cursor = self.cnxn.cursor()
+        sql = '''
+                                 SELECT 											
+                                        *
+                                 FROM  [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] COA											
+                            '''.format(field=self.selected_project_id)
+        accountsname = pd.read_sql(sql, self.cnxn)
+
+        self.new_tree = Form(self)
+        self.new_tree.tree.clear()
+        accountType = accountsname.AccountType.unique()
+        accountType.sort()
+        for n, i in enumerate(accountType):
+            self.new_tree.parent = QTreeWidgetItem(self.new_tree.tree)
+            self.new_tree.parent.setText(0, "{}".format(i))
+            self.new_tree.parent.setFlags(self.new_tree.parent.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+            child_items = accountsname.AccountSubType[
+                accountsname.AccountType == accountType[n]].unique()
+            child_items.sort()
+
+            for m, x in enumerate(child_items):
+
+                self.new_tree.child = QTreeWidgetItem(self.new_tree.parent)
+
+                self.new_tree.child.setText(0, "{}".format(x))
+                self.new_tree.child.setFlags(self.new_tree.child.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+                grandchild_items = accountsname.AccountClass[accountsname.AccountSubType == child_items[m]].unique()
+                grandchild_items.sort()
+                for o, y in enumerate(grandchild_items):
+                    self.new_tree.grandchild = QTreeWidgetItem(self.new_tree.child)
+
+                    self.new_tree.grandchild.setText(0, "{}".format(y))
+                    self.new_tree.grandchild.setFlags(
+                        self.new_tree.grandchild.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
+                    num_name = accountsname[accountsname.AccountClass == grandchild_items[o]].iloc[:, 2:4]
+                    full_name = num_name["GLAccountNumber"].map(str) + ' ' + num_name["GLAccountName"]
+                    full_name.sort_values(inplace=True)
+                    for z in full_name:
+                        self.new_tree.grandgrandchild = QTreeWidgetItem(self.new_tree.grandchild)
+
+                        self.new_tree.grandgrandchild.setText(0, "{}".format(z))
+                        self.new_tree.grandgrandchild.setFlags(
+                            self.new_tree.grandgrandchild.flags() | Qt.ItemIsUserCheckable)
+                        self.new_tree.grandgrandchild.setCheckState(0, Qt.Unchecked)
+        self.new_tree.get_selected_leaves()  # 초기값 모두 선택 (추가)
+
+        ### 버튼 1 - Extract Data
+        self.btn2 = QPushButton('   Extract Data', self.dialog17)
+        self.btn2.setStyleSheet('color:white; background-image : url(./bar.png)')
+        font9 = self.btn2.font()
+        font9.setBold(True)
+        self.btn2.setFont(font9)
+
+        # 추후 Thread17 함수 추가 예정 (기능 연결 시)
+        # self.btn2.clicked.connect(self.Thread17)
+
+        ### 버튼 2 - Close
+        self.btnDialog = QPushButton('   Close', self.dialog17)
+        self.btnDialog.setStyleSheet('color:white;  background-image : url(./bar.png)')
+        self.btnDialog.clicked.connect(self.dialog_close17)
+
+        font10 = self.btnDialog.font()
+        font10.setBold(True)
+        self.btnDialog.setFont(font10)
+
+        # JE Line / JE 라디오 버튼
+        self.rbtn1 = QRadioButton('JE Line', self.dialog17)
+        self.rbtn1.setStyleSheet("color: white;")
+        font11 = self.rbtn1.font()
+        font11.setBold(True)
+        self.rbtn1.setFont(font11)
+        self.rbtn1.setChecked(True)
+
+        self.rbtn2 = QRadioButton('JE', self.dialog17)
+        self.rbtn2.setStyleSheet("color: white;")
+        font12 = self.rbtn2.font()
+        font12.setBold(True)
+        self.rbtn2.setFont(font12)
+
+        ### LineEdit 2 - 중요성 금액
+        label_TE = QLabel('중요성 금액 : ', self.dialog17)
+        label_TE.setStyleSheet("color: white;")
+        font1 = label_TE.font()
+        font1.setBold(True)
+        label_TE.setFont(font1)
+
+        self.D17_TE = QLineEdit(self.dialog17)
+        self.D17_TE.setStyleSheet('background-color: white;')
+        self.D17_TE.setPlaceholderText('중요성 금액을 입력하세요')
+
+        ### 라벨 3 - 시트명
+        labelSheet = QLabel('시나리오 번호* : ', self.dialog17)
+        labelSheet.setStyleSheet("color: white;")
+
+        font5 = labelSheet.font()
+        font5.setBold(True)
+        labelSheet.setFont(font5)
+
+        ### LineEdit 3 - 시트명
+        self.D17_Sheet = QLineEdit(self.dialog17)
+        self.D17_Sheet.setStyleSheet("background-color: white;")
+        self.D17_Sheet.setPlaceholderText('※ 입력 예시 : F01')
+
+        label_tree = QLabel('특정 계정명 : ', self.dialog17)
+        label_tree.setStyleSheet("color: white;")
+        font4 = label_tree.font()
+        font4.setBold(True)
+        label_tree.setFont(font4)
+
+        # 차변/대변 체크박스로 구현
+        labelDC = QLabel('차변/대변 : ', self.dialog17)
+        labelDC.setStyleSheet("color: white;")
+        font1 = labelDC.font()
+        font1.setBold(True)
+        labelDC.setFont(font1)
+        self.checkC = QCheckBox('Credit', self.dialog17)
+        self.checkD = QCheckBox('Debit', self.dialog17)
+        self.checkC.setStyleSheet("color: white;")
+        self.checkD.setStyleSheet("color: white;")
+
+        labelManual = QLabel('수동/자동 : ', self.dialog17)
+        labelManual.setStyleSheet("color: white; font-weight : bold")
+        self.Manual = QCheckBox('수동', self.dialog17)
+        self.Auto = QCheckBox('자동', self.dialog17)
+        self.Manual.setStyleSheet("color: white;")
+        self.Auto.setStyleSheet("color: white;")
+
+        self.D17_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+        self.D17_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+
+        ### 요소 배치
+        layout1 = QGridLayout()
+        layout1.addWidget(self.rbtn1, 0, 0)
+        layout1.addWidget(self.rbtn2, 0, 1)
+        layout1.addWidget(labelSheet, 1, 0)
+        layout1.addWidget(self.D17_Sheet, 1, 1)
+        layout1.addWidget(label_TE, 2, 0)
+        layout1.addWidget(self.D17_TE, 2, 1)
+        layout1.addWidget(label_tree, 3, 0)
+        layout1.addWidget(self.new_tree, 3, 1)
+        layout1.addWidget(Addnew17.Acount, 4, 1)
+        layout1.addWidget(Addnew17.UserLabel, 5, 0)
+        layout1.addWidget(Addnew17.User, 5, 1)
+
+        layout2 = QHBoxLayout()
+        layout2.addStretch(2)
+        layout2.addWidget(self.btn2)
+        layout2.addWidget(self.btnDialog)
+
+        layout2.setContentsMargins(-1, 10, -1, -1)
+
+        layout_dc = QHBoxLayout()
+        layout_dc.addWidget(labelDC)
+        layout_dc.addWidget(self.checkD)
+        layout_dc.addWidget(self.checkC)
+
+        layout_am = QHBoxLayout()
+        layout_am.addWidget(labelManual)
+        layout_am.addWidget(self.Manual)
+        layout_am.addWidget(self.Auto)
+
+        main_layout = QVBoxLayout()
+        main_layout.setAlignment(Qt.AlignTop)
+        main_layout.addWidget(Titlelabel17)
+        main_layout.addLayout(layout1)
+        main_layout.addLayout(Addnew17.sublayout1)
+        main_layout.addLayout(layout_dc)
+        main_layout.addLayout(layout_am)
+        main_layout.addLayout(layout2)
+        self.dialog17.setLayout(main_layout)
+
+        self.dialog17.setGeometry(300, 300, 1000, 600)
+
+        # ? 제거
+        self.dialog17.setWindowFlags(Qt.WindowCloseButtonHint)
+
+        self.dialog17.setWindowTitle('Scenario14')
+        self.dialog17.setWindowModality(Qt.NonModal)
+        self.dialog17.show()
 
     def D14_LabelC(self, state):
         if state == 0:
@@ -4077,6 +4661,15 @@ class MyApp(QWidget):
 
     def dialog_close14(self):
         self.dialog14.close()
+
+    def dialog_close15(self):
+        self.dialog15.close()
+
+    def dialog_close16(self):
+        self.dialog16.close()
+
+    def dialog_close17(self):
+        self.dialog17.close()
 
     def dropFiles(self):
         self.listbox_drops.clear()
@@ -4136,6 +4729,12 @@ class MyApp(QWidget):
                 self.dialog13.close()
             elif a == 14:
                 self.dialog14.close()
+            elif a == 15:
+                self.dialog15.close()
+            elif a == 16:
+                self.dialog16.close()
+            elif a == 17:
+                self.dialog17.close()
         self.Action.close()
         sys.exit()
 
