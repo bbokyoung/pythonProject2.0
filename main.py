@@ -4102,7 +4102,7 @@ class MyApp(QWidget):
 
         ### 라벨 3 - 시트명
         labelSheet = QLabel('시나리오 번호* : ', self.dialog15)
-        labelSheet.setStyleSheet("color: white;")
+        labelSheet.setStyleSheet("color: yellow;")
 
         font5 = labelSheet.font()
         font5.setBold(True)
@@ -4151,8 +4151,10 @@ class MyApp(QWidget):
         layout1.addWidget(label_tree, 3, 0)
         layout1.addWidget(self.new_tree, 3, 1)
         layout1.addWidget(Addnew15.Acount, 4, 1)
-        layout1.addWidget(Addnew15.UserLabel, 5, 0)
-        layout1.addWidget(Addnew15.User, 5, 1)
+        layout1.addWidget(Addnew15.sourceLabel,5,0)
+        layout1.addWidget(Addnew15.source,5,1)
+        layout1.addWidget(Addnew15.UserLabel, 6, 0)
+        layout1.addWidget(Addnew15.User, 6, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
@@ -4282,7 +4284,7 @@ class MyApp(QWidget):
 
         ### LineEdit 2 - 중요성 금액
         label_TE = QLabel('중요성 금액* : ', self.dialog16)
-        label_TE.setStyleSheet("color: white;")
+        label_TE.setStyleSheet("color: yellow;")
         font1 = label_TE.font()
         font1.setBold(True)
         label_TE.setFont(font1)
@@ -4293,7 +4295,7 @@ class MyApp(QWidget):
 
         ### 라벨 3 - 시트명
         labelSheet = QLabel('시나리오 번호* : ', self.dialog16)
-        labelSheet.setStyleSheet("color: white;")
+        labelSheet.setStyleSheet("color: yellow;")
 
         font5 = labelSheet.font()
         font5.setBold(True)
@@ -4342,8 +4344,10 @@ class MyApp(QWidget):
         layout1.addWidget(label_tree, 3, 0)
         layout1.addWidget(self.new_tree, 3, 1)
         layout1.addWidget(Addnew16.Acount, 4, 1)
-        layout1.addWidget(Addnew16.UserLabel, 5, 0)
-        layout1.addWidget(Addnew16.User, 5, 1)
+        layout1.addWidget(Addnew16.sourceLabel, 5, 0)
+        layout1.addWidget(Addnew16.source, 5, 1)
+        layout1.addWidget(Addnew16.UserLabel, 6, 0)
+        layout1.addWidget(Addnew16.User, 6, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
@@ -4484,7 +4488,7 @@ class MyApp(QWidget):
 
         ### 라벨 3 - 시트명
         labelSheet = QLabel('시나리오 번호* : ', self.dialog17)
-        labelSheet.setStyleSheet("color: white;")
+        labelSheet.setStyleSheet("color: yellow;")
 
         font5 = labelSheet.font()
         font5.setBold(True)
@@ -4533,8 +4537,10 @@ class MyApp(QWidget):
         layout1.addWidget(label_tree, 3, 0)
         layout1.addWidget(self.new_tree, 3, 1)
         layout1.addWidget(Addnew17.Acount, 4, 1)
-        layout1.addWidget(Addnew17.UserLabel, 5, 0)
-        layout1.addWidget(Addnew17.User, 5, 1)
+        layout1.addWidget(Addnew17.sourceLabel, 5, 0)
+        layout1.addWidget(Addnew17.source, 5, 1)
+        layout1.addWidget(Addnew17.UserLabel, 6, 0)
+        layout1.addWidget(Addnew17.User, 6, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
