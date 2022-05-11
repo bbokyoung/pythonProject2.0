@@ -65,6 +65,12 @@ class AddForm(QGroupBox):
         self.Acount.setStyleSheet("background-color: white;")
         self.Acount.setPlaceholderText('※ 특정 계정코드를 입력하거나 위 트리에서 선택하세요')
 
+        self.sourceLabel = QLabel('Source :        ')
+        self.sourceLabel.setStyleSheet("color: white; font-weight : bold")
+        self.source = QLineEdit()
+        self.source.setStyleSheet("background-color: white;")
+        self.source.setPlaceholderText('※ Source를 입력하세요')
+
         self.sublayout1 = QGridLayout()
         self.sublayout1.addWidget(SegmentLabel, 0, 0)
         self.sublayout1.addWidget(SegmentBox1, 0, 1)
@@ -1186,7 +1192,7 @@ class MyApp(QWidget):
 
         ### 라벨 1 - 사용빈도
         label_freq = QLabel('사용 빈도(N)* :', self.dialog4)
-        label_freq.setStyleSheet('color: white;')
+        label_freq.setStyleSheet('color: yellow;')
 
         font1 = label_freq.font()
         font1.setBold(True)
@@ -1212,7 +1218,7 @@ class MyApp(QWidget):
 
         ### 라벨 3 - 시트명
         labelSheet = QLabel('시나리오 번호* : ', self.dialog4)
-        labelSheet.setStyleSheet("color: white;")
+        labelSheet.setStyleSheet("color: yellow;")
 
         font5 = labelSheet.font()
         font5.setBold(True)
@@ -1264,8 +1270,10 @@ class MyApp(QWidget):
         layout1.addWidget(label_tree, 4, 0)
         layout1.addWidget(self.new_tree, 4, 1)
         layout1.addWidget(Addnew.Acount, 5, 1)
-        layout1.addWidget(Addnew.UserLabel, 6, 0)
-        layout1.addWidget(Addnew.User, 6, 1)
+        layout1.addWidget(Addnew.sourceLabel, 6,0)
+        layout1.addWidget(Addnew.source, 6, 1)
+        layout1.addWidget(Addnew.UserLabel, 7, 0)
+        layout1.addWidget(Addnew.User, 7, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
@@ -1997,40 +2005,14 @@ class MyApp(QWidget):
         self.dialog6.show()
 
     def Dialog7(self):
+        Addnew7 = AddForm()
+        Titlelabel7 = QLabel('4. 비영업일 전기/입력 전표\n')
+        Titlelabel7.setStyleSheet("color: white; font-weight : bold")
+
         self.dialoglist.add(7)
         self.dialog7 = QDialog()
         self.dialog7.setStyleSheet('background-color: #2E2E38')
         self.dialog7.setWindowIcon(QIcon(self.resource_path("./EY_logo.png")))
-
-        groupbox1 = QGroupBox('')
-        groupbox1.setStyleSheet('QGroupBox  {border:0;}')
-        font_groupbox1 = groupbox1.font()
-        font_groupbox1.setBold(True)
-        groupbox1.setFont(font_groupbox1)
-
-        groupbox2 = QGroupBox('')
-        groupbox2.setStyleSheet('QGroupBox  {border:0;}')
-        font_groupbox2 = groupbox2.font()
-        font_groupbox2.setBold(True)
-        groupbox2.setFont(font_groupbox2)
-
-        groupbox3 = QGroupBox('')
-        groupbox3.setStyleSheet('QGroupBox  {border:0;}')
-        font_groupbox3 = groupbox3.font()
-        font_groupbox3.setBold(True)
-        groupbox3.setFont(font_groupbox3)
-
-        groupbox4 = QGroupBox('')
-        groupbox4.setStyleSheet('QGroupBox  {border:0;}')
-        font_groupbox4 = groupbox4.font()
-        font_groupbox4.setBold(True)
-        groupbox4.setFont(font_groupbox4)
-
-        groupbox5 = QGroupBox('')
-        groupbox5.setStyleSheet('QGroupBox  {border:0;}')
-        font_groupbox5 = groupbox5.font()
-        font_groupbox5.setBold(True)
-        groupbox5.setFont(font_groupbox5)
 
         cursor = self.cnxn.cursor()
 
@@ -2081,44 +2063,6 @@ class MyApp(QWidget):
                             self.new_tree.grandgrandchild.flags() | Qt.ItemIsUserCheckable)
                         self.new_tree.grandgrandchild.setCheckState(0, Qt.Unchecked)
         self.new_tree.get_selected_leaves()  # 초기값 모두 선택 (추가)
-
-        cursor2 = self.cnxn.cursor()
-        sql2 = '''
-                    SELECT
-                        UserName,
-                        FullName
-                    FROM [{field}_Import_Dim].[dbo].[pbcUser]
-            '''.format(field=self.selected_project_id)
-
-        pID = pd.read_sql(sql2, self.cnxn)
-        self.new_prep = Preparer(self)
-        self.new_prep.prep.clear()
-
-        rc = pID.shape[0]
-        real_PID = []
-
-        for i in range(0, rc):
-            a = ''
-            b = ''
-            s = ''
-            a = str(pID['UserName'][i])
-            b = str(pID['FullName'][i])
-            s = a + ' | ' + b
-            real_PID.append(s)
-
-        pID['real_PID'] = real_PID
-        pID.sort_values(by='real_PID', inplace=True)
-
-        pID.loc[-1] = ['', '', '전표입력자 공란']  # adding a row
-        pID.index = pID.index + 1  # shifting index
-
-        for n, i in enumerate(pID.real_PID.unique()):
-            self.new_prep.parent = QTreeWidgetItem(self.new_prep.prep)
-            self.new_prep.parent.setText(0, "{}".format(i))
-            self.new_prep.parent.setFlags(self.new_prep.parent.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-            self.new_prep.parent.setCheckState(0, Qt.Unchecked)
-
-        self.new_prep.get_selected_leaves()
 
         self.checkC = QCheckBox('Credit', self.dialog7)
         self.checkD = QCheckBox('Debit', self.dialog7)
@@ -2213,16 +2157,8 @@ class MyApp(QWidget):
         font4.setBold(True)
         label_tree.setFont(font4)
 
-        labelJE = QLabel('전표입력자 : ', self.dialog7)
-        labelJE.setStyleSheet("color: white;")
-
-        font5 = labelJE.font()
-        font5.setBold(True)
-        labelJE.setFont(font5)
-
         labelCost = QLabel('중요성금액 : ', self.dialog7)
         labelCost.setStyleSheet("color: white;")
-
         font6 = labelCost.font()
         font6.setBold(True)
         labelCost.setFont(font6)
@@ -2256,27 +2192,33 @@ class MyApp(QWidget):
         temp_lineedit2.setDisabled(True)
         temp_lineedit2.setFrame(False)
 
+        labelManual = QLabel('수동/자동 : ', self.dialog7)
+        labelManual.setStyleSheet("color: white; font-weight : bold")
+        self.Manual = QCheckBox('수동', self.dialog7)
+        self.Auto = QCheckBox('자동', self.dialog7)
+        self.Manual.setStyleSheet("color: white;")
+        self.Auto.setStyleSheet("color: white;")
+
         layoutr = QGridLayout()
         self.rbtn1.setChecked(True)
         layoutr.addWidget(self.rbtn1, 0, 0)
         layoutr.addWidget(self.rbtn2, 0, 1)
         layoutr.addWidget(temp_lineedit, 0, 2)
-        groupbox1.setLayout(layoutr)
 
         layout1 = QGridLayout()
-        layout1.addWidget(labelDate, 0, 0)
-        layout1.addWidget(self.D7_Date, 0, 1)
-        layout1.addWidget(self.btnDate, 0, 2)
-        layout1.addWidget(self.btnDelete, 0, 3)
-        layout1.addWidget(label_tree, 1, 0)
-        layout1.addWidget(self.new_tree, 1, 1)
-        layout1.addWidget(labelJE, 2, 0)
-        layout1.addWidget(self.new_prep, 2, 1)
-        layout1.addWidget(labelCost, 3, 0)
-        layout1.addWidget(self.D7_Cost, 3, 1)
-        layout1.addWidget(labelSheet, 4, 0)
-        layout1.addWidget(self.D7_Sheet, 4, 1)
-        groupbox3.setLayout(layout1)
+        layout1.addWidget(labelSheet, 0, 0)
+        layout1.addWidget(self.D7_Sheet, 0, 1)
+        layout1.addWidget(labelDate, 1, 0)
+        layout1.addWidget(self.D7_Date, 1, 1)
+        layout1.addWidget(self.btnDate, 1, 2)
+        layout1.addWidget(self.btnDelete, 1, 3)
+        layout1.addWidget(labelCost, 2, 0)
+        layout1.addWidget(self.D7_Cost, 2, 1)
+        layout1.addWidget(label_tree, 3, 0)
+        layout1.addWidget(self.new_tree, 3, 1)
+        layout1.addWidget(Addnew7.Acount, 4, 1)
+        layout1.addWidget(Addnew7.UserLabel, 5, 0)
+        layout1.addWidget(Addnew7.User, 5, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch()
@@ -2284,29 +2226,33 @@ class MyApp(QWidget):
         layout2.addWidget(self.btn2)
         layout2.addWidget(self.btnDialog)
         layout2.setContentsMargins(-1, 10, -1, -1)
-        groupbox4.setLayout(layout2)
 
         layout3 = QGridLayout()
         self.rbtn3.setChecked(True)
         layout3.addWidget(self.rbtn3, 0, 0)
         layout3.addWidget(self.rbtn4, 0, 1)
         layout3.addWidget(temp_lineedit2, 0, 2)
-        groupbox2.setLayout(layout3)
 
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
-        groupbox5.setLayout(layout_dc)
+
+        layout_am = QHBoxLayout()
+        layout_am.addWidget(labelManual)
+        layout_am.addWidget(self.Manual)
+        layout_am.addWidget(self.Auto)
 
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
-        main_layout.addWidget(groupbox2)
-        main_layout.addWidget(groupbox1)
-        main_layout.addWidget(groupbox3)
-        main_layout.addWidget(groupbox5)
-        main_layout.addWidget(groupbox4)
-
+        main_layout.addWidget(Titlelabel7)
+        main_layout.addLayout(layoutr)
+        main_layout.addLayout(layout3)
+        main_layout.addLayout(layout1)
+        main_layout.addLayout(Addnew7.sublayout1)
+        main_layout.addLayout(layout_dc)
+        main_layout.addLayout(layout_am)
+        main_layout.addLayout(layout2)
         self.dialog7.setLayout(main_layout)
         self.dialog7.setGeometry(300, 300, 750, 500)
 
