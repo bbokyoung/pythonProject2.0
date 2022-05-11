@@ -63,6 +63,7 @@ class AddForm(QGroupBox):
         self.User.setPlaceholderText('※ 전표입력자를 입력하세요')
         self.Acount = QTextEdit()
         self.Acount.setStyleSheet("background-color: white;")
+        self.Acount.setPlaceholderText('※ 특정 계정코드를 입력하거나 위 트리에서 선택하세요')
 
         self.sublayout1 = QGridLayout()
         self.sublayout1.addWidget(SegmentLabel, 0, 0)
