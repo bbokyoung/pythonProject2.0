@@ -26,7 +26,7 @@ from threading import Thread
 
 class AddForm(QGroupBox):
     def __init__(self):
-        SegmentLabel = QLabel('Segment :        ')
+        SegmentLabel = QLabel('Segment :            ')
         SegmentLabel.setStyleSheet("color: white; font-weight : bold")
         SegmentBox1 = QLineEdit()
         SegmentBox2 = QLineEdit()
@@ -44,7 +44,7 @@ class AddForm(QGroupBox):
         SegmentBox4.setPlaceholderText('※ Segment04')
         SegmentBox5.setPlaceholderText('※ Segment05')
 
-        UserDefineLabel = QLabel('UserDefine :        ')
+        UserDefineLabel = QLabel('UserDefine :            ')
         UserDefineLabel.setStyleSheet("color: white; font-weight : bold")
         UserDefine1 = QLineEdit()
         UserDefine2 = QLineEdit()
@@ -1170,14 +1170,14 @@ class MyApp(QWidget):
         self.btnDialog.setFont(font10)
 
         # JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line', self.dialog4)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog4)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
 
-        self.rbtn2 = QRadioButton('JE', self.dialog4)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog4)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -1310,7 +1310,7 @@ class MyApp(QWidget):
         self.dialog5.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
 
         ### JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line             ', self.dialog5)  # 간격 유지를 위한 공백 13개
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog5)  # 간격 유지를 위한 공백 13개
         self.rbtn1.setStyleSheet("color: white;")
 
         font11 = self.rbtn1.font()
@@ -1318,7 +1318,7 @@ class MyApp(QWidget):
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
 
-        self.rbtn2 = QRadioButton('JE', self.dialog5)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog5)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -1823,13 +1823,13 @@ class MyApp(QWidget):
         self.btn2.resize(110, 30)
         self.btnDialog.resize(110, 30)
 
-        self.rbtn1 = QRadioButton('JE Line             ', self.dialog6)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog6)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
-        self.rbtn2 = QRadioButton('JE             ', self.dialog6)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog6)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -2149,13 +2149,13 @@ class MyApp(QWidget):
         self.btn2.resize(110, 30)
         self.btnDialog.resize(110, 30)
 
-        self.rbtn3 = QRadioButton('JE Line             ', self.dialog7)
+        self.rbtn3 = QRadioButton('JE Line (Result)', self.dialog7)
         self.rbtn3.setStyleSheet("color: white;")
         font11 = self.rbtn3.font()
         font11.setBold(True)
         self.rbtn3.setFont(font11)
 
-        self.rbtn4 = QRadioButton('JE             ', self.dialog7)
+        self.rbtn4 = QRadioButton('JE (Journals)', self.dialog7)
         self.rbtn4.setStyleSheet("color: white;")
         font12 = self.rbtn4.font()
         font12.setBold(True)
@@ -2462,13 +2462,13 @@ class MyApp(QWidget):
         self.btn2.resize(110, 30)
         self.btnDialog.resize(110, 30)
 
-        self.rbtn1 = QRadioButton('JE Line             ', self.dialog8)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog8)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
-        self.rbtn2 = QRadioButton('JE             ', self.dialog8)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog8)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -2652,13 +2652,13 @@ class MyApp(QWidget):
         self.btnDialog.setFont(font10)
 
         # JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line', self.dialog9)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog9)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
-        self.rbtn2 = QRadioButton('JE', self.dialog9)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog9)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -2891,13 +2891,13 @@ class MyApp(QWidget):
         self.btnDialog.resize(110, 30)
 
         ### JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line', self.dialog10)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog10)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
-        self.rbtn2 = QRadioButton('JE', self.dialog10)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog10)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -3529,13 +3529,13 @@ class MyApp(QWidget):
         self.D12_Cost2.setPlaceholderText('중요성 금액을 입력하세요')
 
         # JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line', self.dialog12)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog12)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
-        self.rbtn2 = QRadioButton('JE', self.dialog12)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog12)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -3720,14 +3720,14 @@ class MyApp(QWidget):
         self.new_tree.get_selected_leaves()  # 초기값 모두 선택 (추가)
 
         ### JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line', self.dialog13)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog13)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
 
-        self.rbtn2 = QRadioButton('JE', self.dialog13)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog13)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -3927,13 +3927,13 @@ class MyApp(QWidget):
         self.btnDialog.resize(110, 30)
 
         ### JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line', self.dialog14)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog14)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
-        self.rbtn2 = QRadioButton('JE', self.dialog14)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog14)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -4129,14 +4129,14 @@ class MyApp(QWidget):
         self.btnDialog.setFont(font10)
 
         # JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line', self.dialog15)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog15)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
 
-        self.rbtn2 = QRadioButton('JE', self.dialog15)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog15)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -4320,14 +4320,14 @@ class MyApp(QWidget):
         self.btnDialog.setFont(font10)
 
         # JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line', self.dialog16)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog16)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
 
-        self.rbtn2 = QRadioButton('JE', self.dialog16)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog16)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
@@ -4511,14 +4511,14 @@ class MyApp(QWidget):
         self.btnDialog.setFont(font10)
 
         # JE Line / JE 라디오 버튼
-        self.rbtn1 = QRadioButton('JE Line', self.dialog17)
+        self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog17)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
         font11.setBold(True)
         self.rbtn1.setFont(font11)
         self.rbtn1.setChecked(True)
 
-        self.rbtn2 = QRadioButton('JE', self.dialog17)
+        self.rbtn2 = QRadioButton('JE (Journals)', self.dialog17)
         self.rbtn2.setStyleSheet("color: white;")
         font12 = self.rbtn2.font()
         font12.setBold(True)
