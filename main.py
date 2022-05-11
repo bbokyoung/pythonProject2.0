@@ -3590,6 +3590,10 @@ class MyApp(QWidget):
             self.dialog12.activateWindow()
 
     def Dialog13(self):
+        Addnew13 = AddForm()
+        Titlelabel13 = QLabel('10. 연속된 숫자로 끝나는 금액 검토\n')
+        Titlelabel13.setStyleSheet("color: white; font-weight : bold")
+
         self.dialoglist.add(13)
         self.dialog13 = QDialog()
         self.dialog13.setStyleSheet('background-color: #2E2E38')
@@ -3678,8 +3682,7 @@ class MyApp(QWidget):
 
         ### 라벨 1 - 연속된 자릿수
         label_Continuous = QLabel('연속된 자릿수* : ', self.dialog13)
-        label_Continuous.setStyleSheet("color: white;")
-
+        label_Continuous.setStyleSheet("color: yellow;")
         font1 = label_Continuous.font()
         font1.setBold(True)
         label_Continuous.setFont(font1)
@@ -3711,8 +3714,7 @@ class MyApp(QWidget):
         label_tree.setFont(font4)
 
         labelSheet = QLabel('시나리오 번호* : ', self.dialog13)
-        labelSheet.setStyleSheet("color: white;")
-
+        labelSheet.setStyleSheet("color: yellow;")
         font5 = labelSheet.font()
         font5.setBold(True)
         labelSheet.setFont(font5)
@@ -3734,10 +3736,22 @@ class MyApp(QWidget):
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
+        labelManual = QLabel('수동/자동 : ', self.dialog13)
+        labelManual.setStyleSheet("color: white; font-weight : bold")
+        self.Manual = QCheckBox('수동', self.dialog13)
+        self.Auto = QCheckBox('자동', self.dialog13)
+        self.Manual.setStyleSheet("color: white;")
+        self.Auto.setStyleSheet("color: white;")
+
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
+
+        layout_am = QHBoxLayout()
+        layout_am.addWidget(labelManual)
+        layout_am.addWidget(self.Manual)
+        layout_am.addWidget(self.Auto)
 
         ### Layout - 다이얼로그 UI
 
@@ -3748,26 +3762,35 @@ class MyApp(QWidget):
         ### sublayout 배치 - 탭 삭제
         sublayout1.addWidget(self.rbtn1, 0, 0)
         sublayout1.addWidget(self.rbtn2, 0, 1)
-        sublayout1.addWidget(label_Continuous, 1, 0)
-        sublayout1.addWidget(self.text_continuous, 1, 1)
-        sublayout1.addWidget(label_amount, 2, 0)
-        sublayout1.addWidget(self.line_amount, 2, 1)
-        sublayout1.addWidget(label_tree, 3, 0)
-        sublayout1.addWidget(self.new_tree, 3, 1)
-        sublayout1.addWidget(labelSheet, 4, 0)
-        sublayout1.addWidget(self.D13_Sheet, 4, 1)
+        sublayout1.addWidget(labelSheet, 1, 0)
+        sublayout1.addWidget(self.D13_Sheet, 1, 1)
+        sublayout1.addWidget(label_Continuous, 2, 0)
+        sublayout1.addWidget(self.text_continuous, 2, 1)
+        sublayout1.addWidget(label_amount, 3, 0)
+        sublayout1.addWidget(self.line_amount, 3, 1)
+        sublayout1.addWidget(label_tree, 4, 0)
+        sublayout1.addWidget(self.new_tree, 4, 1)
+        sublayout1.addWidget(Addnew13.Acount, 5, 1)
+        sublayout1.addWidget(Addnew13.sourceLabel, 6, 0)
+        sublayout1.addWidget(Addnew13.source, 6, 1)
+        sublayout1.addWidget(Addnew13.UserLabel, 7, 0)
+        sublayout1.addWidget(Addnew13.User, 7, 1)
 
         sublayout2.addStretch(2)
         sublayout2.addWidget(self.btn2)
         sublayout2.addWidget(self.btnDialog)
 
+        main_layout.setAlignment(Qt.AlignTop)
+        main_layout.addWidget(Titlelabel13)
         main_layout.addLayout(sublayout1, stretch=4)
+        main_layout.addLayout(Addnew13.sublayout1, stretch=4)
         main_layout.addLayout(layout_dc, stretch=4)
+        main_layout.addLayout(layout_am, stretch=4)
         main_layout.addLayout(sublayout2, stretch=1)
 
         ### 공통 지정
         self.dialog13.setLayout(main_layout)
-        self.dialog13.setGeometry(300, 300, 600, 450)
+        self.dialog13.setGeometry(100, 100, 1000, 600)
 
         # ? 제거
         self.dialog13.setWindowFlags(Qt.WindowCloseButtonHint)
@@ -3776,6 +3799,10 @@ class MyApp(QWidget):
         self.dialog13.show()
 
     def Dialog14(self):
+        Addnew14 = AddForm()
+        Titlelabel14 = QLabel('11. 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (TE금액 제시 가능)\n')
+        Titlelabel14.setStyleSheet("color: white; font-weight : bold")
+
         self.dialoglist.add(14)
         self.dialog14 = QDialog()
         self.dialog14.setStyleSheet('background-color: #2E2E38')
@@ -3865,7 +3892,7 @@ class MyApp(QWidget):
         self.rbtn2.setFont(font12)
 
         labelKeyword = QLabel('Key Words* : ', self.dialog14)
-        labelKeyword.setStyleSheet("color: white;")
+        labelKeyword.setStyleSheet("color: yellow;")
         font1 = labelKeyword.font()
         font1.setBold(True)
         labelKeyword.setFont(font1)
@@ -3904,7 +3931,7 @@ class MyApp(QWidget):
         label_tree.setFont(font4)
 
         labelSheet = QLabel('시나리오 번호* : ', self.dialog14)
-        labelSheet.setStyleSheet("color: white;")
+        labelSheet.setStyleSheet("color: yellow;")
 
         font5 = labelSheet.font()
         font5.setBold(True)
@@ -3926,6 +3953,13 @@ class MyApp(QWidget):
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
+        labelManual = QLabel('수동/자동 : ', self.dialog14)
+        labelManual.setStyleSheet("color: white; font-weight : bold")
+        self.Manual = QCheckBox('수동', self.dialog14)
+        self.Auto = QCheckBox('자동', self.dialog14)
+        self.Manual.setStyleSheet("color: white;")
+        self.Auto.setStyleSheet("color: white;")
+
         self.D14_Key.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
         self.D14_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
         self.D14_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
@@ -3936,39 +3970,50 @@ class MyApp(QWidget):
         layout1 = QGridLayout()
         layout1.addWidget(self.rbtn1, 0, 0)
         layout1.addWidget(self.rbtn2, 0, 1)
-        layout1.addWidget(labelKeyword, 1, 0)
-        layout1.addWidget(self.D14_Key, 1, 1)
-        layout1.addWidget(labelKeyword2, 2, 0)
-        layout1.addWidget(self.D14_Key2, 2, 1)
-        layout1.addWidget(self.D14_Key2C, 2, 2)
-        layout1.addWidget(labelTE, 3, 0)
-        layout1.addWidget(self.D14_TE, 3, 1)
-        layout1.addWidget(label_tree, 4, 0)
-        layout1.addWidget(self.new_tree, 4, 1)
-        layout1.addWidget(labelSheet, 5, 0)
-        layout1.addWidget(self.D14_Sheet, 5, 1)
+        layout1.addWidget(labelSheet, 1, 0)
+        layout1.addWidget(self.D14_Sheet, 1, 1)
+        layout1.addWidget(labelKeyword, 2, 0)
+        layout1.addWidget(self.D14_Key, 2, 1)
+        layout1.addWidget(labelKeyword2, 3, 0)
+        layout1.addWidget(self.D14_Key2, 3, 1)
+        layout1.addWidget(self.D14_Key2C, 3, 2)
+        layout1.addWidget(labelTE, 4, 0)
+        layout1.addWidget(self.D14_TE, 4, 1)
+        layout1.addWidget(label_tree, 5, 0)
+        layout1.addWidget(self.new_tree, 5, 1)
+        layout1.addWidget(Addnew14.Acount, 6, 1)
+        layout1.addWidget(Addnew14.sourceLabel, 7,0)
+        layout1.addWidget(Addnew14.source,7,1)
+        layout1.addWidget(Addnew14.UserLabel, 8, 0)
+        layout1.addWidget(Addnew14.User, 8, 1)
 
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
 
+        layout_am = QHBoxLayout()
+        layout_am.addWidget(labelManual)
+        layout_am.addWidget(self.Manual)
+        layout_am.addWidget(self.Auto)
+
         layout2 = QHBoxLayout()
         layout2.addStretch()
         layout2.addStretch()
         layout2.addWidget(self.btn2)
         layout2.addWidget(self.btnDialog)
-
         layout2.setContentsMargins(-1, 10, -1, -1)
 
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
+        main_layout.addWidget(Titlelabel14)
         main_layout.addLayout(layout1)
+        main_layout.addLayout(Addnew14.sublayout1)
         main_layout.addLayout(layout_dc)
+        main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
-
         self.dialog14.setLayout(main_layout)
-        self.dialog14.setGeometry(300, 300, 550, 350)
+        self.dialog14.setGeometry(100, 100, 1000, 600)
 
         # ? 제거
         self.dialog14.setWindowFlags(Qt.WindowCloseButtonHint)
