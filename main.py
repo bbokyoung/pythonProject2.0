@@ -28,33 +28,33 @@ class AddForm(QGroupBox):
     def __init__(self):
         SegmentLabel = QLabel('Segment :            ')
         SegmentLabel.setStyleSheet("color: white; font-weight : bold")
-        SegmentBox1 = QLineEdit()
-        SegmentBox2 = QLineEdit()
-        SegmentBox3 = QLineEdit()
-        SegmentBox4 = QLineEdit()
-        SegmentBox5 = QLineEdit()
-        SegmentBox1.setStyleSheet("background-color: white;")
-        SegmentBox2.setStyleSheet("background-color: white;")
-        SegmentBox3.setStyleSheet("background-color: white;")
-        SegmentBox4.setStyleSheet("background-color: white;")
-        SegmentBox5.setStyleSheet("background-color: white;")
-        SegmentBox1.setPlaceholderText('※ Segment01')
-        SegmentBox2.setPlaceholderText('※ Segment02')
-        SegmentBox3.setPlaceholderText('※ Segment03')
-        SegmentBox4.setPlaceholderText('※ Segment04')
-        SegmentBox5.setPlaceholderText('※ Segment05')
+        self.SegmentBox1 = QLineEdit()
+        self.SegmentBox2 = QLineEdit()
+        self.SegmentBox3 = QLineEdit()
+        self.SegmentBox4 = QLineEdit()
+        self.SegmentBox5 = QLineEdit()
+        self.SegmentBox1.setStyleSheet("background-color: white;")
+        self.SegmentBox2.setStyleSheet("background-color: white;")
+        self.SegmentBox3.setStyleSheet("background-color: white;")
+        self.SegmentBox4.setStyleSheet("background-color: white;")
+        self.SegmentBox5.setStyleSheet("background-color: white;")
+        self.SegmentBox1.setPlaceholderText('※ Segment01')
+        self.SegmentBox2.setPlaceholderText('※ Segment02')
+        self.SegmentBox3.setPlaceholderText('※ Segment03')
+        self.SegmentBox4.setPlaceholderText('※ Segment04')
+        self.SegmentBox5.setPlaceholderText('※ Segment05')
 
         UserDefineLabel = QLabel('UserDefine :            ')
         UserDefineLabel.setStyleSheet("color: white; font-weight : bold")
-        UserDefine1 = QLineEdit()
-        UserDefine2 = QLineEdit()
-        UserDefine3 = QLineEdit()
-        UserDefine1.setStyleSheet("background-color: white;")
-        UserDefine2.setStyleSheet("background-color: white;")
-        UserDefine3.setStyleSheet("background-color: white;")
-        UserDefine1.setPlaceholderText('※ UserDefine01')
-        UserDefine2.setPlaceholderText('※ UserDefine02')
-        UserDefine3.setPlaceholderText('※ UserDefine03')
+        self.UserDefine1 = QLineEdit()
+        self.UserDefine2 = QLineEdit()
+        self.UserDefine3 = QLineEdit()
+        self.UserDefine1.setStyleSheet("background-color: white;")
+        self.UserDefine2.setStyleSheet("background-color: white;")
+        self.UserDefine3.setStyleSheet("background-color: white;")
+        self.UserDefine1.setPlaceholderText('※ UserDefine01')
+        self.UserDefine2.setPlaceholderText('※ UserDefine02')
+        self.UserDefine3.setPlaceholderText('※ UserDefine03')
 
         self.UserLabel = QLabel('전표입력자 :        ')
         self.UserLabel.setStyleSheet("color: white; font-weight : bold")
@@ -79,16 +79,16 @@ class AddForm(QGroupBox):
 
         self.sublayout1 = QGridLayout()
         self.sublayout1.addWidget(SegmentLabel, 0, 0)
-        self.sublayout1.addWidget(SegmentBox1, 0, 1)
-        self.sublayout1.addWidget(SegmentBox2, 0, 2)
-        self.sublayout1.addWidget(SegmentBox3, 0, 3)
-        self.sublayout1.addWidget(SegmentBox4, 0, 4)
-        self.sublayout1.addWidget(SegmentBox5, 0, 5)
+        self.sublayout1.addWidget(self.SegmentBox1, 0, 1)
+        self.sublayout1.addWidget(self.SegmentBox2, 0, 2)
+        self.sublayout1.addWidget(self.SegmentBox3, 0, 3)
+        self.sublayout1.addWidget(self.SegmentBox4, 0, 4)
+        self.sublayout1.addWidget(self.SegmentBox5, 0, 5)
 
         self.sublayout1.addWidget(UserDefineLabel, 1, 0)
-        self.sublayout1.addWidget(UserDefine1, 1, 1)
-        self.sublayout1.addWidget(UserDefine2, 1, 2)
-        self.sublayout1.addWidget(UserDefine3, 1, 3)
+        self.sublayout1.addWidget(self.UserDefine1, 1, 1)
+        self.sublayout1.addWidget(self.UserDefine2, 1, 2)
+        self.sublayout1.addWidget(self.UserDefine3, 1, 3)
 
 class Communicate(QObject):
     def resource_path(self, relative_path):
@@ -785,6 +785,146 @@ class MyApp(QWidget):
         self.alt.setText('해당 프로젝트는 기능영역이 존재하지 않습니다.')
         self.alt.exec_()
 
+    def NewQueryConcat(self, Segment1, Segment2, Segment3, Segment4, Segment5, UserDefine1, UserDefine2, UserDefine3,
+                       UserList1, SourceList1):
+        SplitedSegment1 = Segment1.text().split(',')
+        SplitedSegment1List = []
+        for a in SplitedSegment1:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.Segment01 LIKE N'%" + a + "%'"
+            SplitedSegment1List.append(b)
+        Segment1Clean = str(' OR '.join(SplitedSegment1List))
+
+        SplitedSegment2 = Segment2.text().split(',')
+        SplitedSegment2List = []
+        for a in SplitedSegment2:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.Segment02 LIKE N'%" + a + "%'"
+            SplitedSegment2List.append(b)
+        Segment2Clean = str(' OR '.join(SplitedSegment2List))
+
+        SplitedSegment3 = Segment3.text().split(',')
+        SplitedSegment3List = []
+        for a in SplitedSegment3:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.Segment03 LIKE N'%" + a + "%'"
+            SplitedSegment3List.append(b)
+        Segment3Clean = str(' OR '.join(SplitedSegment3List))
+
+        SplitedSegment4 = Segment4.text().split(',')
+        SplitedSegment4List = []
+        for a in SplitedSegment4:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.Segment04 LIKE N'%" + a + "%'"
+            SplitedSegment4List.append(b)
+        Segment4Clean = str(' OR '.join(SplitedSegment4List))
+
+        SplitedSegment5 = Segment5.text().split(',')
+        SplitedSegment5List = []
+        for a in SplitedSegment5:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.Segment05 LIKE N'%" + a + "%'"
+            SplitedSegment5List.append(b)
+        Segment5Clean = str(' OR '.join(SplitedSegment5List))
+
+        SplitedUserDefine1 = UserDefine1.text().split(',')
+        SplitedUserDefine1List = []
+        for a in SplitedUserDefine1:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.UserDefine01 LIKE N'%" + a + "%'"
+            SplitedUserDefine1List.append(b)
+        UserDefine1Clean = str(' OR '.join(SplitedUserDefine1List))
+
+        SplitedUserDefine2 = UserDefine2.text().split(',')
+        SplitedUserDefine2List = []
+        for a in SplitedUserDefine2:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.UserDefine02 LIKE N'%" + a + "%'"
+            SplitedUserDefine2List.append(b)
+        UserDefine2Clean = str(' OR '.join(SplitedUserDefine2List))
+
+        SplitedUserDefine3 = UserDefine3.text().split(',')
+        SplitedUserDefine3List = []
+        for a in SplitedUserDefine3:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.UserDefine03 LIKE N'%" + a + "%'"
+            SplitedUserDefine3List.append(b)
+        UserDefine3Clean = str(' OR '.join(SplitedUserDefine3List))
+
+        SplitedUserList1 = UserList1.text().split(',')
+        SplitedUserList1List = []
+        for a in SplitedUserList1:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.PreparerID LIKE N'%" + a + "%'"
+            SplitedUserList1List.append(b)
+        UserList1Clean = str(' OR '.join(SplitedUserList1List))
+
+        SplitedSourceList1 = SourceList1.text().split(',')
+        SplitedSourceList1List = []
+        for a in SplitedSourceList1:
+            a = a.strip()
+            if a == '':
+                b = ""
+            else:
+                b = "JournalEntries.Source LIKE N'%" + a + "%'"
+            SplitedSourceList1List.append(b)
+        SourceList1Clean = str(' OR '.join(SplitedSourceList1List))
+
+        ConcatSQLlist = [Segment1Clean, Segment2Clean, Segment3Clean, Segment4Clean, Segment5Clean, UserDefine1Clean,
+                         UserDefine2Clean, UserDefine3Clean]
+        ConcatSQLlistClean = []
+        for i in ConcatSQLlist:
+            if len(i) > 0:
+                ConcatSQLlistClean.append(i)
+        ConcatSQL = str(' OR '.join(ConcatSQLlistClean))
+
+        if not ConcatSQL:
+            ConcatSQL2 = ""
+        else:
+            ConcatSQL2 = "AND (" + ConcatSQL + ")"
+
+        if len(UserList1Clean) > 0:
+            ConcatSQL2 = ConcatSQL2 + "AND (" + UserList1Clean + ")"
+        else:
+            ConcatSQL2 = ConcatSQL2
+
+        if len(SourceList1Clean) > 0:
+            ConcatSQL2 = ConcatSQL2 + "AND (" + SourceList1Clean + ")"
+        else:
+            ConcatSQL2 = ConcatSQL2
+
+        return ConcatSQL2
+
+    def AccountUpdate(self, AccountText):
+        AccountText.setPlainText(checked_account)
+
     def init_UI(self):
 
         image = QImage(self.resource_path('./dark_gray.png'))
@@ -1104,7 +1244,9 @@ class MyApp(QWidget):
                 self.MessageBox_Open("접근 권한이 없는 프로젝트 입니다.")
 
     def Dialog4(self):
-        Addnew = AddForm()
+        self.Addnew = AddForm()
+        self.Addnew.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew.Acount))
+
         Titlelabel = QLabel('1. 계정 사용빈도 N번 이하인 계정이 포함된 전표리스트\n')
         Titlelabel.setStyleSheet("color: white; font-weight : bold")
 
@@ -1275,12 +1417,12 @@ class MyApp(QWidget):
         layout1.addWidget(self.D4_TE, 3, 1)
         layout1.addWidget(label_tree, 4, 0)
         layout1.addWidget(self.new_tree, 4, 1)
-        layout1.addWidget(Addnew.btnMid,5,1)
-        layout1.addWidget(Addnew.Acount, 6, 1)
-        layout1.addWidget(Addnew.sourceLabel, 7,0)
-        layout1.addWidget(Addnew.source, 7, 1)
-        layout1.addWidget(Addnew.UserLabel, 8, 0)
-        layout1.addWidget(Addnew.User, 8, 1)
+        layout1.addWidget(self.Addnew.btnMid,5,1)
+        layout1.addWidget(self.Addnew.Acount, 6, 1)
+        layout1.addWidget(self.Addnew.sourceLabel, 7,0)
+        layout1.addWidget(self.Addnew.source, 7, 1)
+        layout1.addWidget(self.Addnew.UserLabel, 8, 0)
+        layout1.addWidget(self.Addnew.User, 8, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
@@ -1304,7 +1446,7 @@ class MyApp(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel)
         main_layout.addLayout(layout1)
-        main_layout.addLayout(Addnew.sublayout1)
+        main_layout.addLayout(self.Addnew.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
@@ -5138,6 +5280,10 @@ class MyApp(QWidget):
         self.th14.join()
 
     def Thread4(self):
+        self.NewSQL = self.NewQueryConcat(self.Addnew.SegmentBox1, self.Addnew.SegmentBox2, self.Addnew.SegmentBox3,
+                                          self.Addnew.SegmentBox4, self.Addnew.SegmentBox5,
+                                          self.Addnew.UserDefine1, self.Addnew.UserDefine2, self.Addnew.UserDefine3,
+                                          self.Addnew.User, self.Addnew.source)
         self.temp_N = self.D4_N.text()  # 필수값
         self.temp_TE = self.D4_TE.text()
         self.tempSheet = self.D4_Sheet.text()
@@ -5164,12 +5310,12 @@ class MyApp(QWidget):
                 int(self.temp_TE)
 
                 ##Unselect all의 경우
-                if checked_account == 'AND JournalEntries.GLAccountNumber IN ()':
+                if self.Addnew.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
                     self.checked_account4 = ''
 
                 ##Select all이나 일부 체크박스가 선택된 경우
                 else:
-                    self.checked_account4 = checked_account
+                    self.checked_account4 = self.Addnew.Acount.toPlainText()
 
                 if self.checkD.isChecked() and self.checkC.isChecked():
                     self.tempCD = ''
@@ -6305,12 +6451,13 @@ class MyApp(QWidget):
                                         ) AND ABS(JournalEntries.Amount) >= {TE}
                                         {Account}
                                         {CD}
+                                        {NewSQL}
                                         AND JournalEntries.Year = {year}
                                         GROUP BY JournalEntries.GLAccountNumber	
                                         ORDER BY JournalEntries.GLAccountNumber
                                         DROP TABLE #TMPCOA
                                     """.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
-                                               Account=self.checked_account4, year=self.pname_year, CD=self.tempCD)
+                                               Account=self.checked_account4, year=self.pname_year, CD=self.tempCD, NewSQL = self.NewSQL)
 
             ### JE Line - Refer
             sql_query = '''
@@ -6348,11 +6495,12 @@ class MyApp(QWidget):
                                         HAVING COUNT(GLAccountNumber) <= {N}			
                                         ) AND ABS(JournalEntries.Amount) >= {TE}
                                         {Account}
+                                        {NewSQL}
                                         AND JournalEntries.Year = {year}
                                     ORDER BY JENumber,JELineNumber				
                                     DROP TABLE #TMPCOA
                                 '''.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
-                                           Account=self.checked_account4, year=self.pname_year)
+                                           Account=self.checked_account4, year=self.pname_year, NewSQL = self.NewSQL)
 
             self.dataframe_refer = pd.read_sql(sql_refer, self.cnxn)
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
@@ -6406,12 +6554,13 @@ class MyApp(QWidget):
                                             HAVING COUNT(JournalEntries.GLAccountNumber) <= {N}	
                                             ) AND ABS(JournalEntries.Amount) >= {TE}
                                             {Account}
+                                            {NewSQL}
                                             AND JournalEntries.Year = {year}
                                         ) AND JournalEntries.Year = {year}		
                                 ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                                 DROP TABLE #TMPCOA
                         '''.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
-                                   Account=self.checked_account4, year=self.pname_year)
+                                   Account=self.checked_account4, year=self.pname_year, NewSQL = self.NewSQL)
 
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
