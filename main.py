@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[ ]:
-
-
 import os
 import sys
 import re
@@ -44,7 +42,7 @@ class AddForm(QGroupBox):
         self.SegmentBox4.setPlaceholderText('※ Segment04')
         self.SegmentBox5.setPlaceholderText('※ Segment05')
 
-        UserDefineLabel = QLabel('UserDefine :            ')
+        UserDefineLabel = QLabel('UserDefined :            ')
         UserDefineLabel.setStyleSheet("color: white; font-weight : bold")
         self.UserDefine1 = QLineEdit()
         self.UserDefine2 = QLineEdit()
@@ -52,9 +50,9 @@ class AddForm(QGroupBox):
         self.UserDefine1.setStyleSheet("background-color: white;")
         self.UserDefine2.setStyleSheet("background-color: white;")
         self.UserDefine3.setStyleSheet("background-color: white;")
-        self.UserDefine1.setPlaceholderText('※ UserDefine01')
-        self.UserDefine2.setPlaceholderText('※ UserDefine02')
-        self.UserDefine3.setPlaceholderText('※ UserDefine03')
+        self.UserDefine1.setPlaceholderText('※ UserDefined1')
+        self.UserDefine2.setPlaceholderText('※ UserDefined2')
+        self.UserDefine3.setPlaceholderText('※ UserDefined3')
 
         self.UserLabel = QLabel('전표입력자 :        ')
         self.UserLabel.setStyleSheet("color: white; font-weight : bold")
