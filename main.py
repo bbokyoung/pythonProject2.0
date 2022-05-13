@@ -465,7 +465,6 @@ class MyApp(QWidget):
         self.my_query = None
         self.selected_scenario_subclass_index = 0
         self.scenario_dic = {}
-        self.new_calendar = None
         self.new_tree = None
         self.new_prep = None
         self.dateList = []
@@ -6256,24 +6255,6 @@ class MyApp(QWidget):
         groupbox.setLayout(layout)
 
         return groupbox
-
-    def calendar6(self):
-        self.dialog6.activateWindow()
-        self.new_calendar.show()
-        self.dialog6.activateWindow()
-
-    def calendar7(self):
-        self.dialog7.activateWindow()
-        self.new_calendar.show()
-        self.dialog7.activateWindow()
-
-    def calendar10_1(self):
-        self.dialog10.activateWindow()
-        self.new_calendar1.show()
-
-    def calendar10_2(self):
-        self.dialog10.activateWindow()
-        self.new_calendar2.show()
 
     def extButtonClicked4(self):
         cursor = self.cnxn.cursor()
