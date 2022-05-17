@@ -794,7 +794,7 @@ class MyApp(QWidget):
             ConcatSQL3List.append('JournalEntries.UserDefined3')
 
         if len(ConcatSQL3List) > 0:
-            ConcatSQL3Clean = str(','.join(ConcatSQL3List))
+            ConcatSQL3Clean = "," + str(','.join(ConcatSQL3List))
         else: ConcatSQL3Clean = ""
 
         if not ConcatSQL:
@@ -6342,7 +6342,7 @@ class MyApp(QWidget):
                                         , JournalEntries.JELineDescription			
                                         , JournalEntries.PreparerID			
                                         , JournalEntries.Source
-                                        , {NewSelect}			
+                                        {NewSelect}			
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.GLAccountNumber IN 				
                                         (			
@@ -6399,7 +6399,7 @@ class MyApp(QWidget):
                                     , JournalEntries.JELineDescription			
                                     , JournalEntries.PreparerID			
                                     , JournalEntries.Source
-                                    , {NewSelect}			
+                                    {NewSelect}			
                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN (				
                                     SELECT DISTINCT JournalEntries.JENumber			
