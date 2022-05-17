@@ -42,7 +42,7 @@ class AddForm(QGroupBox):
         self.SegmentBox4.setPlaceholderText('※ Segment04')
         self.SegmentBox5.setPlaceholderText('※ Segment05')
 
-        UserDefineLabel = QLabel('UserDefined :            ')
+        UserDefineLabel = QLabel('UserDefined :          ')
         UserDefineLabel.setStyleSheet("color: white; font-weight : bold")
         self.UserDefine1 = QLineEdit()
         self.UserDefine2 = QLineEdit()
@@ -9497,7 +9497,6 @@ class MyApp(QWidget):
                     query_wb_origin.save(path)
 
                     self.MessageBox_Open("저장을 완료했습니다.")
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
