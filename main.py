@@ -2,8 +2,6 @@
 # coding: utf-8
 
 # In[ ]:
-
-
 import os
 import sys
 import re
@@ -44,7 +42,7 @@ class AddForm(QGroupBox):
         self.SegmentBox4.setPlaceholderText('※ Segment04')
         self.SegmentBox5.setPlaceholderText('※ Segment05')
 
-        UserDefineLabel = QLabel('UserDefine :            ')
+        UserDefineLabel = QLabel('UserDefined :            ')
         UserDefineLabel.setStyleSheet("color: white; font-weight : bold")
         self.UserDefine1 = QLineEdit()
         self.UserDefine2 = QLineEdit()
@@ -52,9 +50,9 @@ class AddForm(QGroupBox):
         self.UserDefine1.setStyleSheet("background-color: white;")
         self.UserDefine2.setStyleSheet("background-color: white;")
         self.UserDefine3.setStyleSheet("background-color: white;")
-        self.UserDefine1.setPlaceholderText('※ UserDefine01')
-        self.UserDefine2.setPlaceholderText('※ UserDefine02')
-        self.UserDefine3.setPlaceholderText('※ UserDefine03')
+        self.UserDefine1.setPlaceholderText('※ UserDefined1')
+        self.UserDefine2.setPlaceholderText('※ UserDefined2')
+        self.UserDefine3.setPlaceholderText('※ UserDefined3')
 
         self.UserLabel = QLabel('전표입력자 :        ')
         self.UserLabel.setStyleSheet("color: white; font-weight : bold")
@@ -101,41 +99,6 @@ class Communicate(QObject):
 
     closeApp = pyqtSignal()
     closeApp2 = pyqtSignal(str)
-
-class Calendar(QDialog):
-    def resource_path(self, relative_path):
-        try:
-            # PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수
-            base_path = sys._MEIPASS
-        except Exception:
-            base_path = os.path.abspath(".")
-        return os.path.join(base_path, relative_path)
-
-    def __init__(self, parent):
-        super(Calendar, self).__init__(parent)
-        self.MyApp = MyApp
-
-        self.setGeometry(1050, 400, 400, 200)
-        self.setWindowTitle("Calendar")
-        self.setWindowIcon(QIcon(self.resource_path("./EY_logo.png")))
-        self.setWindowModality(Qt.NonModal)
-        self.setWindowFlag(Qt.FramelessWindowHint)
-
-        vbox = QVBoxLayout()
-        hbox = QHBoxLayout()
-
-        self.calendar = QCalendarWidget()
-        self.calendar.setGridVisible(True)
-        self.calendar.setVerticalHeaderFormat(QCalendarWidget.NoVerticalHeader)
-
-        self.closebtn = QPushButton("Close")
-
-        hbox.addStretch(3)
-        hbox.addWidget(self.closebtn)
-        vbox.addWidget(self.calendar)
-        vbox.addLayout(hbox)
-        self.setLayout(vbox)
-
 
 class Form(QGroupBox):
     def resource_path(self, relative_path):
@@ -362,98 +325,6 @@ class Form1(QGroupBox):
         global checked_account_B
         checked_account_B = 'AND LVL4.Analysis_GL_Account_Number NOT IN (' + checked_name + ')'
 
-
-class Preparer(QGroupBox):
-    def resource_path(self, relative_path):
-        try:
-            # PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수
-            base_path = sys._MEIPASS
-        except Exception:
-            base_path = os.path.abspath(".")
-        return os.path.join(base_path, relative_path)
-
-    def __init__(self, parent):
-        super(Preparer, self).__init__(parent)
-
-        grid = QGridLayout()
-        qh = QHBoxLayout()
-
-        self.setLayout(grid)
-        self.setStyleSheet('QGroupBox  {color: white; background-color: white}')
-
-        self.prep = QTreeWidget(self)
-        self.prep.setStyleSheet("border-style: outset; border-color : white; background-color:white;")
-
-        headerItem = QTreeWidgetItem()
-        item = QTreeWidgetItem()
-
-        self.btnSelectp = QPushButton("Select All")
-        self.btnSelectp.resize(65, 22)
-        self.btnSelectp.clicked.connect(self.select_all)
-        self.btnSelectp.clicked.connect(self.get_selected_leaves)
-        self.btnSelectp.setStyleSheet('color:white;  background-color : #2E2E38')
-        font11 = self.btnSelectp.font()
-        font11.setBold(True)
-        self.btnSelectp.setFont(font11)
-
-        self.btnUnselectp = QPushButton("Unselect All")
-        self.btnUnselectp.resize(65, 22)
-        self.btnUnselectp.clicked.connect(self.unselect_all)
-        self.btnUnselectp.clicked.connect(self.get_selected_leaves)
-        self.btnUnselectp.setStyleSheet('color:white;  background-color : #2E2E38')
-        font11 = self.btnUnselectp.font()
-        font11.setBold(True)
-        self.btnUnselectp.setFont(font11)
-
-        qh.addWidget(self.btnSelectp)
-        qh.addWidget(self.btnUnselectp)
-
-        grid.addLayout(qh, 0, 0)
-        grid.addWidget(self.prep, 1, 0)
-        self.prep.setHeaderHidden(True)
-        self.prep.itemClicked.connect(self.get_selected_leaves)
-
-    def unselect_all(self):
-        for i in range(self.prep.topLevelItemCount()):
-            self.prep.topLevelItem(i).setCheckState(0, Qt.Unchecked)
-
-    def select_all(self):
-        for i in range(self.prep.topLevelItemCount()):
-            self.prep.topLevelItem(i).setCheckState(0, Qt.Checked)
-
-    def get_selected_leaves(self):
-        checked_items = []
-        # checked_items = [self.prep.topLevelItem(i).text(0).split(' ')[0] for i in range(self.prep.topLevelItemCount()) if self.prep.topLevelItem(i).checkState(0) == Qt.Checked]
-        for i in range(self.prep.topLevelItemCount()):
-            if self.prep.topLevelItem(i).checkState(0) == Qt.Checked:
-                checked_items.append(self.prep.topLevelItem(i).text(0).split(' ')[0])
-
-        global checked_prep
-
-        np_y = 0  # 공란 있음
-        np_n = 0  # 공란 없음
-        checked_prep = ''
-        for i in checked_items:
-            if i == '전표입력자':
-                np_y = 1
-            else:
-                checked_prep = checked_prep + ', N' + '\'' + i + '\''
-                np_n = 1
-
-        checked_prep = checked_prep[1:]
-
-        global checked_preparer
-
-        if np_y == 0 and np_n == 0:
-            checked_preparer = 'AND JournalEntries.PreparerID IN (' + checked_prep + ')'  # 어느것도 선택 X
-        elif np_y == 0 and np_n == 1:
-            checked_preparer = 'AND JournalEntries.PreparerID IN (' + checked_prep + ')'  # 공란 선택 X
-        elif np_y == 1 and np_n == 1:
-            checked_preparer = 'AND ((JournalEntries.PreparerID IN (' + checked_prep + ')) OR (JournalEntries.PreparerID = ' + "'" + "'" + '))'
-        elif np_y == 1 and np_n == 0:
-            checked_preparer = 'AND JournalEntries.PreparerID = ' + "'" + "'"  # 공란만 선택
-
-
 class DataFrameModel(QAbstractTableModel):
     DtypeRole = Qt.UserRole + 1000
     ValueRole = Qt.UserRole + 1001
@@ -592,7 +463,6 @@ class MyApp(QWidget):
         self.my_query = None
         self.selected_scenario_subclass_index = 0
         self.scenario_dic = {}
-        self.new_calendar = None
         self.new_tree = None
         self.new_prep = None
         self.dateList = []
@@ -999,13 +869,6 @@ class MyApp(QWidget):
             self.MessageBox_Open("서버가 선택되어 있지 않습니다.")
             return
 
-        # 예외처리 - Ecode 이상 (앞으로 Ecode에 문자가 포함되어 해당 예외처리는 삭제 예정)
-        #elif ecode.isdigit() is False:
-        #    self.MessageBox_Open("Engagement Code가 잘못되었습니다.")
-        #    self.ProjectCombobox.clear()
-        #    self.ProjectCombobox.addItem("프로젝트가 없습니다.")
-        #    return
-
         server_path = f"DRIVER={{SQL Server}};SERVER={server};uid={user};pwd={password};DATABASE={db};trusted_connection=yes"
 
         # 예외처리 - 접속 정보 오류
@@ -1016,8 +879,6 @@ class MyApp(QWidget):
             return
 
         cursor = self.cnxn.cursor()
-
-
 
         sql_query = f"""
                            SELECT ProjectName
@@ -1146,12 +1007,12 @@ class MyApp(QWidget):
         self.comboScenario.addItem('05 : 효력, 입력 일자 간 차이가 N일 이상인 전표')
         self.comboScenario.addItem('06 : 전표 작성 빈도수가 N회 이하인 작성자에 의한 생성된 전표')
         self.comboScenario.addItem('07 : 특정 전표 입력자(W)에 의해 생성된 전표')
-        self.comboScenario.addItem('08-09 : 특정 계정(A) 상대계정 리스트 검토')
-        self.comboScenario.addItem('10 : 연속된 숫자로 끝나는 금액 검토')
-        self.comboScenario.addItem('11 : 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (중요성 금액 제시 가능)')
-        self.comboScenario.addItem('12 : 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토')
-        self.comboScenario.addItem('13 : 차/대변 합계가 중요성금액 이상인 전표')
-        self.comboScenario.addItem('14 : 전표 입력자와 승인자가 동일한 전표')
+        self.comboScenario.addItem('08 : 특정 계정(A) 상대계정 리스트 검토')
+        self.comboScenario.addItem('09 : 연속된 숫자로 끝나는 금액 검토')
+        self.comboScenario.addItem('10 : 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (중요성 금액 제시 가능)')
+        self.comboScenario.addItem('11 : 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토')
+        self.comboScenario.addItem('12 : 차/대변 합계가 중요성금액 이상인 전표')
+        self.comboScenario.addItem('13 : 전표 입력자와 승인자가 동일한 전표')
 
         self.ProjectCombobox = QComboBox(self)
 
@@ -1485,7 +1346,7 @@ class MyApp(QWidget):
         self.dialog4.show()
 
     def Dialog5(self):
-        Addnew5 = AddForm()
+        self.Addnew5 = AddForm()
         Titlelabel5 = QLabel('2. 당기 생성된 계정리스트 추출\n')
         Titlelabel5.setStyleSheet("color: white; font-weight : bold")
 
@@ -1591,14 +1452,6 @@ class MyApp(QWidget):
         self.Manual.setStyleSheet("color: white;")
         self.Auto.setStyleSheet("color: white;")
 
-        # 구분자
-        labelSep = QLabel('구분자(회계일자) : ', self.dialog5)
-        labelSep.setStyleSheet("color: white; font-weight : bold")
-        self.sepy = QCheckBox('유', self.dialog5)
-        self.sepy.setStyleSheet("color: white;")
-        self.sepn = QCheckBox('무', self.dialog5)
-        self.sepn.setStyleSheet("color: white;")
-
         ### 라벨 2 - 시트명
         labelSheet = QLabel('시나리오 번호* : ', self.dialog5)
         labelSheet.setStyleSheet("color: yellow;")
@@ -1637,13 +1490,14 @@ class MyApp(QWidget):
         layout1.addWidget(self.D5_Sheet, 1, 1)
         layout1.addWidget(label_tree, 2, 0)
         layout1.addWidget(self.new_tree2, 2, 1)
-        layout1.addWidget(Addnew5.Acount, 3, 1)
-        layout1.addWidget(label_TE, 4, 0)
-        layout1.addWidget(self.D5_TE, 4, 1)
-        layout1.addWidget(Addnew5.sourceLabel, 5, 0)
-        layout1.addWidget(Addnew5.source, 5, 1)
-        layout1.addWidget(Addnew5.UserLabel, 6, 0)
-        layout1.addWidget(Addnew5.User, 6, 1)
+        layout1.addWidget(self.Addnew5.btnMid, 3, 1)
+        layout1.addWidget(self.Addnew5.Acount, 4, 1)
+        layout1.addWidget(label_TE, 5, 0)
+        layout1.addWidget(self.D5_TE, 5, 1)
+        layout1.addWidget(self.Addnew5.sourceLabel, 6, 0)
+        layout1.addWidget(self.Addnew5.source, 6, 1)
+        layout1.addWidget(self.Addnew5.UserLabel, 7, 0)
+        layout1.addWidget(self.Addnew5.User, 7, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
@@ -1662,19 +1516,13 @@ class MyApp(QWidget):
         layout_am.addWidget(self.Manual)
         layout_am.addWidget(self.Auto)
 
-        layout_sep = QHBoxLayout()
-        layout_sep.addWidget(labelSep)
-        layout_sep.addWidget(self.sepy)
-        layout_sep.addWidget(self.sepn)
-
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel5)
         main_layout.addLayout(layout1)
-        main_layout.addLayout(Addnew5.sublayout1)
+        main_layout.addLayout(self.Addnew5.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
-        main_layout.addLayout(layout_sep)
         main_layout.addLayout(layout2)
         self.dialog5.setLayout(main_layout)
         self.dialog5.setGeometry(100, 100, 1000, 600)
@@ -1688,7 +1536,7 @@ class MyApp(QWidget):
         self.dialog5.show()
 
     def Dialog6(self):
-        Addnew6 = AddForm()
+        self.Addnew6 = AddForm()
         Titlelabel6 = QLabel('3. 결산일 전후 T일 입력 전표\n')
         Titlelabel6.setStyleSheet("color: white; font-weight : bold")
 
@@ -1867,11 +1715,12 @@ class MyApp(QWidget):
         layout2.addWidget(self.D6_Cost, 0, 1)
         layout2.addWidget(label_tree, 1, 0)
         layout2.addWidget(self.new_tree, 1, 1)
-        layout2.addWidget(Addnew6.Acount, 2, 1)
-        layout2.addWidget(Addnew6.sourceLabel, 3, 0)
-        layout2.addWidget(Addnew6.source, 3, 1)
-        layout2.addWidget(Addnew6.UserLabel, 4, 0)
-        layout2.addWidget(Addnew6.User, 4, 1)
+        layout2.addWidget(self.Addnew6.btnMid, 2, 1)
+        layout2.addWidget(self.Addnew6.Acount, 3, 1)
+        layout2.addWidget(self.Addnew6.sourceLabel, 4, 0)
+        layout2.addWidget(self.Addnew6.source, 4, 1)
+        layout2.addWidget(self.Addnew6.UserLabel, 5, 0)
+        layout2.addWidget(self.Addnew6.User, 5, 1)
 
         layout_btn = QHBoxLayout()
         layout_btn.addStretch()
@@ -1887,7 +1736,7 @@ class MyApp(QWidget):
         main_layout.addLayout(layout1)
         main_layout.addLayout(layout4)
         main_layout.addLayout(layout2)
-        main_layout.addLayout(Addnew6.sublayout1)
+        main_layout.addLayout(self.Addnew6.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout_btn)
@@ -1901,7 +1750,7 @@ class MyApp(QWidget):
         self.dialog6.show()
 
     def Dialog7(self):
-        Addnew7 = AddForm()
+        self.Addnew7 = AddForm()
         Titlelabel7 = QLabel('4. 비영업일 전기/입력 전표\n')
         Titlelabel7.setStyleSheet("color: white; font-weight : bold")
 
@@ -2074,11 +1923,12 @@ class MyApp(QWidget):
         layout3.addWidget(self.D7_Cost, 1, 1)
         layout3.addWidget(label_tree, 2, 0)
         layout3.addWidget(self.new_tree, 2, 1)
-        layout3.addWidget(Addnew7.Acount, 3, 1)
-        layout3.addWidget(Addnew7.sourceLabel, 4, 0)
-        layout3.addWidget(Addnew7.source, 4, 1)
-        layout3.addWidget(Addnew7.UserLabel, 5, 0)
-        layout3.addWidget(Addnew7.User, 5, 1)
+        layout3.addWidget(self.Addnew7.btnMid, 3, 1)
+        layout3.addWidget(self.Addnew7.Acount, 4, 1)
+        layout3.addWidget(self.Addnew7.sourceLabel, 5, 0)
+        layout3.addWidget(self.Addnew7.source, 5, 1)
+        layout3.addWidget(self.Addnew7.UserLabel, 6, 0)
+        layout3.addWidget(self.Addnew7.User, 6, 1)
 
         layout4 = QHBoxLayout()
         layout4.addStretch()
@@ -2103,7 +1953,7 @@ class MyApp(QWidget):
         main_layout.addLayout(layout1)
         main_layout.addLayout(layout2)
         main_layout.addLayout(layout3)
-        main_layout.addLayout(Addnew7.sublayout1)
+        main_layout.addLayout(self.Addnew7.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout4)
@@ -2117,7 +1967,7 @@ class MyApp(QWidget):
         self.dialog7.show()
 
     def Dialog8(self):
-        Addnew8 = AddForm()
+        self.Addnew8 = AddForm()
         Titlelabel8 = QLabel('5. 효력, 입력 일자 간 차이가 N일 이상인 전표\n')
         Titlelabel8.setStyleSheet("color: white; font-weight : bold")
 
@@ -2295,11 +2145,12 @@ class MyApp(QWidget):
         layout1.addWidget(self.D8_Cost, 2, 1)
         layout1.addWidget(label_tree, 3, 0)
         layout1.addWidget(self.new_tree, 3, 1)
-        layout1.addWidget(Addnew8.Acount, 4, 1)
-        layout1.addWidget(Addnew8.sourceLabel, 5, 0)
-        layout1.addWidget(Addnew8.source, 5, 1)
-        layout1.addWidget(Addnew8.UserLabel, 6, 0)
-        layout1.addWidget(Addnew8.User, 6, 1)
+        layout1.addWidget(self.Addnew8.btnMid, 4, 1)
+        layout1.addWidget(self.Addnew8.Acount, 5, 1)
+        layout1.addWidget(self.Addnew8.sourceLabel, 6, 0)
+        layout1.addWidget(self.Addnew8.source, 6, 1)
+        layout1.addWidget(self.Addnew8.UserLabel, 7, 0)
+        layout1.addWidget(self.Addnew8.User, 7, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch()
@@ -2313,7 +2164,7 @@ class MyApp(QWidget):
         main_layout.addWidget(Titlelabel8)
         main_layout.addLayout(layout0)
         main_layout.addLayout(layout1)
-        main_layout.addLayout(Addnew8.sublayout1)
+        main_layout.addLayout(self.Addnew8.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
@@ -2328,7 +2179,7 @@ class MyApp(QWidget):
         self.dialog8.show()
 
     def Dialog9(self):
-        Addnew9 = AddForm()
+        self.Addnew9 = AddForm()
         Titlelabel9 = QLabel('6. 전표 작성 빈도수가 N회 이하인 작성자에 의한 생성된 전표\n')
         Titlelabel9.setStyleSheet("color: white; font-weight : bold")
 
@@ -2493,11 +2344,12 @@ class MyApp(QWidget):
         layout1.addWidget(self.D9_TE, 3, 1)
         layout1.addWidget(label_tree, 4, 0)
         layout1.addWidget(self.new_tree, 4, 1)
-        layout1.addWidget(Addnew9.Acount, 5, 1)
-        layout1.addWidget(Addnew9.sourceLabel,6,0)
-        layout1.addWidget(Addnew9.source, 6, 1)
-        layout1.addWidget(Addnew9.UserLabel, 7, 0)
-        layout1.addWidget(Addnew9.User, 7, 1)
+        layout1.addWidget(self.Addnew9.btnMid, 5, 1)
+        layout1.addWidget(self.Addnew9.Acount, 6, 1)
+        layout1.addWidget(self.Addnew9.sourceLabel,7,0)
+        layout1.addWidget(self.Addnew9.source, 7, 1)
+        layout1.addWidget(self.Addnew9.UserLabel, 8, 0)
+        layout1.addWidget(self.Addnew9.User, 8, 1)
 
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
@@ -2521,7 +2373,7 @@ class MyApp(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel9)
         main_layout.addLayout(layout1)
-        main_layout.addLayout(Addnew9.sublayout1)
+        main_layout.addLayout(self.Addnew9.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
@@ -2537,7 +2389,7 @@ class MyApp(QWidget):
         self.dialog9.show()
 
     def Dialog10(self):
-        Addnew10 = AddForm()
+        self.Addnew10 = AddForm()
         Titlelabel10 = QLabel('7. 특정 전표입력자(W)에 의해 생성된 전표\n')
         Titlelabel10.setStyleSheet("color: white; font-weight : bold")
 
@@ -2703,14 +2555,15 @@ class MyApp(QWidget):
         layout1.addWidget(self.D10_Sheet, 1, 1)
 
         layout1.addWidget(labelKeyword, 2, 0)
-        layout1.addWidget(Addnew10.User, 2, 1)
+        layout1.addWidget(self.Addnew10.User, 2, 1)
         layout1.addWidget(labelTE, 3, 0)
         layout1.addWidget(self.D10_TE, 3, 1)
         layout1.addWidget(label_tree, 4, 0)
         layout1.addWidget(self.new_tree, 4, 1)
-        layout1.addWidget(Addnew10.Acount, 5, 1)
-        layout1.addWidget(Addnew10.sourceLabel,6,0)
-        layout1.addWidget(Addnew10.source, 6,1)
+        layout1.addWidget(self.Addnew10.btnMid, 5, 1)
+        layout1.addWidget(self.Addnew10.Acount, 6, 1)
+        layout1.addWidget(self.Addnew10.sourceLabel,7,0)
+        layout1.addWidget(self.Addnew10.source, 7,1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch()
@@ -2724,7 +2577,7 @@ class MyApp(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel10)
         main_layout.addLayout(layout1)
-        main_layout.addLayout(Addnew10.sublayout1)
+        main_layout.addLayout(self.Addnew10.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
@@ -2738,71 +2591,24 @@ class MyApp(QWidget):
         self.dialog10.setWindowModality(Qt.NonModal)
         self.dialog10.show()
 
-    def delete_date7(self):
-        self.string_date_list = []
-        self.finalDate = []
-        self.D7_Date.setText('')
-
-    def delete_date6(self):
-        self.D6_Date.setText('')
-
-    def delete_date101(self):
-        self.D10_Point1.setText('')
-
-    def delete_date102(self):
-        self.D10_Point2.setText('')
-
-    def closeCalendar6(self):
-        self.new_calendar.close()
-        self.dialog6.activateWindow()
-
-    def closeCalendar7(self):
-        self.new_calendar.close()
-        self.dialog7.activateWindow()
-
-    def closeCalendar10_1(self):
-        self.new_calendar1.close()
-        self.dialog10.activateWindow()
-
-    def closeCalendar10_2(self):
-        self.new_calendar2.close()
-        self.dialog10.activateWindow()
-
-    def handle_date_clicked(self, date):
-        self.D6_Date.setText(date.toString("yyyy-MM-dd"))
-        self.dialog6.activateWindow()
-
-    def handle_date_clicked2(self, date):
-        self.dialog7.activateWindow()
-
-        self.dateList = []
-        self.dateList.append(date)
-
-        self.string_date_list = [date_obj.toString("yyyy-MM-dd") for date_obj in self.dateList]
-
-        for self.string_date in self.string_date_list:
-            self.D7_Date.append(self.string_date)
-            self.finalDate.append(self.string_date)
-
-        self.dialog7.activateWindow()
-
-    def handle_date_clicked3(self, date):
-        self.D10_Point1.setText(date.toString("yyyy-MM-dd"))
-        self.dialog10.activateWindow()
-
-    def handle_date_clicked4(self, date):
-        self.D10_Point2.setText(date.toString("yyyy-MM-dd"))
-        self.dialog10.activateWindow()
-
     def Dialog12(self):
+        self.Addnew11 = AddForm()
+        self.Addnew11_2 = AddForm()
+
+        TitlelabelMain = QLabel('8. 특정 계정(A)에 대한 상대계정 검토\n')
+        TitlelabelMain.setStyleSheet("color: white; font-weight : bold")
+
         self.dialoglist.add(12)
         self.dialog12 = QDialog()
         self.dialog12.setStyleSheet('background-color: #2E2E38')
         self.dialog12.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
 
         ### 탭 3 - 시나리오 11================================================================
-        cursor1 = self.cnxn.cursor()
+        ### Step 1-2
+        Titlelabel11 = QLabel('A계정의 상대계정이 B계정이 아닌 상대계정 리스트 추출\n')
+        Titlelabel11.setStyleSheet("color: white; font-weight : bold")
 
+        cursor1 = self.cnxn.cursor()
         sql1 = '''
                                  SELECT 											
                                         *
@@ -2810,7 +2616,6 @@ class MyApp(QWidget):
                             '''.format(field=self.selected_project_id)
 
         accountsname1 = pd.read_sql(sql1, self.cnxn)
-
         ### 계정트리 - A, B
         self.new_tree1 = Form(self)
         self.new_tree2 = Form1(self)
@@ -2819,7 +2624,6 @@ class MyApp(QWidget):
 
         accountType1 = accountsname1.AccountType.unique()
         accountType1.sort()
-
         for n, i in enumerate(accountType1):
             self.new_tree1.parent = QTreeWidgetItem(self.new_tree1.tree)
 
@@ -2858,7 +2662,6 @@ class MyApp(QWidget):
         self.new_tree1.get_selected_leaves()
 
         cursor2 = self.cnxn.cursor()
-
         sql2 = '''
                                  SELECT 											
                                         *
@@ -2923,14 +2726,14 @@ class MyApp(QWidget):
 
         ### 라벨 1 - A 계정명/계정 코드
         labelAccount1 = QLabel('A 계정명/계정 코드* : ', self.dialog12)
-        labelAccount1.setStyleSheet("color: white;")
+        labelAccount1.setStyleSheet("color: yellow;")
         font3 = labelAccount1.font()
         font3.setBold(True)
         labelAccount1.setFont(font3)
 
         ### 라벨 2 - B 계정명/계정 코드
         labelAccount2 = QLabel('B 계정명/계정 코드* : ', self.dialog12)
-        labelAccount2.setStyleSheet("color: white;")
+        labelAccount2.setStyleSheet("color: yellow;")
         font3 = labelAccount2.font()
         font3.setBold(True)
         labelAccount2.setFont(font3)
@@ -2959,9 +2762,17 @@ class MyApp(QWidget):
         self.checkC22.setStyleSheet("color: white;")
         self.checkD22.setStyleSheet("color: white;")
 
+        # 수동 자동
+        labelManual2 = QLabel('수동/자동 : ', self.dialog12)
+        labelManual2.setStyleSheet("color: white; font-weight : bold")
+        self.Manual2 = QCheckBox('수동', self.dialog12)
+        self.Auto2 = QCheckBox('자동', self.dialog12)
+        self.Manual2.setStyleSheet("color: white;")
+        self.Auto2.setStyleSheet("color: white;")
+
         ### 라벨 4 - 시나리오 번호
         labelSheet11 = QLabel('시나리오 번호* : ', self.dialog12)
-        labelSheet11.setStyleSheet("color: white;")
+        labelSheet11.setStyleSheet("color: yellow;")
         font5 = labelSheet11.font()
         font5.setBold(True)
         labelSheet11.setFont(font5)
@@ -2985,12 +2796,12 @@ class MyApp(QWidget):
         font1.setBold(True)
         labelDC22.setFont(font1)
 
-        self.checkF3 = QCheckBox('기능영역', self.dialog12)
-        self.checkP3 = QCheckBox('회계일자', self.dialog12)
+        self.checkF3 = QCheckBox('유', self.dialog12)
+        self.checkP3 = QCheckBox('무', self.dialog12)
         self.checkF3.setStyleSheet("color: white;")
         self.checkP3.setStyleSheet("color: white;")
 
-        labelFP3 = QLabel('구분자 : ', self.dialog12)
+        labelFP3 = QLabel('기능영역 : ', self.dialog12)
         labelFP3.setStyleSheet("color: white;")
         font11 = labelFP3.font()
         font11.setBold(True)
@@ -3007,20 +2818,29 @@ class MyApp(QWidget):
         sublayout002.addWidget(self.checkD2)
         sublayout002.addWidget(self.checkC2)
 
+        sublayout_am = QHBoxLayout()
+        sublayout_am.addWidget(labelManual2)
+        sublayout_am.addWidget(self.Manual2)
+        sublayout_am.addWidget(self.Auto2)
+
         sublayout003 = QHBoxLayout()
         sublayout003.addWidget(labelDC22)
         sublayout003.addWidget(self.checkD22)
         sublayout003.addWidget(self.checkC22)
 
         sublayout03 = QGridLayout()
+        sublayout03.addWidget(labelSheet11, 0, 0)
+        sublayout03.addWidget(self.D12_Sheet11, 0, 1)
         sublayout03.addWidget(labelAccount1, 1, 0)
         sublayout03.addWidget(self.new_tree1, 1, 1)
-        sublayout03.addWidget(labelAccount2, 2, 0)
-        sublayout03.addWidget(self.new_tree2, 2, 1)
-        sublayout03.addWidget(labelCost1, 3, 0)
-        sublayout03.addWidget(self.D12_Cost1, 3, 1)
-        sublayout03.addWidget(labelSheet11, 4, 0)
-        sublayout03.addWidget(self.D12_Sheet11, 4, 1)
+        sublayout03.addWidget(self.Addnew11.btnMid, 2, 1)
+        sublayout03.addWidget(self.Addnew11.Acount, 3, 1)
+        sublayout03.addWidget(labelAccount2, 4, 0)
+        sublayout03.addWidget(self.new_tree2, 4, 1)
+        sublayout03.addWidget(self.Addnew11_2.btnMid, 5, 1)
+        sublayout03.addWidget(self.Addnew11_2.Acount, 6, 1)
+        sublayout03.addWidget(labelCost1, 7, 0)
+        sublayout03.addWidget(self.D12_Cost1, 7, 1)
 
         sublayout04 = QHBoxLayout()
         sublayout04.addStretch()
@@ -3029,14 +2849,22 @@ class MyApp(QWidget):
         sublayout04.addWidget(self.btnDialog1)
 
         main_layout3 = QVBoxLayout()
+        main_layout3.addWidget(Titlelabel11)
         main_layout3.addLayout(sublayout03)
         main_layout3.addLayout(sublayout002)
         main_layout3.addLayout(sublayout003)
+        main_layout3.addLayout(sublayout_am)
         main_layout3.addLayout(sublayout0003)
         main_layout3.addStretch()
         main_layout3.addLayout(sublayout04)
 
-        # 시나리오12
+        ### 시나리오12==============================
+        # Step 1-1
+        Titlelabel12 = QLabel('A계정의 모든 상대계정 리스트 추출\n')
+        Titlelabel12.setStyleSheet("color: white; font-weight : bold")
+
+        self.Addnew12 = AddForm()
+
         cursor = self.cnxn.cursor()
         sql = '''
                          SELECT 											
@@ -3101,7 +2929,7 @@ class MyApp(QWidget):
         self.btnDialog.resize(110, 30)
 
         labelAccount = QLabel('특정 계정명/계정 코드* : ', self.dialog12)
-        labelAccount.setStyleSheet("color: white;")
+        labelAccount.setStyleSheet("color: yellow;")
         font3 = labelAccount.font()
         font3.setBold(True)
         labelAccount.setFont(font3)
@@ -3118,7 +2946,7 @@ class MyApp(QWidget):
         self.D12_Cost.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
 
         labelSheet12 = QLabel('시나리오 번호* : ', self.dialog12)
-        labelSheet12.setStyleSheet("color: white;")
+        labelSheet12.setStyleSheet("color: yellow;")
         font5 = labelSheet12.font()
         font5.setBold(True)
         labelSheet12.setFont(font5)
@@ -3138,16 +2966,28 @@ class MyApp(QWidget):
         font1.setBold(True)
         labelDC1.setFont(font1)
 
-        self.checkF = QCheckBox('기능영역', self.dialog12)
-        self.checkP = QCheckBox('회계일자', self.dialog12)
+        self.checkF = QCheckBox('유', self.dialog12)
+        self.checkP = QCheckBox('무', self.dialog12)
         self.checkF.setStyleSheet("color: white;")
         self.checkP.setStyleSheet("color: white;")
 
-        labelFP = QLabel('구분자 : ', self.dialog12)
+        labelFP = QLabel('기능영역 : ', self.dialog12)
         labelFP.setStyleSheet("color: white;")
         font11 = labelFP.font()
         font11.setBold(True)
         labelFP.setFont(font1)
+
+        labelManual1 = QLabel('수동/자동 : ', self.dialog12)
+        labelManual1.setStyleSheet("color: white; font-weight : bold")
+        self.Manual1 = QCheckBox('수동', self.dialog12)
+        self.Auto1 = QCheckBox('자동', self.dialog12)
+        self.Manual1.setStyleSheet("color: white;")
+        self.Auto1.setStyleSheet("color: white;")
+
+        sublayout_am1 = QHBoxLayout()
+        sublayout_am1.addWidget(labelManual1)
+        sublayout_am1.addWidget(self.Manual1)
+        sublayout_am1.addWidget(self.Auto1)
 
         sublayout0 = QHBoxLayout()
         sublayout0.addWidget(labelDC1)
@@ -3159,19 +2999,15 @@ class MyApp(QWidget):
         sublayout00.addWidget(self.checkF)
         sublayout00.addWidget(self.checkP)
 
-        temp_lineedit = QLineEdit(self.dialog12)
-        temp_lineedit.setDisabled(True)
-        temp_lineedit.setFrame(False)
-        temp_lineedit.setStyleSheet('background-color: #2E2E38;')
-
         sublayout1 = QGridLayout()
-        sublayout1.addWidget(temp_lineedit, 0, 1)
+        sublayout1.addWidget(labelSheet12, 0, 0)
+        sublayout1.addWidget(self.D12_Sheet12, 0, 1)
         sublayout1.addWidget(labelAccount, 1, 0)
         sublayout1.addWidget(self.new_tree, 1, 1)
-        sublayout1.addWidget(labelCost, 2, 0)
-        sublayout1.addWidget(self.D12_Cost, 2, 1)
-        sublayout1.addWidget(labelSheet12, 3, 0)
-        sublayout1.addWidget(self.D12_Sheet12, 3, 1)
+        sublayout1.addWidget(self.Addnew12.btnMid, 2, 1)
+        sublayout1.addWidget(self.Addnew12.Acount,3,1)
+        sublayout1.addWidget(labelCost, 4, 0)
+        sublayout1.addWidget(self.D12_Cost, 4, 1)
 
         sublayout2 = QHBoxLayout()
         sublayout2.addStretch()
@@ -3180,12 +3016,19 @@ class MyApp(QWidget):
         sublayout2.addWidget(self.btnDialog)
 
         main_layout1 = QVBoxLayout()
+        main_layout1.addWidget(Titlelabel12)
         main_layout1.addLayout(sublayout1)
         main_layout1.addLayout(sublayout0)
+        main_layout1.addLayout(sublayout_am1)
         main_layout1.addLayout(sublayout00)
         main_layout1.addLayout(sublayout2)
 
         ### Cursor문
+        TitlelabelC = QLabel('상대계정 상세 내역 추출\n')
+        TitlelabelC.setStyleSheet("color: white; font-weight : bold")
+
+        self.AddnewC = AddForm()
+
         self.btn2 = QPushButton('   Extract Data', self.dialog12)
         self.btn2.setStyleSheet('color:white;  background-image : url(./bar.png)')
         self.btn2.clicked.connect(self.ThreadC)
@@ -3202,16 +3045,6 @@ class MyApp(QWidget):
         self.btn2.resize(110, 30)
         self.btnDialog2.resize(110, 30)
 
-        labelCost2 = QLabel('중요성 금액 : ', self.dialog12)
-        labelCost2.setStyleSheet("color: white;")
-        font3 = labelCost2.font()
-        font3.setBold(True)
-        labelCost2.setFont(font3)
-
-        self.D12_Cost2 = QLineEdit(self.dialog12)
-        self.D12_Cost2.setStyleSheet("background-color: white;")
-        self.D12_Cost2.setPlaceholderText('중요성 금액을 입력하세요')
-
         # JE Line / JE 라디오 버튼
         self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog12)
         self.rbtn1.setStyleSheet("color: white;")
@@ -3225,21 +3058,16 @@ class MyApp(QWidget):
         font12.setBold(True)
         self.rbtn2.setFont(font12)
 
-        self.checkF2 = QCheckBox('기능영역', self.dialog12)
-        self.checkP2 = QCheckBox('회계일자', self.dialog12)
+        self.checkF2 = QCheckBox('유', self.dialog12)
+        self.checkP2 = QCheckBox('무', self.dialog12)
         self.checkF2.setStyleSheet("color: white;")
         self.checkP2.setStyleSheet("color: white;")
 
-        labelFP2 = QLabel('구분자 : ', self.dialog12)
+        labelFP2 = QLabel('기능영역 : ', self.dialog12)
         labelFP2.setStyleSheet("color: white;")
         font112 = labelFP2.font()
         font112.setBold(True)
         labelFP2.setFont(font12)
-
-        sublayout000 = QHBoxLayout()
-        sublayout000.addWidget(labelFP2)
-        sublayout000.addWidget(self.checkF2)
-        sublayout000.addWidget(self.checkP2)
 
         # 입력된 Cursor문
         labelCursortext = QLabel('입력된 Cursor : ', self.dialog12)
@@ -3253,13 +3081,13 @@ class MyApp(QWidget):
         self.Cursortext.setStyleSheet("background-color: white;")
 
         labelCursor = QLabel('Cursor 파일 위치* : ', self.dialog12)
-        labelCursor.setStyleSheet("color: white;")
+        labelCursor.setStyleSheet("color: yellow;")
         font3 = labelCursor.font()
         font3.setBold(True)
         labelCursor.setFont(font3)
 
         listCursor = QLabel('Cursor Sheet 위치* : ', self.dialog12)
-        listCursor.setStyleSheet("color: white;")
+        listCursor.setStyleSheet("color: yellow;")
         font13 = listCursor.font()
         font13.setBold(True)
         listCursor.setFont(font13)
@@ -3278,7 +3106,7 @@ class MyApp(QWidget):
         self.cursorFile.setFont(font10)
 
         labelSheetc = QLabel('시나리오 번호* : ', self.dialog12)
-        labelSheetc.setStyleSheet("color: white;")
+        labelSheetc.setStyleSheet("color: yellow;")
         font5 = labelSheetc.font()
         font5.setBold(True)
         labelSheetc.setFont(font5)
@@ -3286,11 +3114,28 @@ class MyApp(QWidget):
         self.D12_Sheetc.setStyleSheet("background-color: white;")
         self.D12_Sheetc.setPlaceholderText('※ 입력 예시 : F01')
 
+        labelManualC = QLabel('수동/자동 : ', self.dialog12)
+        labelManualC.setStyleSheet("color: white; font-weight : bold")
+        self.ManualC = QCheckBox('수동', self.dialog12)
+        self.AutoC = QCheckBox('자동', self.dialog12)
+        self.ManualC.setStyleSheet("color: white;")
+        self.AutoC.setStyleSheet("color: white;")
+
+        sublayout_amC = QHBoxLayout()
+        sublayout_amC.addWidget(labelManualC)
+        sublayout_amC.addWidget(self.ManualC)
+        sublayout_amC.addWidget(self.AutoC)
+
+        sublayout000 = QHBoxLayout()
+        sublayout000.addWidget(labelFP2)
+        sublayout000.addWidget(self.checkF2)
+        sublayout000.addWidget(self.checkP2)
+
         sublayout5 = QGridLayout()
         sublayout5.addWidget(self.rbtn1, 0, 0)
         sublayout5.addWidget(self.rbtn2, 0, 1)
-        sublayout5.addWidget(labelCost2, 1, 0)
-        sublayout5.addWidget(self.D12_Cost2, 1, 1)
+        sublayout5.addWidget(labelSheetc, 1, 0)
+        sublayout5.addWidget(self.D12_Sheetc, 1, 1)
         sublayout5.addWidget(labelCursor, 2, 0)
         sublayout5.addWidget(self.cursorCondition, 2, 1)
         sublayout5.addWidget(self.cursorFile, 2, 2)
@@ -3298,8 +3143,6 @@ class MyApp(QWidget):
         sublayout5.addWidget(self.listCursor, 3, 1)
         sublayout5.addWidget(labelCursortext, 4, 0)
         sublayout5.addWidget(self.Cursortext, 4, 1)
-        sublayout5.addWidget(labelSheetc, 5, 0)
-        sublayout5.addWidget(self.D12_Sheetc, 5, 1)
 
         sublayout6 = QHBoxLayout()
         sublayout6.addStretch(2)
@@ -3307,7 +3150,9 @@ class MyApp(QWidget):
         sublayout6.addWidget(self.btnDialog2)
 
         main_layout2 = QVBoxLayout()
+        main_layout2.addWidget(TitlelabelC)
         main_layout2.addLayout(sublayout5)
+        main_layout2.addLayout(sublayout_amC)
         main_layout2.addLayout(sublayout000)
         main_layout2.addLayout(sublayout6)
 
@@ -3323,15 +3168,16 @@ class MyApp(QWidget):
         tabs.addTab(tab1, "Step1-1")
         tabs.addTab(tab3, "Step1-2")
         tabs.addTab(tab2, "Step2")
+        layout.addWidget(TitlelabelMain)
         layout.addWidget(tabs)
 
         self.dialog12.setLayout(layout)
-        self.dialog12.setGeometry(300, 300, 650, 450)
+        self.dialog12.setGeometry(100, 100, 1000, 600)
 
         # ? 제거
         self.dialog12.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog12.setWindowTitle('Scenario8-9')
+        self.dialog12.setWindowTitle('Scenario8')
         self.dialog12.setWindowModality(Qt.NonModal)
         self.dialog12.show()
 
@@ -3349,8 +3195,8 @@ class MyApp(QWidget):
             self.dialog12.activateWindow()
 
     def Dialog13(self):
-        Addnew13 = AddForm()
-        Titlelabel13 = QLabel('10. 연속된 숫자로 끝나는 금액 검토\n')
+        self.Addnew13 = AddForm()
+        Titlelabel13 = QLabel('09. 연속된 숫자로 끝나는 금액 검토\n')
         Titlelabel13.setStyleSheet("color: white; font-weight : bold")
 
         self.dialoglist.add(13)
@@ -3513,7 +3359,6 @@ class MyApp(QWidget):
         layout_am.addWidget(self.Auto)
 
         ### Layout - 다이얼로그 UI
-
         main_layout = QVBoxLayout()
         sublayout1 = QGridLayout()
         sublayout2 = QHBoxLayout()
@@ -3529,11 +3374,12 @@ class MyApp(QWidget):
         sublayout1.addWidget(self.line_amount, 3, 1)
         sublayout1.addWidget(label_tree, 4, 0)
         sublayout1.addWidget(self.new_tree, 4, 1)
-        sublayout1.addWidget(Addnew13.Acount, 5, 1)
-        sublayout1.addWidget(Addnew13.sourceLabel, 6, 0)
-        sublayout1.addWidget(Addnew13.source, 6, 1)
-        sublayout1.addWidget(Addnew13.UserLabel, 7, 0)
-        sublayout1.addWidget(Addnew13.User, 7, 1)
+        sublayout1.addWidget(self.Addnew13.btnMid, 5, 1)
+        sublayout1.addWidget(self.Addnew13.Acount, 6, 1)
+        sublayout1.addWidget(self.Addnew13.sourceLabel, 7, 0)
+        sublayout1.addWidget(self.Addnew13.source, 7, 1)
+        sublayout1.addWidget(self.Addnew13.UserLabel, 8, 0)
+        sublayout1.addWidget(self.Addnew13.User, 8, 1)
 
         sublayout2.addStretch(2)
         sublayout2.addWidget(self.btn2)
@@ -3542,7 +3388,7 @@ class MyApp(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel13)
         main_layout.addLayout(sublayout1, stretch=4)
-        main_layout.addLayout(Addnew13.sublayout1, stretch=4)
+        main_layout.addLayout(self.Addnew13.sublayout1, stretch=4)
         main_layout.addLayout(layout_dc, stretch=4)
         main_layout.addLayout(layout_am, stretch=4)
         main_layout.addLayout(sublayout2, stretch=1)
@@ -3553,13 +3399,13 @@ class MyApp(QWidget):
 
         # ? 제거
         self.dialog13.setWindowFlags(Qt.WindowCloseButtonHint)
-        self.dialog13.setWindowTitle('Scenario10')
+        self.dialog13.setWindowTitle('Scenario9')
         self.dialog13.setWindowModality(Qt.NonModal)
         self.dialog13.show()
 
     def Dialog14(self):
-        Addnew14 = AddForm()
-        Titlelabel14 = QLabel('11. 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (TE금액 제시 가능)\n')
+        self.Addnew14 = AddForm()
+        Titlelabel14 = QLabel('10. 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (TE금액 제시 가능)\n')
         Titlelabel14.setStyleSheet("color: white; font-weight : bold")
 
         self.dialoglist.add(14)
@@ -3740,11 +3586,12 @@ class MyApp(QWidget):
         layout1.addWidget(self.D14_TE, 4, 1)
         layout1.addWidget(label_tree, 5, 0)
         layout1.addWidget(self.new_tree, 5, 1)
-        layout1.addWidget(Addnew14.Acount, 6, 1)
-        layout1.addWidget(Addnew14.sourceLabel, 7,0)
-        layout1.addWidget(Addnew14.source,7,1)
-        layout1.addWidget(Addnew14.UserLabel, 8, 0)
-        layout1.addWidget(Addnew14.User, 8, 1)
+        layout1.addWidget(self.Addnew14.btnMid, 6, 1)
+        layout1.addWidget(self.Addnew14.Acount, 7, 1)
+        layout1.addWidget(self.Addnew14.sourceLabel, 8,0)
+        layout1.addWidget(self.Addnew14.source,8,1)
+        layout1.addWidget(self.Addnew14.UserLabel, 9, 0)
+        layout1.addWidget(self.Addnew14.User, 9, 1)
 
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
@@ -3767,7 +3614,7 @@ class MyApp(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel14)
         main_layout.addLayout(layout1)
-        main_layout.addLayout(Addnew14.sublayout1)
+        main_layout.addLayout(self.Addnew14.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
@@ -3777,13 +3624,13 @@ class MyApp(QWidget):
         # ? 제거
         self.dialog14.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog14.setWindowTitle("Scenario11")
+        self.dialog14.setWindowTitle("Scenario10")
         self.dialog14.setWindowModality(Qt.NonModal)
         self.dialog14.show()
 
     def Dialog15(self):
-        Addnew15 = AddForm()
-        Titlelabel15 = QLabel('12. 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토\n')
+        self.Addnew15 = AddForm()
+        Titlelabel15 = QLabel('11. 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토\n')
         Titlelabel15.setStyleSheet("color: white; font-weight : bold")
 
         self.dialoglist.add(15)
@@ -3931,11 +3778,12 @@ class MyApp(QWidget):
         layout1.addWidget(self.D15_TE, 2, 1)
         layout1.addWidget(label_tree, 3, 0)
         layout1.addWidget(self.new_tree, 3, 1)
-        layout1.addWidget(Addnew15.Acount, 4, 1)
-        layout1.addWidget(Addnew15.sourceLabel,5,0)
-        layout1.addWidget(Addnew15.source,5,1)
-        layout1.addWidget(Addnew15.UserLabel, 6, 0)
-        layout1.addWidget(Addnew15.User, 6, 1)
+        layout1.addWidget(self.Addnew15.btnMid,4,1)
+        layout1.addWidget(self.Addnew15.Acount, 5, 1)
+        layout1.addWidget(self.Addnew15.sourceLabel,6,0)
+        layout1.addWidget(self.Addnew15.source,6,1)
+        layout1.addWidget(self.Addnew15.UserLabel, 7, 0)
+        layout1.addWidget(self.Addnew15.User, 7, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
@@ -3958,7 +3806,7 @@ class MyApp(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel15)
         main_layout.addLayout(layout1)
-        main_layout.addLayout(Addnew15.sublayout1)
+        main_layout.addLayout(self.Addnew15.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
@@ -3968,13 +3816,13 @@ class MyApp(QWidget):
         # ? 제거
         self.dialog15.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog15.setWindowTitle('Scenario12')
+        self.dialog15.setWindowTitle('Scenario11')
         self.dialog15.setWindowModality(Qt.NonModal)
         self.dialog15.show()
 
     def Dialog16(self):
-        Addnew16 = AddForm()
-        Titlelabel16 = QLabel('13. 차/대변 합계가 중요성금액 이상인 전표\n')
+        self.Addnew16 = AddForm()
+        Titlelabel16 = QLabel('12. 차/대변 합계가 중요성금액 이상인 전표\n')
         Titlelabel16.setStyleSheet("color: white; font-weight : bold")
 
         self.dialoglist.add(16)
@@ -4123,11 +3971,12 @@ class MyApp(QWidget):
         layout1.addWidget(self.D16_TE, 2, 1)
         layout1.addWidget(label_tree, 3, 0)
         layout1.addWidget(self.new_tree, 3, 1)
-        layout1.addWidget(Addnew16.Acount, 4, 1)
-        layout1.addWidget(Addnew16.sourceLabel, 5, 0)
-        layout1.addWidget(Addnew16.source, 5, 1)
-        layout1.addWidget(Addnew16.UserLabel, 6, 0)
-        layout1.addWidget(Addnew16.User, 6, 1)
+        layout1.addWidget(self.Addnew16.btnMid, 5, 1)
+        layout1.addWidget(self.Addnew16.Acount, 6, 1)
+        layout1.addWidget(self.Addnew16.sourceLabel, 7, 0)
+        layout1.addWidget(self.Addnew16.source, 7, 1)
+        layout1.addWidget(self.Addnew16.UserLabel, 8, 0)
+        layout1.addWidget(self.Addnew16.User, 8, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
@@ -4150,7 +3999,7 @@ class MyApp(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel16)
         main_layout.addLayout(layout1)
-        main_layout.addLayout(Addnew16.sublayout1)
+        main_layout.addLayout(self.Addnew16.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
@@ -4161,13 +4010,13 @@ class MyApp(QWidget):
         # ? 제거
         self.dialog16.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog16.setWindowTitle('Scenario13')
+        self.dialog16.setWindowTitle('Scenario12')
         self.dialog16.setWindowModality(Qt.NonModal)
         self.dialog16.show()
 
     def Dialog17(self):
-        Addnew17 = AddForm()
-        Titlelabel17 = QLabel('14. 전표 입력자와 승인자가 동일한 전표\n')
+        self.Addnew17 = AddForm()
+        Titlelabel17 = QLabel('13. 전표 입력자와 승인자가 동일한 전표\n')
         Titlelabel17.setStyleSheet("color: white; font-weight : bold")
 
         self.dialoglist.add(17)
@@ -4316,11 +4165,12 @@ class MyApp(QWidget):
         layout1.addWidget(self.D17_TE, 2, 1)
         layout1.addWidget(label_tree, 3, 0)
         layout1.addWidget(self.new_tree, 3, 1)
-        layout1.addWidget(Addnew17.Acount, 4, 1)
-        layout1.addWidget(Addnew17.sourceLabel, 5, 0)
-        layout1.addWidget(Addnew17.source, 5, 1)
-        layout1.addWidget(Addnew17.UserLabel, 6, 0)
-        layout1.addWidget(Addnew17.User, 6, 1)
+        layout1.addWidget(self.Addnew17.btnMid, 4, 1)
+        layout1.addWidget(self.Addnew17.Acount, 5, 1)
+        layout1.addWidget(self.Addnew17.sourceLabel, 6, 0)
+        layout1.addWidget(self.Addnew17.source, 6, 1)
+        layout1.addWidget(self.Addnew17.UserLabel, 7, 0)
+        layout1.addWidget(self.Addnew17.User, 7, 1)
 
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
@@ -4343,7 +4193,7 @@ class MyApp(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel17)
         main_layout.addLayout(layout1)
-        main_layout.addLayout(Addnew17.sublayout1)
+        main_layout.addLayout(self.Addnew17.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
@@ -4354,7 +4204,7 @@ class MyApp(QWidget):
         # ? 제거
         self.dialog17.setWindowFlags(Qt.WindowCloseButtonHint)
 
-        self.dialog17.setWindowTitle('Scenario14')
+        self.dialog17.setWindowTitle('Scenario13')
         self.dialog17.setWindowModality(Qt.NonModal)
         self.dialog17.show()
 
@@ -6427,24 +6277,6 @@ class MyApp(QWidget):
         groupbox.setLayout(layout)
 
         return groupbox
-
-    def calendar6(self):
-        self.dialog6.activateWindow()
-        self.new_calendar.show()
-        self.dialog6.activateWindow()
-
-    def calendar7(self):
-        self.dialog7.activateWindow()
-        self.new_calendar.show()
-        self.dialog7.activateWindow()
-
-    def calendar10_1(self):
-        self.dialog10.activateWindow()
-        self.new_calendar1.show()
-
-    def calendar10_2(self):
-        self.dialog10.activateWindow()
-        self.new_calendar2.show()
 
     def extButtonClicked4(self):
         cursor = self.cnxn.cursor()
