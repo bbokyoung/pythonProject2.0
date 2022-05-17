@@ -849,7 +849,7 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.UserDefine01 LIKE N'%" + a + "%'"
+                b = "JournalEntries.UserDefined1 LIKE N'%" + a + "%'"
             SplitedUserDefine1List.append(b)
         UserDefine1Clean = str(' OR '.join(SplitedUserDefine1List))
 
@@ -860,7 +860,7 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.UserDefine02 LIKE N'%" + a + "%'"
+                b = "JournalEntries.UserDefined2 LIKE N'%" + a + "%'"
             SplitedUserDefine2List.append(b)
         UserDefine2Clean = str(' OR '.join(SplitedUserDefine2List))
 
@@ -871,7 +871,7 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.UserDefine03 LIKE N'%" + a + "%'"
+                b = "JournalEntries.UserDefined3 LIKE N'%" + a + "%'"
             SplitedUserDefine3List.append(b)
         UserDefine3Clean = str(' OR '.join(SplitedUserDefine3List))
 
@@ -902,13 +902,35 @@ class MyApp(QWidget):
         ConcatSQLlistClean = []
         for i in ConcatSQLlist:
             if len(i) > 0:
-                ConcatSQLlistClean.append(i)
-        ConcatSQL = str(' OR '.join(ConcatSQLlistClean))
+                ConcatSQLlistClean.append("(" + i + ")")
+        ConcatSQL = str(' AND '.join(ConcatSQLlistClean))
+
+        ConcatSQL3List = []
+        if Segment1.text() != '':
+            ConcatSQL3List.append('JournalEntries.Segment01')
+        if Segment2.text() != '':
+            ConcatSQL3List.append('JournalEntries.Segment02')
+        if Segment3.text() != '':
+            ConcatSQL3List.append('JournalEntries.Segment03')
+        if Segment4.text() != '':
+            ConcatSQL3List.append('JournalEntries.Segment04')
+        if Segment5.text() != '':
+            ConcatSQL3List.append('JournalEntries.Segment05')
+        if UserDefine1.text() != '':
+            ConcatSQL3List.append('JournalEntries.UserDefined1')
+        if UserDefine2.text() != '':
+            ConcatSQL3List.append('JournalEntries.UserDefined2')
+        if UserDefine3.text() != '':
+            ConcatSQL3List.append('JournalEntries.UserDefined3')
+
+        if len(ConcatSQL3List) > 0:
+            ConcatSQL3Clean = str(','.join(ConcatSQL3List))
+        else: ConcatSQL3Clean = ""
 
         if not ConcatSQL:
             ConcatSQL2 = ""
         else:
-            ConcatSQL2 = "AND (" + ConcatSQL + ")"
+            ConcatSQL2 = "AND " + ConcatSQL
 
         if len(UserList1Clean) > 0:
             ConcatSQL2 = ConcatSQL2 + "AND (" + UserList1Clean + ")"
@@ -920,7 +942,9 @@ class MyApp(QWidget):
         else:
             ConcatSQL2 = ConcatSQL2
 
-        return ConcatSQL2
+
+
+        return ConcatSQL2 , ConcatSQL3Clean
 
     def AccountUpdate(self, AccountText):
         AccountText.setPlainText(checked_account)
@@ -5280,7 +5304,7 @@ class MyApp(QWidget):
         self.th14.join()
 
     def Thread4(self):
-        self.NewSQL = self.NewQueryConcat(self.Addnew.SegmentBox1, self.Addnew.SegmentBox2, self.Addnew.SegmentBox3,
+        self.NewSQL , self.NewSelect = self.NewQueryConcat(self.Addnew.SegmentBox1, self.Addnew.SegmentBox2, self.Addnew.SegmentBox3,
                                           self.Addnew.SegmentBox4, self.Addnew.SegmentBox5,
                                           self.Addnew.UserDefine1, self.Addnew.UserDefine2, self.Addnew.UserDefine3,
                                           self.Addnew.User, self.Addnew.source)
@@ -6457,7 +6481,8 @@ class MyApp(QWidget):
                                         ORDER BY JournalEntries.GLAccountNumber
                                         DROP TABLE #TMPCOA
                                     """.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
-                                               Account=self.checked_account4, year=self.pname_year, CD=self.tempCD, NewSQL = self.NewSQL)
+                                               Account=self.checked_account4, year=self.pname_year, CD=self.tempCD, NewSQL = self.NewSQL
+                                               )
 
             ### JE Line - Refer
             sql_query = '''
@@ -6484,7 +6509,8 @@ class MyApp(QWidget):
                                         , JournalEntries.JEDescription			
                                         , JournalEntries.JELineDescription			
                                         , JournalEntries.PreparerID			
-                                        , JournalEntries.Source			
+                                        , JournalEntries.Source
+                                        , {NewSelect}			
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.GLAccountNumber IN 				
                                         (			
@@ -6500,7 +6526,8 @@ class MyApp(QWidget):
                                     ORDER BY JENumber,JELineNumber				
                                     DROP TABLE #TMPCOA
                                 '''.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
-                                           Account=self.checked_account4, year=self.pname_year, NewSQL = self.NewSQL)
+                                           Account=self.checked_account4, year=self.pname_year, NewSQL = self.NewSQL,
+                                           NewSelect = self.NewSelect)
 
             self.dataframe_refer = pd.read_sql(sql_refer, self.cnxn)
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
@@ -6539,7 +6566,8 @@ class MyApp(QWidget):
                                     , JournalEntries.JEDescription			
                                     , JournalEntries.JELineDescription			
                                     , JournalEntries.PreparerID			
-                                    , JournalEntries.Source			
+                                    , JournalEntries.Source
+                                    , {NewSelect}			
                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA
                                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber AND JournalEntries.JENumber IN (				
                                     SELECT DISTINCT JournalEntries.JENumber			
@@ -6560,7 +6588,8 @@ class MyApp(QWidget):
                                 ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                                 DROP TABLE #TMPCOA
                         '''.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
-                                   Account=self.checked_account4, year=self.pname_year, NewSQL = self.NewSQL)
+                                   Account=self.checked_account4, year=self.pname_year, NewSQL = self.NewSQL,
+                                   NewSelect = self.NewSelect)
 
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
