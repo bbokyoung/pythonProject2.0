@@ -9519,7 +9519,6 @@ class MyApp(QWidget):
 
                     self.MessageBox_Open("저장을 완료했습니다.")
 
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyApp()
