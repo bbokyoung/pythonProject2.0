@@ -477,8 +477,6 @@ class MyApp(QWidget):
         self.communicate4.closeApp.connect(self.doneAction4)
         self.communicate5_Non_SAP = Communicate()
         self.communicate5_Non_SAP.closeApp.connect(self.doneAction5_Non_SAP)
-        self.communicate5_SAP = Communicate()
-        self.communicate5_SAP.closeApp.connect(self.doneAction5_SAP)
         self.communicate6 = Communicate()
         self.communicate6.closeApp.connect(self.doneAction6)
         self.communicate7 = Communicate()
@@ -491,8 +489,6 @@ class MyApp(QWidget):
         self.communicate10.closeApp.connect(self.doneAction10)
         self.communicate11 = Communicate()
         self.communicate11.closeApp.connect(self.doneAction11)
-        self.communicate12 = Communicate()
-        self.communicate12.closeApp.connect(self.doneAction12)
         self.communicate13 = Communicate()
         self.communicate13.closeApp.connect(self.doneAction13)
         self.communicate14 = Communicate()
@@ -4263,68 +4259,6 @@ class MyApp(QWidget):
 
         self.th4.join()
 
-    def doneAction5_SAP(self):
-        self.Action.close()
-        self.timerVar.stop()
-
-        ### 예외처리 5 - 최대 라인 수 초과
-        if len(self.dataframe) > 1048576:
-            self.alertbox_open3()
-
-        elif self.rbtn1.isChecked():
-            if 'No Data' in self.dataframe.columns.tolist():
-                buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
-                                                      + str(self.tempYear_SAP) + ')에 생성된 계정 리스트가 '
-                                                      + str(len(self.dataframe) - 1)
-                                                      + '건 추출되었습니다. <br> - SKA1(' + str(self.dropped_items)
-                                                      + ')를 적용하였습니다. <br> [전표라인번호 기준]'
-                                                      , QMessageBox.Ok)
-            elif len(self.dataframe) > 300:
-                buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
-                                                      + str(self.tempYear_SAP) + ')에 생성된 계정 리스트가 '
-                                                      + str(len(self.dataframe))
-                                                      + '건 추출되었습니다. <br> - SKA1(' + str(self.dropped_items)
-                                                      + ')를 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
-                                                      , QMessageBox.Ok)
-            else:
-                buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
-                                                      + str(self.tempYear_SAP) + ')에 생성된 계정 리스트가 '
-                                                      + str(len(self.dataframe))
-                                                      + '건 추출되었습니다. <br> - SKA1(' + str(self.dropped_items)
-                                                      + ')를 적용하였습니다. <br> [전표라인번호 기준]'
-                                                      , QMessageBox.Ok)
-
-            if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
-
-        elif self.rbtn2.isChecked():
-            if 'No Data' in self.dataframe.columns.tolist():
-                buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
-                                                      + str(self.tempYear_SAP) + ')에 생성된 계정 리스트가 '
-                                                      + str(len(self.dataframe) - 1)
-                                                      + '건 추출되었습니다. <br> - SKA1(' + str(self.dropped_items)
-                                                      + ')를 적용하였습니다. <br> [전표번호 기준]'
-                                                      , QMessageBox.Ok)
-
-            elif len(self.dataframe) > 300:
-                buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
-                                                      + str(self.tempYear_SAP) + ')에 생성된 계정 리스트가 '
-                                                      + str(len(self.dataframe))
-                                                      + '건 추출되었습니다. <br> - SKA1(' + str(self.dropped_items)
-                                                      + ')를 적용하였습니다. <br> [전표번호 기준]'
-                                                      , QMessageBox.Ok)
-
-            else:
-                buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
-                                                      + str(self.tempYear_SAP) + ')에 생성된 계정 리스트가 '
-                                                      + str(len(self.dataframe))
-                                                      + '건 추출되었습니다. <br> - SKA1(' + str(self.dropped_items)
-                                                      + ')를 적용하였습니다. <br> [전표번호 기준]'
-                                                      , QMessageBox.Ok)
-
-            if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
-
-        self.th5_SAP.join()
-
     def doneAction5_Non_SAP(self):
         self.Action.close()
         self.timerVar.stop()
@@ -4590,34 +4524,6 @@ class MyApp(QWidget):
         if buttonReply == QMessageBox.Ok: self.dialog12.activateWindow()
 
         self.th11.join()
-
-    def doneAction12(self):
-        self.Action.close()
-        self.timerVar.stop()
-
-        if len(self.dataframe) > 1048576:
-            self.alertbox_open3()
-
-        elif 'No Data' in self.dataframe.columns.tolist():
-            buttonReply = QMessageBox.information(self, "라인수 추출",
-                                                  "[중요성 금액: " + str(self.tempCost) +
-                                                  "] 라인수 " + str(len(self.dataframe) - 1) + "개입니다",
-                                                  QMessageBox.Ok)
-
-        elif len(self.dataframe) > 300:
-            buttonReply = QMessageBox.information(self, "라인수 추출", "[중요성 금액: " + str(
-                self.tempCost) + "] 라인수 " + str(len(self.dataframe)) + "개입니다 <br> [전표번호 기준]",
-                                                  QMessageBox.Ok)
-
-        else:
-            buttonReply = QMessageBox.information(self, "라인수 추출",
-                                                  "[중요성 금액: " + str(self.tempCost) +
-                                                  "] 라인수 " + str(len(self.dataframe)) + "개입니다",
-                                                  QMessageBox.Ok)
-
-        if buttonReply == QMessageBox.Ok: self.dialog12.activateWindow()
-
-        self.th12.join()
 
     @pyqtSlot(str)
     def doneActionC(self, cursortext):
