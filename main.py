@@ -1860,7 +1860,6 @@ class MyApp(QWidget):
         labelDate.setFont(font3)
 
         self.D7_Date = QTextEdit(self.dialog7)
-        #self.D7_Date.setReadOnly(True)
         self.D7_Date.setStyleSheet("background-color: white;")
         self.D7_Date.setPlaceholderText('날짜를 추가해주세요 (법정 공휴일 및 주말은 포함되어 있습니다) \nex) 창립기념일, 근로자의 날')
 
@@ -2735,8 +2734,8 @@ class MyApp(QWidget):
         labelAccount1.setFont(font3)
 
         ### 라벨 2 - B 계정명/계정 코드
-        labelAccount2 = QLabel('B 계정명/계정 코드* : ', self.dialog12)
-        labelAccount2.setStyleSheet("color: yellow;")
+        labelAccount2 = QLabel('B 계정명/계정 코드 : ', self.dialog12)
+        labelAccount2.setStyleSheet("color: white;")
         font3 = labelAccount2.font()
         font3.setBold(True)
         labelAccount2.setFont(font3)
@@ -2800,9 +2799,9 @@ class MyApp(QWidget):
         labelDC22.setFont(font1)
 
         self.checkF3 = QCheckBox('유', self.dialog12)
-        self.checkP3 = QCheckBox('무', self.dialog12)
+        labelBlank = QLabel('ㅤ', self.dialog12)
         self.checkF3.setStyleSheet("color: white;")
-        self.checkP3.setStyleSheet("color: white;")
+        labelBlank.setStyleSheet("color: white;")
 
         labelFP3 = QLabel('기능영역 : ', self.dialog12)
         labelFP3.setStyleSheet("color: white;")
@@ -2814,7 +2813,7 @@ class MyApp(QWidget):
         sublayout0003 = QHBoxLayout()
         sublayout0003.addWidget(labelFP3)
         sublayout0003.addWidget(self.checkF3)
-        sublayout0003.addWidget(self.checkP3)
+        sublayout0003.addWidget(labelBlank)
 
         sublayout002 = QHBoxLayout()
         sublayout002.addWidget(labelDC2)
@@ -2897,9 +2896,9 @@ class MyApp(QWidget):
         self.rbtn2.setFont(font12)
 
         self.checkF2 = QCheckBox('유', self.dialog12)
-        self.checkP2 = QCheckBox('무', self.dialog12)
         self.checkF2.setStyleSheet("color: white;")
-        self.checkP2.setStyleSheet("color: white;")
+        labelBlank2 = QLabel('ㅤ', self.dialog12)
+        labelBlank2.setStyleSheet("color: white;")
 
         labelFP2 = QLabel('기능영역 : ', self.dialog12)
         labelFP2.setStyleSheet("color: white;")
@@ -2967,7 +2966,7 @@ class MyApp(QWidget):
         sublayout000 = QHBoxLayout()
         sublayout000.addWidget(labelFP2)
         sublayout000.addWidget(self.checkF2)
-        sublayout000.addWidget(self.checkP2)
+        sublayout000.addWidget(labelBlank2)
 
         sublayout5 = QGridLayout()
         sublayout5.addWidget(self.rbtn1, 0, 0)
@@ -5360,9 +5359,13 @@ class MyApp(QWidget):
                             self.tempStateB = 'AND LVL4.Analysis_Position IN (' + "'" + 'Debit' + "')"
 
                         # 계정 A
-                        if checked_account_A == 'AND LVL4.GL_Account_Number IN ()' or checked_account_B == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()':
+                        if checked_account_A == 'AND LVL4.GL_Account_Number IN ()':
                             self.MessageBox_Open("계정트리가 선택되어 있지 않습니다.")
                             return
+
+                        elif checked_account_B == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()':
+                            self.checked_accountB = ''
+                            self.checked_accountA = checked_account_A
                         else:
                             self.checked_accountA = checked_account_A
                             self.checked_accountB = checked_account_B
@@ -5402,9 +5405,13 @@ class MyApp(QWidget):
                     self.tempStateB = 'AND LVL4.Analysis_Position IN (' + "'" + 'Debit' + "')"
 
                 # 계정 A
-                if checked_account_A == 'AND LVL4.GL_Account_Number IN ()' or checked_account_B == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()':
+                if checked_account_A == 'AND LVL4.GL_Account_Number IN ()' :
                     self.MessageBox_Open("계정트리가 선택되어 있지 않습니다.")
                     return
+
+                elif checked_account_B == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()':
+                    self.checked_accountB = ''
+                    self.checked_accountA = checked_account_A
                 else:
                     self.checked_accountA = checked_account_A
                     self.checked_accountB = checked_account_B
