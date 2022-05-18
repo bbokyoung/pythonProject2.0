@@ -211,7 +211,6 @@ class Form(QGroupBox):
         global checked_account_12
 
         checked_account = 'AND JournalEntries.GLAccountNumber IN (' + checked_name + ')'
-
         checked_account_12 = 'AND LVL4.GL_Account_Number IN (' + checked_name + ')'
         checked_account_A = 'AND LVL4.GL_Account_Number IN (' + checked_name + ')'
 
@@ -2866,171 +2865,6 @@ class MyApp(QWidget):
         main_layout3.addStretch()
         main_layout3.addLayout(sublayout04)
 
-        ### 시나리오12==============================
-        # Step 1-1
-        Titlelabel12 = QLabel('A계정의 모든 상대계정 리스트 추출\n')
-        Titlelabel12.setStyleSheet("color: white; font-weight : bold")
-
-        self.Addnew12 = AddForm()
-
-        cursor = self.cnxn.cursor()
-        sql = '''
-                         SELECT 											
-                                *
-                         FROM  [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] COA											
-                    '''.format(field=self.selected_project_id)
-
-        accountsname = pd.read_sql(sql, self.cnxn)
-        self.new_tree = Form(self)
-        self.new_tree.tree.clear()
-        accountType = accountsname.AccountType.unique()
-        accountType.sort()
-        for n, i in enumerate(accountType):
-            self.new_tree.parent = QTreeWidgetItem(self.new_tree.tree)
-
-            self.new_tree.parent.setText(0, "{}".format(i))
-            self.new_tree.parent.setFlags(self.new_tree.parent.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-            child_items = accountsname.AccountSubType[
-                accountsname.AccountType == accountType[n]].unique()
-            child_items.sort()
-
-            for m, x in enumerate(child_items):
-
-                self.new_tree.child = QTreeWidgetItem(self.new_tree.parent)
-
-                self.new_tree.child.setText(0, "{}".format(x))
-                self.new_tree.child.setFlags(self.new_tree.child.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-                grandchild_items = accountsname.AccountClass[accountsname.AccountSubType == child_items[m]].unique()
-                grandchild_items.sort()
-                for o, y in enumerate(grandchild_items):
-                    self.new_tree.grandchild = QTreeWidgetItem(self.new_tree.child)
-
-                    self.new_tree.grandchild.setText(0, "{}".format(y))
-                    self.new_tree.grandchild.setFlags(
-                        self.new_tree.grandchild.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-                    num_name = accountsname[accountsname.AccountClass == grandchild_items[o]].iloc[:, 2:4]
-                    full_name = num_name["GLAccountNumber"].map(str) + ' ' + num_name["GLAccountName"]
-                    full_name.sort_values(inplace=True)
-                    for z in full_name:
-                        self.new_tree.grandgrandchild = QTreeWidgetItem(self.new_tree.grandchild)
-
-                        self.new_tree.grandgrandchild.setText(0, "{}".format(z))
-                        self.new_tree.grandgrandchild.setFlags(
-                            self.new_tree.grandgrandchild.flags() | Qt.ItemIsUserCheckable)
-                        self.new_tree.grandgrandchild.setCheckState(0, Qt.Unchecked)
-        self.new_tree.get_selected_leaves()
-
-        self.btn = QPushButton('   Extract Data', self.dialog12)
-        self.btn.setStyleSheet('color:white;  background-image : url(./bar.png)')
-        self.btn.clicked.connect(self.Thread12)
-        font9 = self.btn.font()
-        font9.setBold(True)
-        self.btn.setFont(font9)
-
-        self.btnDialog = QPushButton("   Close", self.dialog12)
-        self.btnDialog.setStyleSheet('color:white;  background-image : url(./bar.png)')
-        self.btnDialog.clicked.connect(self.dialog_close12)
-        font10 = self.btnDialog.font()
-        font10.setBold(True)
-        self.btnDialog.setFont(font10)
-        self.btn.resize(110, 30)
-        self.btnDialog.resize(110, 30)
-
-        labelAccount = QLabel('특정 계정명/계정 코드* : ', self.dialog12)
-        labelAccount.setStyleSheet("color: yellow;")
-        font3 = labelAccount.font()
-        font3.setBold(True)
-        labelAccount.setFont(font3)
-
-        labelCost = QLabel('중요성 금액 : ', self.dialog12)
-        labelCost.setStyleSheet("color: white;")
-        font3 = labelCost.font()
-        font3.setBold(True)
-        labelCost.setFont(font3)
-
-        self.D12_Cost = QLineEdit(self.dialog12)
-        self.D12_Cost.setStyleSheet("background-color: white;")
-        self.D12_Cost.setPlaceholderText('중요성 금액을 입력하세요')
-        self.D12_Cost.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
-
-        labelSheet12 = QLabel('시나리오 번호* : ', self.dialog12)
-        labelSheet12.setStyleSheet("color: yellow;")
-        font5 = labelSheet12.font()
-        font5.setBold(True)
-        labelSheet12.setFont(font5)
-        self.D12_Sheet12 = QLineEdit(self.dialog12)
-        self.D12_Sheet12.setStyleSheet("background-color: white;")
-        self.D12_Sheet12.setPlaceholderText('※ 입력 예시 : F01')
-        self.D12_Sheet12.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
-
-        self.checkC1 = QCheckBox('Credit', self.dialog12)
-        self.checkD1 = QCheckBox('Debit', self.dialog12)
-        self.checkC1.setStyleSheet("color: white;")
-        self.checkD1.setStyleSheet("color: white;")
-
-        labelDC1 = QLabel('차변/대변 : ', self.dialog12)
-        labelDC1.setStyleSheet("color: white;")
-        font1 = labelDC1.font()
-        font1.setBold(True)
-        labelDC1.setFont(font1)
-
-        self.checkF = QCheckBox('유', self.dialog12)
-        self.checkP = QCheckBox('무', self.dialog12)
-        self.checkF.setStyleSheet("color: white;")
-        self.checkP.setStyleSheet("color: white;")
-
-        labelFP = QLabel('기능영역 : ', self.dialog12)
-        labelFP.setStyleSheet("color: white;")
-        font11 = labelFP.font()
-        font11.setBold(True)
-        labelFP.setFont(font1)
-
-        labelManual1 = QLabel('수동/자동 : ', self.dialog12)
-        labelManual1.setStyleSheet("color: white; font-weight : bold")
-        self.Manual1 = QCheckBox('수동', self.dialog12)
-        self.Auto1 = QCheckBox('자동', self.dialog12)
-        self.Manual1.setStyleSheet("color: white;")
-        self.Auto1.setStyleSheet("color: white;")
-
-        sublayout_am1 = QHBoxLayout()
-        sublayout_am1.addWidget(labelManual1)
-        sublayout_am1.addWidget(self.Manual1)
-        sublayout_am1.addWidget(self.Auto1)
-
-        sublayout0 = QHBoxLayout()
-        sublayout0.addWidget(labelDC1)
-        sublayout0.addWidget(self.checkD1)
-        sublayout0.addWidget(self.checkC1)
-
-        sublayout00 = QHBoxLayout()
-        sublayout00.addWidget(labelFP)
-        sublayout00.addWidget(self.checkF)
-        sublayout00.addWidget(self.checkP)
-
-        sublayout1 = QGridLayout()
-        sublayout1.addWidget(labelSheet12, 0, 0)
-        sublayout1.addWidget(self.D12_Sheet12, 0, 1)
-        sublayout1.addWidget(labelAccount, 1, 0)
-        sublayout1.addWidget(self.new_tree, 1, 1)
-        sublayout1.addWidget(self.Addnew12.btnMid, 2, 1)
-        sublayout1.addWidget(self.Addnew12.Acount,3,1)
-        sublayout1.addWidget(labelCost, 4, 0)
-        sublayout1.addWidget(self.D12_Cost, 4, 1)
-
-        sublayout2 = QHBoxLayout()
-        sublayout2.addStretch()
-        sublayout2.addStretch()
-        sublayout2.addWidget(self.btn)
-        sublayout2.addWidget(self.btnDialog)
-
-        main_layout1 = QVBoxLayout()
-        main_layout1.addWidget(Titlelabel12)
-        main_layout1.addLayout(sublayout1)
-        main_layout1.addLayout(sublayout0)
-        main_layout1.addLayout(sublayout_am1)
-        main_layout1.addLayout(sublayout00)
-        main_layout1.addLayout(sublayout2)
-
         ### Cursor문
         TitlelabelC = QLabel('상대계정 상세 내역 추출\n')
         TitlelabelC.setStyleSheet("color: white; font-weight : bold")
@@ -3167,14 +3001,11 @@ class MyApp(QWidget):
         ### 탭 지정
         layout = QVBoxLayout()
         tabs = QTabWidget()
-        tab1 = QWidget()  # 시나리오12
         tab3 = QWidget()  # 시나리오11
         tab2 = QWidget()  # cursor문
-        tab1.setLayout(main_layout1)
         tab2.setLayout(main_layout2)
         tab3.setLayout(main_layout3)
-        tabs.addTab(tab1, "Step1-1")
-        tabs.addTab(tab3, "Step1-2")
+        tabs.addTab(tab3, "Step1")
         tabs.addTab(tab2, "Step2")
         layout.addWidget(TitlelabelMain)
         layout.addWidget(tabs)
