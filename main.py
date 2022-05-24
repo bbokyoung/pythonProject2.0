@@ -5854,10 +5854,11 @@ class MyApp(QWidget):
                 if a == '':
                     b = "(JournalEntries.JEDescription NOT LIKE '' AND JournalEntries.JELineDescription NOT LIKE '')"
                 else:
-                    b = "JournalEntries.JEDescription NOT LIKE N'%" + a + "%' OR JournalEntries.JELineDescription NOT LIKE N'%" + a + "%'"
+                    b = "JournalEntries.JEDescription NOT LIKE N'%" + a + "%' AND JournalEntries.JELineDescription NOT LIKE N'%" + a + "%'"
                 self.baseKey2_clean.append(b)
             self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ') AND (' + str(
-                ' OR '.join(self.baseKey2_clean)) + ')'
+                ' AND '.join(self.baseKey2_clean)) + ')'
+
         else:
             self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ')'
 
@@ -6999,14 +7000,11 @@ class MyApp(QWidget):
                             , JournalEntries.JEDescription AS 전표헤더적요			
                             , JournalEntries.JELineDescription AS 전표라인적요			
                             {NewSelect}		
-
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                             #TMPCOA,			
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                         AND JournalEntries.JELINEID = Details.JENumberID 				
-
                         AND JournalEntries.Year = {year}  				
                         AND JournalEntries.PreparerID IN				
                                 (		
@@ -7040,16 +7038,13 @@ class MyApp(QWidget):
                                 MAX(Users.Title) AS 직급, 			
                                 MAX(Users.Department) AS 부서,			
                                 COUNT(JournalEntries.PreparerID) AS CNT
-
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                             #TMPCOA,			
                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details,			
                             [{field}_Import_Dim].[dbo].[pbcUser] AS Users			
-
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                         AND JournalEntries.JELINEID = Details.JENumberID 				
                         AND Users.UserName = JournalEntries.PreparerID				
-
                         AND JournalEntries.Year = {year} 
                         AND JournalEntries.PreparerID IN				
                                 (		
@@ -7101,14 +7096,11 @@ class MyApp(QWidget):
                             , JournalEntries.JEDescription AS 전표헤더적요			
                             , JournalEntries.JELineDescription AS 전표라인적요			
                             {NewSelect}
-
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                             #TMPCOA,			
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                         AND JournalEntries.JELINEID = Details.JENumberID 				
-
                         AND JournalEntries.Year = {year} 
                         AND Details.JEIdentifierID IN				
                                 (		
@@ -7116,7 +7108,6 @@ class MyApp(QWidget):
                                  FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                                  WHERE JournalEntries.JELINEID = Details.JENumberID 		
-
                                  AND JournalEntries.Year = {year}  
                                  AND JournalEntries.PreparerID IN		
                                         (
@@ -8721,11 +8712,9 @@ class MyApp(QWidget):
                     , JournalEntries.JEDescription AS 전표헤더적요			
                     , JournalEntries.JELineDescription AS 전표라인적요			
                     {NewSelect}			
-
                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                     #TMPCOA,			
                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-
                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                 AND JournalEntries.JELINEID = Details.JENumberID 
                 AND JournalEntries.Year = {year} 
@@ -8769,14 +8758,11 @@ class MyApp(QWidget):
                     , JournalEntries.JEDescription AS 전표헤더적요			
                     , JournalEntries.JELineDescription AS 전표라인적요			
                     {NewSelect}			
-
                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                     #TMPCOA,			
                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-
                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                 AND JournalEntries.JELINEID = Details.JENumberID 				
-
                 AND JournalEntries.Year = {year} 
                 AND Details.JEIdentifierID IN				
                         (		
