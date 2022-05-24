@@ -4252,12 +4252,6 @@ class MyApp(QWidget):
                                                       + str(len(self.dataframe) - 1) + '건 추출되었습니다. <br> - TE 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
-            elif len(self.dataframe) > 300:
-                buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가' + str(self.temp_N)
-                                                      + '회 이하인 작성자에 의해 생성된 전표가 '
-                                                      + str(len(self.dataframe)) + '건 추출되었습니다. <br> - TE 금액('
-                                                      + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
-                                                      , QMessageBox.Ok)
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가' + str(self.temp_N)
@@ -4374,14 +4368,6 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            elif len(self.dataframe) > 300:
-                buttonReply = QMessageBox.information(self, "라인수 추출",
-                                                      "- 시작 시점 : " + str(self.period1.text()) + " 종료 시점 : " + str(
-                                                          self.period2.text())
-                                                      + "에 입력된 전표가 " + str(len(self.dataframe))
-                                                      + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                      + ")를 적용하였습니다. <br> [전표번호 기준]"
-                                                      , QMessageBox.Ok)
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "- 시작 시점 : " + str(self.period1.text()) + " 종료 시점 : " + str(
@@ -4432,12 +4418,6 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            elif len(self.dataframe) > 300:
-                buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
-                                                      + str(len(self.dataframe))
-                                                      + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                      + ")를 적용하였습니다. <br> [전표번호 기준]"
-                                                      , QMessageBox.Ok)
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
                                                       + str(len(self.dataframe))
@@ -4491,13 +4471,6 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            elif len(self.dataframe) > 300:
-                buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
-                                                      + str(int(self.realNDate)) + "인 전표가 "
-                                                      + str(len(self.dataframe))
-                                                      + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                      + ")를 적용하였습니다. <br> [전표번호 기준]"
-                                                      , QMessageBox.Ok)
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
                                                       + str(int(self.realNDate)) + "인 전표가 "
@@ -4580,13 +4553,6 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            elif len(self.dataframe) > 300:
-                buttonReply = QMessageBox.information(self, "라인수 추출",
-                                                      "차/대변 합계가 중요성 금액(" + str(self.temp_TE) + ")원 이상인 전표가 " + str(
-                                                          len(self.dataframe))
-                                                      + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                      + ")를 적용하였습니다. <br> [전표번호 기준]"
-                                                      , QMessageBox.Ok)
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "차/대변 합계가 중요성 금액(" + str(self.temp_TE) + ")원 이상인 전표가 " + str(
