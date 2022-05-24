@@ -3413,7 +3413,6 @@ class MyApp(QWidget):
         self.D14_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
         self.D14_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
 
-        self.D14_Key2C.toggle()
         self.D14_Key2C.stateChanged.connect(self.D14_LabelC)
 
         layout1 = QGridLayout()
