@@ -653,6 +653,7 @@ class MyApp(QWidget):
             self.alertbox_open22()
             return False
 
+
     def NewQueryConcat(self, Segment1, Segment2, Segment3, Segment4, Segment5, UserDefine1, UserDefine2, UserDefine3,
                        UserList1, SourceList1, Manual, Auto):
         SplitedSegment1 = Segment1.text().split(',')
@@ -5138,6 +5139,7 @@ class MyApp(QWidget):
         else:
             self.checked_account5 = self.Addnew5.Acount.toPlainText()
 
+
         ### 예외처리 1 - 필수값 입력 누락
         if self.tempSheet == '':
             self.alertbox_open()
@@ -5153,6 +5155,10 @@ class MyApp(QWidget):
         else:
             if self.temp_TE == '':
                 self.temp_TE = 0
+
+            ##Checked_account의 유효성 체크
+            if self.check_account(self.checked_account5) == False:
+                return
 
             try:
                 int(self.temp_TE)
@@ -5735,6 +5741,15 @@ class MyApp(QWidget):
         self.temp_TE = self.D13_TE.text()
         self.tempSheet = self.D13_Sheet.text()  # 필수
 
+        ##Unselect all의 경우
+        if self.Addnew13.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
+            self.checked_account13 = ''
+
+        ##Select all이나 일부 체크박스가 선택된 경우
+        else:
+            self.checked_account13 = self.Addnew13.Acount.toPlainText()
+
+
         ### 예외처리 1 - 필수값 누락
         if self.temp_Continuous == '' or self.tempSheet == '':
             self.alertbox_open()
@@ -5749,6 +5764,11 @@ class MyApp(QWidget):
         else:
             if self.temp_TE == '':
                 self.temp_TE = 0
+
+            ##Checked_account의 유효성 체크
+            if self.check_account(self.checked_account13) == False:
+                return
+
             try:
                 int(self.temp_TE)
             except ValueError:
@@ -5770,14 +5790,6 @@ class MyApp(QWidget):
                 except ValueError:
                     self.alertbox_open2("연속된 자릿수")
                     return
-
-            ##Unselect all의 경우
-            if self.Addnew13.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
-                self.checked_account13 = ''
-
-            ##Select all이나 일부 체크박스가 선택된 경우
-            else:
-                self.checked_account13 = self.Addnew13.Acount.toPlainText()
 
             self.filter_Continuous = ""
             for x in self.temp_Continuous:
@@ -5988,6 +6000,15 @@ class MyApp(QWidget):
         self.temp_TE = self.D17_TE.text()
         self.tempSheet = self.D17_Sheet.text() # 필수
 
+        ##Unselect all의 경우
+        if self.Addnew17.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
+            self.checked_account17 = ''
+
+        ##Select all이나 일부 체크박스가 선택된 경우
+        else:
+            self.checked_account17 = self.Addnew17.Acount.toPlainText()
+
+
         ### 예외처리 1 - 필수값 누락
         if self.tempSheet == '':
             self.alertbox_open()
@@ -6003,19 +6024,15 @@ class MyApp(QWidget):
             if self.temp_TE == '':
                 self.temp_TE = 0
 
+            ##Checked_account의 유효성 체크
+            if self.check_account(self.checked_account17) == False:
+                return
+
             try:
                 int(self.temp_TE)
             except ValueError:
                 self.alertbox_open2('중요성금액')
                 return
-
-            ##Unselect all의 경우
-            if self.Addnew17.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
-                self.checked_account17 = ''
-
-            ##Select all이나 일부 체크박스가 선택된 경우
-            else:
-                self.checked_account17 = self.Addnew17.Acount.toPlainText()
 
             if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                     not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
