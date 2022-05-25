@@ -653,6 +653,23 @@ class MyApp(QWidget):
             self.alertbox_open22()
             return False
 
+    def check_account2(self, acc1, acc2):
+        sql1 = '''
+                               SET NOCOUNT ON;
+                               SELECT *
+                               FROM (SELECT TOP 1 GLAccountNumber AS GL_Account_Number From [{field}_Import_CY_01].[dbo].[pbcJournalEntries]) AS LVL4
+                               WHERE 1=1 {Account}
+        '''.format(field=self.selected_project_id, Account=acc1)
+
+        sql2 = '''
+                               SET NOCOUNT ON;
+                               SELECT *
+                               FROM (SELECT TOP 1 GLAccountNumber AS Analysis_GL_Account_Number From [{field}_Import_CY_01].[dbo].[pbcJournalEntries]) AS LVL4
+                               WHERE 1=1 {Account}
+                '''.format(field=self.selected_project_id, Account=acc2)
+        pd.read_sql(sql1, self.cnxn)
+        pd.read_sql(sql2, self.cnxn)
+
     def NewQueryConcat(self, Segment1, Segment2, Segment3, Segment4, Segment5, UserDefine1, UserDefine2, UserDefine3,
                        UserList1, SourceList1, Manual, Auto):
         SplitedSegment1 = Segment1.text().split(',')
@@ -5626,10 +5643,14 @@ class MyApp(QWidget):
                 elif self.checkD1.isChecked():
                     self.tempStateA = 'AND LVL4.GL_Account_Position =' + "'" + 'Debit' + "'"
 
-                self.doAction()
-                self.th12 = Thread(target=self.extButtonClicked12)
-                self.th12.daemon = True
-                self.th12.start()
+                try:
+                    self.check_account2(self.checked_accountA, self.checked_accountB)
+                    self.doAction()
+                    self.th12 = Thread(target=self.extButtonClicked12)
+                    self.th12.daemon = True
+                    self.th12.start()
+                except:
+                    self.alertbox_open22()
 
             except ValueError:
                 self.alertbox_open2('중요성 금액')
