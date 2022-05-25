@@ -5361,22 +5361,19 @@ class MyApp(QWidget):
 
             if self.temp_TE == '': self.temp_TE = 0
 
-            try:
-                int(self.temp_TE)
+            if self.Addnew7.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()': self.checked_account7 = ''
+            else: self.checked_account7 = self.Addnew7.Acount.toPlainText()
 
-                if self.Addnew7.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
-                    self.checked_account7 = ''
+            if self.check_account(self.checked_account7) != False:
+                try:
+                    int(self.temp_TE)
+                    self.doAction()
+                    self.th7 = Thread(target=self.extButtonClicked7)
+                    self.th7.daemon = True
+                    self.th7.start()
 
-                else:
-                    self.checked_account7 = self.Addnew7.Acount.toPlainText()
-
-                self.doAction()
-                self.th7 = Thread(target=self.extButtonClicked7)
-                self.th7.daemon = True
-                self.th7.start()
-
-            except ValueError:
-                self.alertbox_open2('중요성 금액')
+                except ValueError:
+                    self.alertbox_open2('중요성 금액')
 
     def Thread8(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew8.SegmentBox1,
@@ -5417,41 +5414,41 @@ class MyApp(QWidget):
             elif self.checkC.isChecked():  # Debit 이 0
                 self.debitcredit = 'AND JournalEntries.Debit = 0'
 
-            try:
-                int(self.tempN)
-                int(self.temp_TE)
+            if self.Addnew8.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
+                self.checked_account8 = ''
 
-                if int(self.tempN) < 0 or int(self.tempN) > 700000:
-                    self.alertbox_open13()
-                    int('False')
+            else:
+                self.checked_account8 = self.Addnew8.Acount.toPlainText()
 
-                else:
-                    if self.Addnew8.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
-                        self.checked_account8 = ''
-
-                    else:
-                        self.checked_account8 = self.Addnew8.Acount.toPlainText()
-
-                    self.realNDate = int(self.tempN)
-
-                    self.doAction()
-                    self.th8 = Thread(target=self.extButtonClicked8)
-                    self.th8.daemon = True
-                    self.th8.start()
-
-            except ValueError:
+            if self.check_account(self.checked_account8) != False:
                 try:
                     int(self.tempN)
+                    int(self.temp_TE)
+
+                    if int(self.tempN) < 0 or int(self.tempN) > 700000:
+                        self.alertbox_open13()
+                        int('False')
+
+                    else:
+                        self.realNDate = int(self.tempN)
+                        self.doAction()
+                        self.th8 = Thread(target=self.extButtonClicked8)
+                        self.th8.daemon = True
+                        self.th8.start()
+
+                except ValueError:
                     try:
-                        int(self.temp_TE)
+                        int(self.tempN)
+                        try:
+                            int(self.temp_TE)
+                        except:
+                            self.alertbox_open2('중요성금액')
                     except:
-                        self.alertbox_open2('중요성금액')
-                except:
-                    try:
-                        int(self.tempCost)
-                        self.alertbox_open2('N')
-                    except:
-                        self.alertbox_open2('N값과 중요성금액')
+                        try:
+                            int(self.tempCost)
+                            self.alertbox_open2('N')
+                        except:
+                            self.alertbox_open2('N값과 중요성금액')
 
     def Thread9(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew9.SegmentBox1,
@@ -5966,15 +5963,16 @@ class MyApp(QWidget):
             elif self.checkC.isChecked():  # Debit 이 0
                 self.debitcredit = 'AND JournalEntries.Debit = 0'
 
-            try:
-                int(self.temp_TE)
-                self.doAction()
-                self.th16 = Thread(target=self.extButtonClicked16)
-                self.th16.daemon = True
-                self.th16.start()
+            if self.check_account(self.checked_account16) != False:
+                try:
+                    int(self.temp_TE)
+                    self.doAction()
+                    self.th16 = Thread(target=self.extButtonClicked16)
+                    self.th16.daemon = True
+                    self.th16.start()
 
-            except ValueError:
-                self.alertbox_open2('중요성 금액')
+                except ValueError:
+                    self.alertbox_open2('중요성 금액')
 
     def Thread17(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew17.SegmentBox1,
