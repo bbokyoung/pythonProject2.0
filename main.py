@@ -639,6 +639,20 @@ class MyApp(QWidget):
         self.alt.setText('계정 코드 쿼리문을 확인하시길 바랍니다.')
         self.alt.exec_()
 
+    def check_account(self, acc):
+        sql = '''
+                               SET NOCOUNT ON;
+                               SELECT TOP 100 JournalEntries.GLAccountNumber
+                               FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries
+                               WHERE 1=1 {Account}
+        '''.format(field=self.selected_project_id, Account = acc)
+
+        try:
+            self.dataframe_check = pd.read_sql(sql, self.cnxn)
+        except:
+            self.alertbox_open22()
+            return False
+
     def NewQueryConcat(self, Segment1, Segment2, Segment3, Segment4, Segment5, UserDefine1, UserDefine2, UserDefine3,
                        UserList1, SourceList1, Manual, Auto):
         SplitedSegment1 = Segment1.text().split(',')
@@ -5205,43 +5219,48 @@ class MyApp(QWidget):
             elif self.checkC.isChecked():  # Debit 이 0
                 self.debitcredit = 'AND JournalEntries.Debit = 0'
 
-            try:
-                int(self.temp_TE)
-                int(self.period1.text())  # 정수만 입력했는지 확인
-                int(self.period2.text())  # 정수만 입력했는지 확인
-
-                self.tempDate1 = "'" + self.period1.text() + "'"  # 시작시점
-                self.tempDate2 = "'" + self.period2.text() + "'"  # 종료시점
-
-                if len(str(self.tempDate1)) != 10:  # 날짜 받아온 것을 형식에 맞는지 확인해야 함 (자릿수 확인)
-                    self.alertbox_open19()
-                elif len(str(self.tempDate2)) != 10:
-                    self.alertbox_open19()
-                else:
-                    self.doAction()
-                    self.th6 = Thread(target=self.extButtonClicked6)
-                    self.th6.daemon = True
-                    self.th6.start()
-
-            except ValueError:
+            if self.check_account(self.checked_account6) != False:
                 try:
                     int(self.temp_TE)
-                except:
+                    int(self.period1.text())  # 정수만 입력했는지 확인
+                    int(self.period2.text())  # 정수만 입력했는지 확인
+
+                    self.tempDate1 = "'" + self.period1.text() + "'"  # 시작시점
+                    self.tempDate2 = "'" + self.period2.text() + "'"  # 종료시점
+
+                    if len(str(self.tempDate1)) != 10:  # 날짜 받아온 것을 형식에 맞는지 확인해야 함 (자릿수 확인)
+                        self.alertbox_open19()
+                    elif len(str(self.tempDate2)) != 10:
+                        self.alertbox_open19()
+                    else:
+                        self.doAction()
+                        self.th6 = Thread(target=self.extButtonClicked6)
+                        self.th6.daemon = True
+                        self.th6.start()
+
+                except ValueError:
+
+
+                    try:
+                        int(self.temp_TE)
+                    except:
+                        try:
+                            int(self.period1.text())
+                            int(self.period2.text())
+                            self.alertbox_open2('중요성 금액')
+                        except:
+                            self.alertbox_open2('입력일과 중요성 금액')
                     try:
                         int(self.period1.text())
                         int(self.period2.text())
-                        self.alertbox_open2('중요성 금액')
                     except:
-                        self.alertbox_open2('입력일과 중요성 금액')
-                try:
-                    int(self.period1.text())
-                    int(self.period2.text())
-                except:
-                    try:
-                        int(self.temp_TE)
-                        self.alertbox_open2('입력일')
-                    except:
-                        self.alertbox_open2('입력일과 중요성 금액')
+                        try:
+                            int(self.temp_TE)
+                            self.alertbox_open2('입력일')
+                        except:
+                            self.alertbox_open2('입력일과 중요성 금액')
+
+
 
     def Thread7(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew7.SegmentBox1,
