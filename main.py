@@ -642,7 +642,7 @@ class MyApp(QWidget):
     def check_account(self, acc):
         sql = '''
                                SET NOCOUNT ON;
-                               SELECT TOP 100 JournalEntries.GLAccountNumber
+                               SELECT TOP 1 JournalEntries.GLAccountNumber
                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries
                                WHERE 1=1 {Account}
         '''.format(field=self.selected_project_id, Account = acc)
@@ -652,7 +652,6 @@ class MyApp(QWidget):
         except:
             self.alertbox_open22()
             return False
-
 
     def NewQueryConcat(self, Segment1, Segment2, Segment3, Segment4, Segment5, UserDefine1, UserDefine2, UserDefine3,
                        UserList1, SourceList1, Manual, Auto):
@@ -5052,6 +5051,12 @@ class MyApp(QWidget):
         self.temp_TE = self.D4_TE.text()
         self.tempSheet = self.D4_Sheet.text()
 
+        if self.Addnew4.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
+            self.checked_account4 = ''
+
+        else:
+            self.checked_account4 = self.Addnew4.Acount.toPlainText()
+
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                 not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
             self.debitcredit = ''
@@ -5077,37 +5082,30 @@ class MyApp(QWidget):
         ### 쿼리 연동
         else:
             if self.temp_TE == '': self.temp_TE = 0
-            try:
-                int(self.temp_N)
-                int(self.temp_TE)
-
-                ##Unselect all의 경우
-                if self.Addnew4.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
-                    self.checked_account4 = ''
-
-                ##Select all이나 일부 체크박스가 선택된 경우
-                else:
-                    self.checked_account4 = self.Addnew4.Acount.toPlainText()
-
-                self.doAction()
-                self.th4 = Thread(target=self.extButtonClicked4)
-                self.th4.daemon = True
-                self.th4.start()
-
-            ### 예외처리 5 - 필수 입력값 타입 오류
-            except ValueError:
+            if self.check_account(self.checked_account4) != False:
                 try:
                     int(self.temp_N)
+                    int(self.temp_TE)
+
+                    self.doAction()
+                    self.th4 = Thread(target=self.extButtonClicked4)
+                    self.th4.daemon = True
+                    self.th4.start()
+
+                ### 예외처리 5 - 필수 입력값 타입 오류
+                except ValueError:
                     try:
-                        int(self.temp_TE)
+                        int(self.temp_N)
+                        try:
+                            int(self.temp_TE)
+                        except:
+                            self.alertbox_open2('중요성금액')
                     except:
-                        self.alertbox_open2('중요성금액')
-                except:
-                    try:
-                        int(self.temp_TE)
-                        self.alertbox_open2('계정사용 빈도수')
-                    except:
-                        self.alertbox_open2('계정사용 빈도수와 중요성금액')
+                        try:
+                            int(self.temp_TE)
+                            self.alertbox_open2('계정사용 빈도수')
+                        except:
+                            self.alertbox_open2('계정사용 빈도수와 중요성금액')
 
     def ChangeInt(self, row):
         try:
@@ -5470,6 +5468,13 @@ class MyApp(QWidget):
         self.tempN = self.D9_N.text()  # 필수값
         self.tempTE = self.D9_TE.text()
         self.tempSheet = self.D9_Sheet.text()
+
+        if self.Addnew9.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
+            self.checked_account9 = ''
+
+        else:
+            self.checked_account9 = self.Addnew9.Acount.toPlainText()
+
         if self.tempN == '' or self.tempSheet == '':
             self.alertbox_open()
         # 시트명 중복 확인
@@ -5483,43 +5488,37 @@ class MyApp(QWidget):
 
         else:
             if self.tempTE == '': self.tempTE = 0
-            try:
-                int(self.tempN)
-                int(self.tempTE)
 
-                ##Unselect all의 경우
-                if self.Addnew9.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
-                    self.checked_account9 = ''
-
-                ##Select all이나 일부 체크박스가 선택된 경우
-                else:
-                    self.checked_account9 = self.Addnew9.Acount.toPlainText()
-
-                if (self.checkD.isChecked() and self.checkC.isChecked()) or (
-                        not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
-                    self.debitcredit = ''
-                elif self.checkD.isChecked():  # Credit 이 0
-                    self.debitcredit = 'AND JournalEntries.Credit = 0'
-                elif self.checkC.isChecked():  # Debit 이 0
-                    self.debitcredit = 'AND JournalEntries.Debit = 0'
-
-                self.doAction()
-                self.th9 = Thread(target=self.extButtonClicked9)
-                self.th9.daemon = True
-                self.th9.start()
-            except ValueError:
+            if self.check_account(self.checked_account9) != False:
                 try:
                     int(self.tempN)
+                    int(self.tempTE)
+                    if (self.checkD.isChecked() and self.checkC.isChecked()) or (
+                            not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
+                        self.debitcredit = ''
+                    elif self.checkD.isChecked():  # Credit 이 0
+                        self.debitcredit = 'AND JournalEntries.Credit = 0'
+                    elif self.checkC.isChecked():  # Debit 이 0
+                        self.debitcredit = 'AND JournalEntries.Debit = 0'
+
+                    self.doAction()
+                    self.th9 = Thread(target=self.extButtonClicked9)
+                    self.th9.daemon = True
+                    self.th9.start()
+
+                except ValueError:
                     try:
-                        int(self.tempTE)
+                        int(self.tempN)
+                        try:
+                            int(self.tempTE)
+                        except:
+                            self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
                     except:
-                        self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
-                except:
-                    try:
-                        int(self.tempTE)
-                        self.alertbox_open4('작성빈도수를 숫자로만 입력해주시기 바랍니다.')
-                    except:
-                        self.alertbox_open4('작성빈도수와 중요성금액을 숫자로만 입력해주시기 바랍니다.')
+                        try:
+                            int(self.tempTE)
+                            self.alertbox_open4('작성빈도수를 숫자로만 입력해주시기 바랍니다.')
+                        except:
+                            self.alertbox_open4('작성빈도수와 중요성금액을 숫자로만 입력해주시기 바랍니다.')
 
     def Thread10(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew10.SegmentBox1,
@@ -5534,6 +5533,12 @@ class MyApp(QWidget):
                                                                            self.Manual, self.Auto)
         self.tempTE = self.D10_TE.text()
         self.tempSheet = self.D10_Sheet.text()  # 필수값
+
+        if self.Addnew10.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
+            self.checked_account10 = ''
+
+        else:
+            self.checked_account10 = self.Addnew10.Acount.toPlainText()
 
         if self.tempSheet == '':
             self.alertbox_open()
@@ -5552,20 +5557,23 @@ class MyApp(QWidget):
         else:
             if self.tempTE == '': self.tempTE = 0
 
-            try:
-                int(self.tempTE)
-                ##Unselect all의 경우
-                if self.Addnew10.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
-                    self.checked_account10 = ''
-                ##Select all이나 일부 체크박스가 선택된 경우
-                else:
-                    self.checked_account10 = self.Addnew10.Acount.toPlainText()
-                self.doAction()
-                self.th10 = Thread(target=self.extButtonClicked10)
-                self.th10.daemon = True
-                self.th10.start()
-            except ValueError:
-                self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
+            if self.check_account(self.checked_account10) != False:
+                try:
+                    int(self.tempTE)
+                    if (self.checkD.isChecked() and self.checkC.isChecked()) or (
+                            not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
+                        self.debitcredit = ''
+                    elif self.checkD.isChecked():
+                        self.debitcredit = 'AND JournalEntries.Credit = 0'
+                    elif self.checkC.isChecked():  # Debit 이 0
+                        self.debitcredit = 'AND JournalEntries.Debit = 0'
+                    self.doAction()
+                    self.th10 = Thread(target=self.extButtonClicked10)
+                    self.th10.daemon = True
+                    self.th10.start()
+
+                except ValueError:
+                    self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
 
     def Thread12(self):
         if (self.Manual.isChecked() and self.Auto.isChecked()) or (
@@ -5749,6 +5757,13 @@ class MyApp(QWidget):
         else:
             self.checked_account13 = self.Addnew13.Acount.toPlainText()
 
+        if (self.checkD.isChecked() and self.checkC.isChecked()) or (
+                not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
+            self.debitcredit = ''
+        elif self.checkD.isChecked():
+            self.debitcredit = 'AND JournalEntries.Credit = 0'
+        elif self.checkC.isChecked():  # Debit 이 0
+            self.debitcredit = 'AND JournalEntries.Debit = 0'
 
         ### 예외처리 1 - 필수값 누락
         if self.temp_Continuous == '' or self.tempSheet == '':
@@ -5849,6 +5864,12 @@ class MyApp(QWidget):
         self.tempTE = self.D14_TE.text()
         self.tempSheet = self.D14_Sheet.text()
 
+        if self.Addnew14.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
+            self.checked_account14 = ''
+
+        else:
+            self.checked_account14 = self.Addnew14.Acount.toPlainText()
+
         if self.tempSheet == '':
             self.alertbox_open()
         # 시트명 중복 확인
@@ -5860,34 +5881,29 @@ class MyApp(QWidget):
 
         else:
             if self.tempTE == '': self.tempTE = 0
-            try:
-                int(self.tempTE)
 
-                ##Unselect all의 경우
-                if self.Addnew14.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
-                    self.checked_account14 = ''
+            if self.check_account(self.checked_account14) != False:
 
-                ##Select all이나 일부 체크박스가 선택된 경우
-                else:
-                    self.checked_account14 = self.Addnew14.Acount.toPlainText()
-
-                if (self.checkD.isChecked() and self.checkC.isChecked()) or (
-                        not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
-                    self.debitcredit = ''
-                elif self.checkD.isChecked():  # Credit 이 0
-                    self.debitcredit = 'AND JournalEntries.Credit = 0'
-                elif self.checkC.isChecked():  # Debit 이 0
-                    self.debitcredit = 'AND JournalEntries.Debit = 0'
-
-                self.doAction()
-                self.th14 = Thread(target=self.extButtonClicked14)
-                self.th14.daemon = True
-                self.th14.start()
-            except ValueError:
                 try:
                     int(self.tempTE)
-                except:
-                    self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')
+                    if (self.checkD.isChecked() and self.checkC.isChecked()) or (
+                            not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
+                        self.debitcredit = ''
+                    elif self.checkD.isChecked():  # Credit 이 0
+                        self.debitcredit = 'AND JournalEntries.Credit = 0'
+                    elif self.checkC.isChecked():  # Debit 이 0
+                        self.debitcredit = 'AND JournalEntries.Debit = 0'
+
+                    self.doAction()
+                    self.th14 = Thread(target=self.extButtonClicked14)
+                    self.th14.daemon = True
+                    self.th14.start()
+
+                except ValueError:
+                    try:
+                        int(self.tempTE)
+                    except:
+                        self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')
 
 
     def Thread15(self):
@@ -5904,6 +5920,20 @@ class MyApp(QWidget):
         self.tempTE = self.D15_TE.text()
         self.tempSheet = self.D15_Sheet.text()  # 필수값
 
+        if (self.checkD.isChecked() and self.checkC.isChecked()) or (
+                not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
+            self.debitcredit = ''
+        elif self.checkD.isChecked():
+            self.debitcredit = 'AND JournalEntries.Credit = 0'
+        elif self.checkC.isChecked():  # Debit 이 0
+            self.debitcredit = 'AND JournalEntries.Debit = 0'
+
+        if self.Addnew15.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
+            self.checked_account15 = ''
+
+        else:
+            self.checked_account15 = self.Addnew15.Acount.toPlainText()
+
         if self.tempSheet == '':
             self.alertbox_open()
 
@@ -5919,20 +5949,17 @@ class MyApp(QWidget):
         else:
             if self.tempTE == '': self.tempTE = 0
 
-            try:
-                int(self.tempTE)
-                ##Unselect all의 경우
-                if self.Addnew15.Acount.toPlainText() == 'AND JournalEntries.GLAccountNumber IN ()':
-                    self.checked_account15 = ''
-                ##Select all이나 일부 체크박스가 선택된 경우
-                else:
-                    self.checked_account15 = self.Addnew15.Acount.toPlainText()
-                self.doAction()
-                self.th15 = Thread(target=self.extButtonClicked15)
-                self.th15.daemon = True
-                self.th15.start()
-            except ValueError:
-                self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
+            if self.check_account(self.checked_account15) != False:
+
+                try:
+                    int(self.tempTE)
+                    self.doAction()
+                    self.th15 = Thread(target=self.extButtonClicked15)
+                    self.th15.daemon = True
+                    self.th15.start()
+
+                except ValueError:
+                    self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
 
     def Thread16(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew16.SegmentBox1,
@@ -7201,21 +7228,6 @@ class MyApp(QWidget):
             self.communicate9.closeApp.emit()
 
         elif len(self.dataframe) == 0:
-            self.dataframe = pd.DataFrame({'No Data': ["[전표작성 빈도수: " + str(self.tempN) + "," + " 중요성금액: " + str(
-                self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
-            model = DataFrameModel(self.dataframe)
-            self.viewtable.setModel(model)
-
-            if self.rbtn1.isChecked():
-                self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
-                self.combo_sheet.addItem(self.tempSheet + '_Result')
-                self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
-
-            elif self.rbtn2.isChecked():
-                self.scenario_dic[self.tempSheet + '_Journals'] = self.dataframe
-                self.combo_sheet.addItem(self.tempSheet + '_Journals')
-                self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
-
             self.communicate9.closeApp.emit()
 
         else:
@@ -8852,21 +8864,6 @@ class MyApp(QWidget):
             self.communicate14.closeApp.emit()
 
         elif len(self.dataframe) == 0:
-            self.dataframe = pd.DataFrame({'No Data': ["[전표 적요 특정단어: " + str(self.baseKey) + "," + " 중요성금액: " + str(
-                self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
-
-            model = DataFrameModel(self.dataframe)
-            self.viewtable.setModel(model)
-
-            if self.rbtn1.isChecked():
-                self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
-                self.combo_sheet.addItem(self.tempSheet + '_Result')
-                self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
-
-            elif self.rbtn2.isChecked():
-                self.scenario_dic[self.tempSheet + '_Journals'] = self.dataframe
-                self.combo_sheet.addItem(self.tempSheet + '_Journals')
-                self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
             self.communicate14.closeApp.emit()
 
         else:
