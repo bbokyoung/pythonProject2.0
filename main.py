@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
 import os
 import sys
 import re
@@ -766,6 +762,9 @@ class MyApp(QWidget):
             a = a.strip()
             if a == '':
                 b = ""
+            elif a == '[NULL]':
+                b = "JournalEntries.PreparerID LIKE N'' OR JournalEntries.PreparerID LIKE N' ' OR JournalEntries.PreparerID IS NULL"
+                SplitedUserList1List.append(b)
             else:
                 b = "JournalEntries.PreparerID LIKE N'" + a + "'"
                 SplitedUserList1List.append(b)
@@ -836,7 +835,7 @@ class MyApp(QWidget):
             AutoManual = "AND Details.SystemManualIndicator = 'Manual' "
         elif Auto.isChecked():
             AutoManual = "AND Details.SystemManualIndicator = 'System' "
-        print(ConcatSQL2,ConcatSQL3Clean,AutoManual)
+
         return ConcatSQL2, ConcatSQL3Clean, AutoManual
 
     def AccountUpdate(self, AccountText):
@@ -4684,12 +4683,12 @@ class MyApp(QWidget):
         elif len(self.dataframe) > 300:
             buttonReply = QMessageBox.information(self, "라인수 추출", "[중요성 금액: " + str(
                 self.temp_TE) + "] 라인수 " + str(
-                len(self.dataframe) - 1) + "개입니다 <br> [전표번호 기준]",
+                len(self.dataframe)) + "개입니다 <br> [전표번호 기준]",
                                                   QMessageBox.Ok)
 
         else:
             buttonReply = QMessageBox.information(self, "라인수 추출", "[중요성 금액: " + str(
-                self.temp_TE) + "] 라인수 " + str(len(self.dataframe) - 1) + "개입니다", QMessageBox.Ok)
+                self.temp_TE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다", QMessageBox.Ok)
 
         if buttonReply == QMessageBox.Ok: self.dialog12.activateWindow()
 
@@ -5102,7 +5101,7 @@ class MyApp(QWidget):
             if self.check_account(self.checked_account4) != False:
                 try:
                     int(self.temp_N)
-                    int(self.temp_TE)
+                    float(self.temp_TE)
 
                     self.doAction()
                     self.th4 = Thread(target=self.extButtonClicked4)
@@ -5114,12 +5113,12 @@ class MyApp(QWidget):
                     try:
                         int(self.temp_N)
                         try:
-                            int(self.temp_TE)
+                            float(self.temp_TE)
                         except:
                             self.alertbox_open2('중요성금액')
                     except:
                         try:
-                            int(self.temp_TE)
+                            float(self.temp_TE)
                             self.alertbox_open2('계정사용 빈도수')
                         except:
                             self.alertbox_open2('계정사용 빈도수와 중요성금액')
@@ -5156,7 +5155,7 @@ class MyApp(QWidget):
 
 
         ### 예외처리 1 - 필수값 입력 누락
-        if self.tempSheet == '':
+        if self.tempSheet == '' or self.checked_account5 == '':
             self.alertbox_open()
 
         ### 예외처리 2 - 시트명 중복 확인 (JE Line)
@@ -5176,7 +5175,7 @@ class MyApp(QWidget):
                 return
 
             try:
-                int(self.temp_TE)
+                float(self.temp_TE)
 
                 if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                         not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
@@ -5242,7 +5241,7 @@ class MyApp(QWidget):
 
             if self.check_account(self.checked_account6) != False:
                 try:
-                    int(self.temp_TE)
+                    float(self.temp_TE)
                     int(self.period1.text())  # 정수만 입력했는지 확인
                     int(self.period2.text())  # 정수만 입력했는지 확인
 
@@ -5263,7 +5262,7 @@ class MyApp(QWidget):
 
 
                     try:
-                        int(self.temp_TE)
+                        float(self.temp_TE)
                     except:
                         try:
                             int(self.period1.text())
@@ -5276,7 +5275,7 @@ class MyApp(QWidget):
                         int(self.period2.text())
                     except:
                         try:
-                            int(self.temp_TE)
+                            float(self.temp_TE)
                             self.alertbox_open2('입력일')
                         except:
                             self.alertbox_open2('입력일과 중요성 금액')
@@ -5577,7 +5576,7 @@ class MyApp(QWidget):
 
             if self.check_account(self.checked_account10) != False:
                 try:
-                    int(self.tempTE)
+                    float(self.tempTE)
                     if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                             not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
                         self.debitcredit = ''
@@ -5617,7 +5616,7 @@ class MyApp(QWidget):
             if self.temp_TE == '':
                 self.temp_TE = 0
             try:
-                int(self.temp_TE)
+                float(self.temp_TE)
 
                 if self.Addnew12_B.Acount.toPlainText() == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()' or self.Addnew12_B.Acount.toPlainText() == '':
                     self.checked_accountA = self.Addnew12_A.Acount.toPlainText()
@@ -5684,7 +5683,7 @@ class MyApp(QWidget):
                        SELECT TOP 100 JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]'''.format(field=self.selected_project_id)
             try:
-                int(self.temp_TE)
+                float(self.temp_TE)
                 self.dataframe = pd.read_sql(sql, self.cnxn)
                 if self.dataframe['Segment01'].isnull().sum() == len(self.dataframe):
                     self.alertbox_open20()
@@ -5714,7 +5713,7 @@ class MyApp(QWidget):
                             self.thC.start()
                         except ValueError:
                             try:
-                                int(self.temp_TE)
+                                float(self.temp_TE)
                                 self.alertbox_open4('필요 조건필드의 데이터 타입을 확인 바랍니다.')
                             except:
                                 self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
@@ -5743,13 +5742,13 @@ class MyApp(QWidget):
                 self.alertbox_open4('필요 조건 필드를 충족하지 않습니다.')
             else:
                 try:
-                    int(self.temp_TE)
+                    float(self.temp_TE)
                     self.doAction()
                     self.thC = Thread(target=self.extButtonClickedC)
                     self.thC.start()
                 except ValueError:
                     try:
-                        int(self.temp_TE)
+                        float(self.temp_TE)
                         self.alertbox_open4('필요 조건필드의 데이터 타입을 확인 바랍니다.')
                     except:
                         self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
@@ -5861,8 +5860,10 @@ class MyApp(QWidget):
         self.baseKey_clean = []
         for a in self.baseKey:
             a = a.strip()
-            if a == '':
-                b = "(JournalEntries.JEDescription LIKE '' AND JournalEntries.JELineDescription LIKE '')"
+            if a == '[NULL]':
+                b = "((JournalEntries.JEDescription LIKE '' AND JournalEntries.JELineDescription LIKE '') " \
+                    "OR (JournalEntries.JEDescription LIKE ' ' AND JournalEntries.JELineDescription LIKE ' ') " \
+                    "OR (JournalEntries.JEDescription IS NULL AND JournalEntries.JELineDescription IS NULL))"
             else:
                 b = "JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%'"
             self.baseKey_clean.append(b)
@@ -5872,8 +5873,10 @@ class MyApp(QWidget):
         if self.D14_Key2C.isChecked():
             for a in self.baseKey2:
                 a = a.strip()
-                if a == '':
-                    b = "(JournalEntries.JEDescription NOT LIKE '' AND JournalEntries.JELineDescription NOT LIKE '')"
+                if a == '[NULL]':
+                    b = "((JournalEntries.JEDescription NOT LIKE '' AND JournalEntries.JELineDescription NOT LIKE '') " \
+                    "OR (JournalEntries.JEDescription NOT LIKE ' ' AND JournalEntries.JELineDescription NOT LIKE ' ') " \
+                    "OR (JournalEntries.JEDescription IS NOT NULL AND JournalEntries.JELineDescription IS NOT NULL))"
                 else:
                     b = "JournalEntries.JEDescription NOT LIKE N'%" + a + "%' AND JournalEntries.JELineDescription NOT LIKE N'%" + a + "%'"
                 self.baseKey2_clean.append(b)
@@ -6026,7 +6029,7 @@ class MyApp(QWidget):
 
             if self.check_account(self.checked_account16) != False:
                 try:
-                    int(self.temp_TE)
+                    float(self.temp_TE)
                     self.doAction()
                     self.th16 = Thread(target=self.extButtonClicked16)
                     self.th16.daemon = True
@@ -7707,7 +7710,7 @@ class MyApp(QWidget):
                                                                  "---Filtered Result  Scenario08---\n" + sql]
 
         if len(self.dataframe) > 500000:
-            self.scenario_dic[self.temp_Sheet + '_Reference'] = self.dataframe
+            self.scenario_dic[self.temp_Sheet + '_Reference'] = self.dataframe.head(1000)
             self.combo_sheet.addItem(self.temp_Sheet + '_Reference')
             self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
             model = DataFrameModel(self.dataframe.head(1000))
