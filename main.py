@@ -679,8 +679,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.Segment01 LIKE N'%" + a + "%'"
-            SplitedSegment1List.append(b)
+                b = "JournalEntries.Segment01 LIKE N'" + a + "'"
+                SplitedSegment1List.append(b)
         Segment1Clean = str(' OR '.join(SplitedSegment1List))
 
         SplitedSegment2 = Segment2.text().split(',')
@@ -690,8 +690,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.Segment02 LIKE N'%" + a + "%'"
-            SplitedSegment2List.append(b)
+                b = "JournalEntries.Segment02 LIKE N'" + a + "'"
+                SplitedSegment2List.append(b)
         Segment2Clean = str(' OR '.join(SplitedSegment2List))
 
         SplitedSegment3 = Segment3.text().split(',')
@@ -701,8 +701,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.Segment03 LIKE N'%" + a + "%'"
-            SplitedSegment3List.append(b)
+                b = "JournalEntries.Segment03 LIKE N'" + a + "'"
+                SplitedSegment3List.append(b)
         Segment3Clean = str(' OR '.join(SplitedSegment3List))
 
         SplitedSegment4 = Segment4.text().split(',')
@@ -712,8 +712,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.Segment04 LIKE N'%" + a + "%'"
-            SplitedSegment4List.append(b)
+                b = "JournalEntries.Segment04 LIKE N'" + a + "'"
+                SplitedSegment4List.append(b)
         Segment4Clean = str(' OR '.join(SplitedSegment4List))
 
         SplitedSegment5 = Segment5.text().split(',')
@@ -723,8 +723,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.Segment05 LIKE N'%" + a + "%'"
-            SplitedSegment5List.append(b)
+                b = "JournalEntries.Segment05 LIKE N'" + a + "'"
+                SplitedSegment5List.append(b)
         Segment5Clean = str(' OR '.join(SplitedSegment5List))
 
         SplitedUserDefine1 = UserDefine1.text().split(',')
@@ -734,8 +734,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.UserDefined1 LIKE N'%" + a + "%'"
-            SplitedUserDefine1List.append(b)
+                b = "JournalEntries.UserDefined1 LIKE N'" + a + "'"
+                SplitedUserDefine1List.append(b)
         UserDefine1Clean = str(' OR '.join(SplitedUserDefine1List))
 
         SplitedUserDefine2 = UserDefine2.text().split(',')
@@ -745,8 +745,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.UserDefined2 LIKE N'%" + a + "%'"
-            SplitedUserDefine2List.append(b)
+                b = "JournalEntries.UserDefined2 LIKE N'" + a + "'"
+                SplitedUserDefine2List.append(b)
         UserDefine2Clean = str(' OR '.join(SplitedUserDefine2List))
 
         SplitedUserDefine3 = UserDefine3.text().split(',')
@@ -756,8 +756,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.UserDefined3 LIKE N'%" + a + "%'"
-            SplitedUserDefine3List.append(b)
+                b = "JournalEntries.UserDefined3 LIKE N'" + a + "'"
+                SplitedUserDefine3List.append(b)
         UserDefine3Clean = str(' OR '.join(SplitedUserDefine3List))
 
         SplitedUserList1 = UserList1.text().split(',')
@@ -767,8 +767,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.PreparerID LIKE N'%" + a + "%'"
-            SplitedUserList1List.append(b)
+                b = "JournalEntries.PreparerID LIKE N'" + a + "'"
+                SplitedUserList1List.append(b)
         UserList1Clean = str(' OR '.join(SplitedUserList1List))
 
         SplitedSourceList1 = SourceList1.text().split(',')
@@ -778,8 +778,8 @@ class MyApp(QWidget):
             if a == '':
                 b = ""
             else:
-                b = "JournalEntries.Source LIKE N'%" + a + "%'"
-            SplitedSourceList1List.append(b)
+                b = "JournalEntries.Source LIKE N'" + a + "'"
+                SplitedSourceList1List.append(b)
         SourceList1Clean = str(' OR '.join(SplitedSourceList1List))
 
         ConcatSQLlist = [Segment1Clean, Segment2Clean, Segment3Clean, Segment4Clean, Segment5Clean, UserDefine1Clean,
@@ -836,7 +836,7 @@ class MyApp(QWidget):
             AutoManual = "AND Details.SystemManualIndicator = 'Manual' "
         elif Auto.isChecked():
             AutoManual = "AND Details.SystemManualIndicator = 'System' "
-
+        print(ConcatSQL2,ConcatSQL3Clean,AutoManual)
         return ConcatSQL2, ConcatSQL3Clean, AutoManual
 
     def AccountUpdate(self, AccountText):
@@ -5353,6 +5353,7 @@ class MyApp(QWidget):
                             self.realDate_List.append(b)
                         else:
                             self.alertbox_open19()
+
                     except:
                         self.alertbox_open19()
 
@@ -5387,7 +5388,7 @@ class MyApp(QWidget):
 
             if self.check_account(self.checked_account7) != False:
                 try:
-                    int(self.temp_TE)
+                    float(self.temp_TE)
                     self.doAction()
                     self.th7 = Thread(target=self.extButtonClicked7)
                     self.th7.daemon = True
@@ -5444,7 +5445,7 @@ class MyApp(QWidget):
             if self.check_account(self.checked_account8) != False:
                 try:
                     int(self.tempN)
-                    int(self.temp_TE)
+                    float(self.temp_TE)
 
                     if int(self.tempN) < 0 or int(self.tempN) > 700000:
                         self.alertbox_open13()
@@ -5461,15 +5462,15 @@ class MyApp(QWidget):
                     try:
                         int(self.tempN)
                         try:
-                            int(self.temp_TE)
+                            float(self.temp_TE)
                         except:
                             self.alertbox_open2('중요성금액')
                     except:
                         try:
-                            int(self.tempCost)
+                            float(self.temp_TE)
                             self.alertbox_open2('N')
                         except:
-                            self.alertbox_open2('N값과 중요성금액')
+                            self.alertbox_open2('중요성금액과 N')
 
     def Thread9(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew9.SegmentBox1,
@@ -5509,7 +5510,7 @@ class MyApp(QWidget):
             if self.check_account(self.checked_account9) != False:
                 try:
                     int(self.tempN)
-                    int(self.tempTE)
+                    float(self.tempTE)
                     if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                             not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
                         self.debitcredit = ''
@@ -5527,12 +5528,12 @@ class MyApp(QWidget):
                     try:
                         int(self.tempN)
                         try:
-                            int(self.tempTE)
+                            float(self.tempTE)
                         except:
                             self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
                     except:
                         try:
-                            int(self.tempTE)
+                            float(self.tempTE)
                             self.alertbox_open4('작성빈도수를 숫자로만 입력해주시기 바랍니다.')
                         except:
                             self.alertbox_open4('작성빈도수와 중요성금액을 숫자로만 입력해주시기 바랍니다.')
