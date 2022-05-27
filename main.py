@@ -5098,7 +5098,7 @@ class MyApp(QWidget):
             if self.check_account(self.checked_account4) != False:
                 try:
                     int(self.temp_N)
-                    int(self.temp_TE)
+                    float(self.temp_TE)
 
                     self.doAction()
                     self.th4 = Thread(target=self.extButtonClicked4)
@@ -5110,12 +5110,12 @@ class MyApp(QWidget):
                     try:
                         int(self.temp_N)
                         try:
-                            int(self.temp_TE)
+                            float(self.temp_TE)
                         except:
                             self.alertbox_open2('중요성금액')
                     except:
                         try:
-                            int(self.temp_TE)
+                            float(self.temp_TE)
                             self.alertbox_open2('계정사용 빈도수')
                         except:
                             self.alertbox_open2('계정사용 빈도수와 중요성금액')
@@ -5152,7 +5152,7 @@ class MyApp(QWidget):
 
 
         ### 예외처리 1 - 필수값 입력 누락
-        if self.tempSheet == '':
+        if self.tempSheet == '' or self.checked_account5 == '':
             self.alertbox_open()
 
         ### 예외처리 2 - 시트명 중복 확인 (JE Line)
@@ -5172,7 +5172,7 @@ class MyApp(QWidget):
                 return
 
             try:
-                int(self.temp_TE)
+                float(self.temp_TE)
 
                 if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                         not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
@@ -5238,7 +5238,7 @@ class MyApp(QWidget):
 
             if self.check_account(self.checked_account6) != False:
                 try:
-                    int(self.temp_TE)
+                    float(self.temp_TE)
                     int(self.period1.text())  # 정수만 입력했는지 확인
                     int(self.period2.text())  # 정수만 입력했는지 확인
 
@@ -5259,7 +5259,7 @@ class MyApp(QWidget):
 
 
                     try:
-                        int(self.temp_TE)
+                        float(self.temp_TE)
                     except:
                         try:
                             int(self.period1.text())
@@ -5272,7 +5272,7 @@ class MyApp(QWidget):
                         int(self.period2.text())
                     except:
                         try:
-                            int(self.temp_TE)
+                            float(self.temp_TE)
                             self.alertbox_open2('입력일')
                         except:
                             self.alertbox_open2('입력일과 중요성 금액')
