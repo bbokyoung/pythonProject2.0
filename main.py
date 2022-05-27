@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
 import os
 import sys
 import re
@@ -4684,12 +4680,12 @@ class MyApp(QWidget):
         elif len(self.dataframe) > 300:
             buttonReply = QMessageBox.information(self, "라인수 추출", "[중요성 금액: " + str(
                 self.temp_TE) + "] 라인수 " + str(
-                len(self.dataframe) - 1) + "개입니다 <br> [전표번호 기준]",
+                len(self.dataframe)) + "개입니다 <br> [전표번호 기준]",
                                                   QMessageBox.Ok)
 
         else:
             buttonReply = QMessageBox.information(self, "라인수 추출", "[중요성 금액: " + str(
-                self.temp_TE) + "] 라인수 " + str(len(self.dataframe) - 1) + "개입니다", QMessageBox.Ok)
+                self.temp_TE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다", QMessageBox.Ok)
 
         if buttonReply == QMessageBox.Ok: self.dialog12.activateWindow()
 
@@ -5577,7 +5573,7 @@ class MyApp(QWidget):
 
             if self.check_account(self.checked_account10) != False:
                 try:
-                    int(self.tempTE)
+                    float(self.tempTE)
                     if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                             not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
                         self.debitcredit = ''
@@ -5617,7 +5613,7 @@ class MyApp(QWidget):
             if self.temp_TE == '':
                 self.temp_TE = 0
             try:
-                int(self.temp_TE)
+                float(self.temp_TE)
 
                 if self.Addnew12_B.Acount.toPlainText() == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()' or self.Addnew12_B.Acount.toPlainText() == '':
                     self.checked_accountA = self.Addnew12_A.Acount.toPlainText()
@@ -5684,7 +5680,7 @@ class MyApp(QWidget):
                        SELECT TOP 100 JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01
                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]'''.format(field=self.selected_project_id)
             try:
-                int(self.temp_TE)
+                float(self.temp_TE)
                 self.dataframe = pd.read_sql(sql, self.cnxn)
                 if self.dataframe['Segment01'].isnull().sum() == len(self.dataframe):
                     self.alertbox_open20()
@@ -5714,7 +5710,7 @@ class MyApp(QWidget):
                             self.thC.start()
                         except ValueError:
                             try:
-                                int(self.temp_TE)
+                                float(self.temp_TE)
                                 self.alertbox_open4('필요 조건필드의 데이터 타입을 확인 바랍니다.')
                             except:
                                 self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
@@ -5743,13 +5739,13 @@ class MyApp(QWidget):
                 self.alertbox_open4('필요 조건 필드를 충족하지 않습니다.')
             else:
                 try:
-                    int(self.temp_TE)
+                    float(self.temp_TE)
                     self.doAction()
                     self.thC = Thread(target=self.extButtonClickedC)
                     self.thC.start()
                 except ValueError:
                     try:
-                        int(self.temp_TE)
+                        float(self.temp_TE)
                         self.alertbox_open4('필요 조건필드의 데이터 타입을 확인 바랍니다.')
                     except:
                         self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
@@ -6026,7 +6022,7 @@ class MyApp(QWidget):
 
             if self.check_account(self.checked_account16) != False:
                 try:
-                    int(self.temp_TE)
+                    float(self.temp_TE)
                     self.doAction()
                     self.th16 = Thread(target=self.extButtonClicked16)
                     self.th16.daemon = True
@@ -7707,7 +7703,7 @@ class MyApp(QWidget):
                                                                  "---Filtered Result  Scenario08---\n" + sql]
 
         if len(self.dataframe) > 500000:
-            self.scenario_dic[self.temp_Sheet + '_Reference'] = self.dataframe
+            self.scenario_dic[self.temp_Sheet + '_Reference'] = self.dataframe.head(1000)
             self.combo_sheet.addItem(self.temp_Sheet + '_Reference')
             self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
             model = DataFrameModel(self.dataframe.head(1000))
