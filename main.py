@@ -520,6 +520,14 @@ class MyApp(QWidget):
         self.alt.setText('이미 해당 시트명이 존재합니다.')
         self.alt.exec_()
 
+    def alertbox_open6(self):
+        self.alt = QMessageBox()
+        self.alt.setIcon(QMessageBox.Information)
+        self.alt.setWindowTitle('제외 키워드 입력 오류')
+        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
+        self.alt.setText('제외할 키워드를 입력하세요.')
+        self.alt.exec_()
+
     def alertbox_open13(self):
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
@@ -561,9 +569,13 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def check_account(self, acc):
+        if acc.strip() != '' and (acc.count(',') + 1) * 2 != acc.count("'"):
+            self.alertbox_open22()
+            return False
+
         sql = '''
                                SET NOCOUNT ON;
-                               SELECT JournalEntries.GLAccountNumber
+                               SELECT TOP 1 JournalEntries.GLAccountNumber
                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries
                                WHERE 1=1 {Account}
         '''.format(field=self.selected_project_id, Account = acc)
@@ -575,21 +587,35 @@ class MyApp(QWidget):
             return False
 
     def check_account2(self, acc1, acc2):
+        if acc1.strip() != '' and (acc1.count(',') + 1) * 2 != acc1.count("'"):
+            self.alertbox_open22()
+            return False
+
+        elif acc2.strip() != '' and (acc2.count(',') + 1) * 2 != acc2.count("'"):
+            self.alertbox_open22()
+            return False
+
         sql1 = '''
                                SET NOCOUNT ON;
-                               SELECT *
+                               SELECT TOP 1 *
                                FROM (SELECT GLAccountNumber AS GL_Account_Number From [{field}_Import_CY_01].[dbo].[pbcJournalEntries]) AS LVL4
                                WHERE 1=1 {Account}
         '''.format(field=self.selected_project_id, Account=acc1)
 
         sql2 = '''
                                SET NOCOUNT ON;
-                               SELECT *
+                               SELECT TOP 1 *
                                FROM (SELECT GLAccountNumber AS Analysis_GL_Account_Number From [{field}_Import_CY_01].[dbo].[pbcJournalEntries]) AS LVL4
                                WHERE 1=1 {Account}
                 '''.format(field=self.selected_project_id, Account=acc2)
-        pd.read_sql(sql1, self.cnxn)
-        pd.read_sql(sql2, self.cnxn)
+
+        try:
+            pd.read_sql(sql1, self.cnxn)
+            pd.read_sql(sql2, self.cnxn)
+        except:
+            self.alertbox_open22()
+            return False
+
 
     def NewQueryConcat(self, Segment1, Segment2, Segment3, Segment4, Segment5, UserDefine1, UserDefine2, UserDefine3,
                        UserList1, SourceList1, Manual, Auto):
@@ -5569,14 +5595,12 @@ class MyApp(QWidget):
                 elif self.checkD1.isChecked():
                     self.tempStateA = 'AND LVL4.GL_Account_Position =' + "'" + 'Debit' + "'"
 
-                try:
-                    self.check_account2(self.checked_accountA, self.checked_accountB)
+
+                if self.check_account2(self.checked_accountA, self.checked_accountB) != False:
                     self.doAction()
                     self.th12 = Thread(target=self.extButtonClicked12)
                     self.th12.daemon = True
                     self.th12.start()
-                except:
-                    self.alertbox_open22()
 
             except ValueError:
                 self.alertbox_open2('중요성 금액')
@@ -5782,36 +5806,6 @@ class MyApp(QWidget):
                                                                            self.Addnew14.UserDefine3,
                                                                            self.Addnew14.User, self.Addnew14.source,
                                                                            self.Manual, self.Auto)
-        self.baseKey = self.D14_Key.text().split(',')
-        self.baseKey_clean = []
-        for a in self.baseKey:
-            a = a.strip()
-            if a.upper() == '[NULL]':
-                b = "((JournalEntries.JEDescription LIKE '' AND JournalEntries.JELineDescription LIKE '') " \
-                    "OR (JournalEntries.JEDescription LIKE ' ' AND JournalEntries.JELineDescription LIKE ' ') " \
-                    "OR (JournalEntries.JEDescription IS NULL AND JournalEntries.JELineDescription IS NULL))"
-            else:
-                b = "(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%')"
-            self.baseKey_clean.append(b)
-
-        self.baseKey2 = self.D14_Key2.text().split(',')
-        self.baseKey2_clean = []
-        if self.D14_Key2C.isChecked():
-            for a in self.baseKey2:
-                a = a.strip()
-                if a.upper() == '[NULL]':
-                    b = "(NOT(JournalEntries.JEDescription LIKE '' AND JournalEntries.JELineDescription LIKE '')" \
-                        "AND NOT(JournalEntries.JEDescription LIKE ' ' AND JournalEntries.JELineDescription LIKE ' ')" \
-                        "AND NOT(JournalEntries.JEDescription IS NULL AND JournalEntries.JELineDescription IS NULL))"
-
-                else:
-                    b = "(NOT(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%'))"
-                self.baseKey2_clean.append(b)
-            self.tempKey = 'AND (' + str('OR '.join(self.baseKey_clean)) + ') AND (' + str(
-                ' AND '.join(self.baseKey2_clean)) + ')'
-
-        else:
-            self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ')'
 
         self.tempTE = self.D14_TE.text()
         self.tempSheet = self.D14_Sheet.text()
@@ -5822,8 +5816,12 @@ class MyApp(QWidget):
         else:
             self.checked_account14 = self.Addnew14.Acount.toPlainText()
 
-        if self.tempSheet == '':
+        if self.tempSheet == '' or self.D14_Key.text().strip() == '':
             self.alertbox_open()
+
+        elif self.D14_Key2C.isChecked() and self.D14_Key2.text().strip() == '':
+            self.alertbox_open6()
+
         # 시트명 중복 확인
         elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
             self.alertbox_open5()
@@ -5832,6 +5830,38 @@ class MyApp(QWidget):
             self.alertbox_open5()
 
         else:
+            self.baseKey = self.D14_Key.text().split(',')
+            self.baseKey_clean = []
+            for a in self.baseKey:
+                a = a.strip()
+                if a.upper() == '[NULL]':
+                    b = "((JournalEntries.JEDescription LIKE '' OR JournalEntries.JEDescription LIKE ' ' OR JournalEntries.JEDescription IS NULL)" \
+                        "AND (JournalEntries.JELineDescription LIKE '' OR JournalEntries.JELineDescription LIKE ' ' OR JournalEntries.JELineDescription IS NULL))"
+                elif a == '':
+                    continue
+                else:
+                    b = "(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%')"
+                self.baseKey_clean.append(b)
+
+            self.baseKey2 = self.D14_Key2.text().split(',')
+            self.baseKey2_clean = []
+            if self.D14_Key2C.isChecked():
+                for a in self.baseKey2:
+                    a = a.strip()
+                    if a.upper() == '[NULL]':
+                        b = "(NOT (JournalEntries.JEDescription LIKE '' OR JournalEntries.JEDescription LIKE ' ' OR JournalEntries.JEDescription IS NULL)" \
+                            "OR NOT (JournalEntries.JELineDescription LIKE '' OR JournalEntries.JELineDescription LIKE ' ' OR JournalEntries.JELineDescription IS NULL))"
+                    elif a == '':
+                        continue
+                    else:
+                        b = "(NOT(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%'))"
+                    self.baseKey2_clean.append(b)
+                self.tempKey = 'AND (' + str('OR '.join(self.baseKey_clean)) + ') AND (' + str(
+                    ' AND '.join(self.baseKey2_clean)) + ')'
+
+            else:
+                self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ')'
+
             if self.tempTE == '': self.tempTE = 0
 
             if self.check_account(self.checked_account14) != False:
