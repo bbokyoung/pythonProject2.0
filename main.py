@@ -5782,37 +5782,6 @@ class MyApp(QWidget):
                                                                            self.Addnew14.UserDefine3,
                                                                            self.Addnew14.User, self.Addnew14.source,
                                                                            self.Manual, self.Auto)
-        self.baseKey = self.D14_Key.text().split(',')
-        self.baseKey_clean = []
-        for a in self.baseKey:
-            a = a.strip()
-            if a.upper() == '[NULL]':
-                b = "((JournalEntries.JEDescription LIKE '' OR JournalEntries.JEDescription LIKE ' ' OR JournalEntries.JEDescription IS NULL)" \
-                    "AND (JournalEntries.JELineDescription LIKE '' OR JournalEntries.JELineDescription LIKE ' ' OR JournalEntries.JELineDescription IS NULL))"
-            elif a == '':
-                continue
-            else:
-                b = "(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%')"
-            self.baseKey_clean.append(b)
-
-        self.baseKey2 = self.D14_Key2.text().split(',')
-        self.baseKey2_clean = []
-        if self.D14_Key2C.isChecked():
-            for a in self.baseKey2:
-                a = a.strip()
-                if a.upper() == '[NULL]':
-                    b = "(NOT (JournalEntries.JEDescription LIKE '' OR JournalEntries.JEDescription LIKE ' ' OR JournalEntries.JEDescription IS NULL)" \
-                        "OR NOT (JournalEntries.JELineDescription LIKE '' OR JournalEntries.JELineDescription LIKE ' ' OR JournalEntries.JELineDescription IS NULL))"
-                elif a == '':
-                    continue
-                else:
-                    b = "(NOT(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%'))"
-                self.baseKey2_clean.append(b)
-            self.tempKey = 'AND (' + str('OR '.join(self.baseKey_clean)) + ') AND (' + str(
-                ' AND '.join(self.baseKey2_clean)) + ')'
-
-        else:
-            self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ')'
 
         self.tempTE = self.D14_TE.text()
         self.tempSheet = self.D14_Sheet.text()
@@ -5823,7 +5792,7 @@ class MyApp(QWidget):
         else:
             self.checked_account14 = self.Addnew14.Acount.toPlainText()
 
-        if self.tempSheet == '':
+        if self.tempSheet == '' or self.D14_Key.text() == '':
             self.alertbox_open()
         # 시트명 중복 확인
         elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
@@ -5833,6 +5802,38 @@ class MyApp(QWidget):
             self.alertbox_open5()
 
         else:
+            self.baseKey = self.D14_Key.text().split(',')
+            self.baseKey_clean = []
+            for a in self.baseKey:
+                a = a.strip()
+                if a.upper() == '[NULL]':
+                    b = "((JournalEntries.JEDescription LIKE '' OR JournalEntries.JEDescription LIKE ' ' OR JournalEntries.JEDescription IS NULL)" \
+                        "AND (JournalEntries.JELineDescription LIKE '' OR JournalEntries.JELineDescription LIKE ' ' OR JournalEntries.JELineDescription IS NULL))"
+                elif a == '':
+                    continue
+                else:
+                    b = "(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%')"
+                self.baseKey_clean.append(b)
+
+            self.baseKey2 = self.D14_Key2.text().split(',')
+            self.baseKey2_clean = []
+            if self.D14_Key2C.isChecked():
+                for a in self.baseKey2:
+                    a = a.strip()
+                    if a.upper() == '[NULL]':
+                        b = "(NOT (JournalEntries.JEDescription LIKE '' OR JournalEntries.JEDescription LIKE ' ' OR JournalEntries.JEDescription IS NULL)" \
+                            "OR NOT (JournalEntries.JELineDescription LIKE '' OR JournalEntries.JELineDescription LIKE ' ' OR JournalEntries.JELineDescription IS NULL))"
+                    elif a == '':
+                        continue
+                    else:
+                        b = "(NOT(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%'))"
+                    self.baseKey2_clean.append(b)
+                self.tempKey = 'AND (' + str('OR '.join(self.baseKey_clean)) + ') AND (' + str(
+                    ' AND '.join(self.baseKey2_clean)) + ')'
+
+            else:
+                self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ')'
+
             if self.tempTE == '': self.tempTE = 0
 
             if self.check_account(self.checked_account14) != False:
