@@ -5800,10 +5800,10 @@ class MyApp(QWidget):
         else:
             self.checked_account14 = self.Addnew14.Acount.toPlainText()
 
-        if self.tempSheet == '' or self.D14_Key.text() == '':
+        if self.tempSheet == '' or self.D14_Key.text().strip() == '':
             self.alertbox_open()
 
-        elif self.D14_Key2C.isChecked() and self.D14_Key2.text() == '':
+        elif self.D14_Key2C.isChecked() and self.D14_Key2.text().strip() == '':
             self.alertbox_open6()
 
         # 시트명 중복 확인
