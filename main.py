@@ -563,7 +563,7 @@ class MyApp(QWidget):
     def check_account(self, acc):
         sql = '''
                                SET NOCOUNT ON;
-                               SELECT TOP 1 JournalEntries.GLAccountNumber
+                               SELECT JournalEntries.GLAccountNumber
                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries
                                WHERE 1=1 {Account}
         '''.format(field=self.selected_project_id, Account = acc)
@@ -578,14 +578,14 @@ class MyApp(QWidget):
         sql1 = '''
                                SET NOCOUNT ON;
                                SELECT *
-                               FROM (SELECT TOP 1 GLAccountNumber AS GL_Account_Number From [{field}_Import_CY_01].[dbo].[pbcJournalEntries]) AS LVL4
+                               FROM (SELECT GLAccountNumber AS GL_Account_Number From [{field}_Import_CY_01].[dbo].[pbcJournalEntries]) AS LVL4
                                WHERE 1=1 {Account}
         '''.format(field=self.selected_project_id, Account=acc1)
 
         sql2 = '''
                                SET NOCOUNT ON;
                                SELECT *
-                               FROM (SELECT TOP 1 GLAccountNumber AS Analysis_GL_Account_Number From [{field}_Import_CY_01].[dbo].[pbcJournalEntries]) AS LVL4
+                               FROM (SELECT GLAccountNumber AS Analysis_GL_Account_Number From [{field}_Import_CY_01].[dbo].[pbcJournalEntries]) AS LVL4
                                WHERE 1=1 {Account}
                 '''.format(field=self.selected_project_id, Account=acc2)
         pd.read_sql(sql1, self.cnxn)
@@ -687,7 +687,7 @@ class MyApp(QWidget):
             a = a.strip()
             if a == '':
                 b = ""
-            elif a == '[NULL]':
+            elif a.upper() == '[NULL]':
                 b = "JournalEntries.PreparerID LIKE N'' OR JournalEntries.PreparerID LIKE N' ' OR JournalEntries.PreparerID IS NULL"
                 SplitedUserList1List.append(b)
             else:
@@ -5731,7 +5731,7 @@ class MyApp(QWidget):
                 return
 
             try:
-                int(self.temp_TE)
+                float(self.temp_TE)
             except ValueError:
                 self.alertbox_open2('중요성금액')
                 return
@@ -5785,12 +5785,12 @@ class MyApp(QWidget):
         self.baseKey_clean = []
         for a in self.baseKey:
             a = a.strip()
-            if a == '[NULL]':
+            if a.upper() == '[NULL]':
                 b = "((JournalEntries.JEDescription LIKE '' AND JournalEntries.JELineDescription LIKE '') " \
                     "OR (JournalEntries.JEDescription LIKE ' ' AND JournalEntries.JELineDescription LIKE ' ') " \
                     "OR (JournalEntries.JEDescription IS NULL AND JournalEntries.JELineDescription IS NULL))"
             else:
-                b = "JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%'"
+                b = "(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%')"
             self.baseKey_clean.append(b)
 
         self.baseKey2 = self.D14_Key2.text().split(',')
@@ -5798,14 +5798,15 @@ class MyApp(QWidget):
         if self.D14_Key2C.isChecked():
             for a in self.baseKey2:
                 a = a.strip()
-                if a == '[NULL]':
-                    b = "((JournalEntries.JEDescription NOT LIKE '' AND JournalEntries.JELineDescription NOT LIKE '') " \
-                    "OR (JournalEntries.JEDescription NOT LIKE ' ' AND JournalEntries.JELineDescription NOT LIKE ' ') " \
-                    "OR (JournalEntries.JEDescription IS NOT NULL AND JournalEntries.JELineDescription IS NOT NULL))"
+                if a.upper() == '[NULL]':
+                    b = "(NOT(JournalEntries.JEDescription LIKE '' AND JournalEntries.JELineDescription LIKE '')" \
+                        "AND NOT(JournalEntries.JEDescription LIKE ' ' AND JournalEntries.JELineDescription LIKE ' ')" \
+                        "AND NOT(JournalEntries.JEDescription IS NULL AND JournalEntries.JELineDescription IS NULL))"
+
                 else:
-                    b = "JournalEntries.JEDescription NOT LIKE N'%" + a + "%' AND JournalEntries.JELineDescription NOT LIKE N'%" + a + "%'"
+                    b = "(NOT(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%'))"
                 self.baseKey2_clean.append(b)
-            self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ') AND (' + str(
+            self.tempKey = 'AND (' + str('OR '.join(self.baseKey_clean)) + ') AND (' + str(
                 ' AND '.join(self.baseKey2_clean)) + ')'
 
         else:
@@ -5835,7 +5836,7 @@ class MyApp(QWidget):
             if self.check_account(self.checked_account14) != False:
 
                 try:
-                    int(self.tempTE)
+                    float(self.tempTE)
                     if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                             not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
                         self.debitcredit = ''
@@ -5851,7 +5852,7 @@ class MyApp(QWidget):
 
                 except ValueError:
                     try:
-                        int(self.tempTE)
+                        float(self.tempTE)
                     except:
                         self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')
 
@@ -5902,7 +5903,7 @@ class MyApp(QWidget):
             if self.check_account(self.checked_account15) != False:
 
                 try:
-                    int(self.tempTE)
+                    float(self.tempTE)
                     self.doAction()
                     self.th15 = Thread(target=self.extButtonClicked15)
                     self.th15.daemon = True
@@ -6006,7 +6007,7 @@ class MyApp(QWidget):
                 return
 
             try:
-                int(self.temp_TE)
+                float(self.temp_TE)
             except ValueError:
                 self.alertbox_open2('중요성금액')
                 return
