@@ -520,87 +520,12 @@ class MyApp(QWidget):
         self.alt.setText('이미 해당 시트명이 존재합니다.')
         self.alt.exec_()
 
-    def alertbox_open6(self):
-        self.alt = QMessageBox()
-        self.alt.setIcon(QMessageBox.Information)
-        self.alt.setWindowTitle('구분자 선택 오류')
-        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
-        self.alt.setText('기능영역과 회계일자 중 하나만 선택하세요.')
-        self.alt.exec_()
-
-    def alertbox_open10(self):
-        self.alt = QMessageBox()
-        self.alt.setIcon(QMessageBox.Information)
-        self.alt.setWindowTitle('SKA1 파일 선택 오류')
-        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
-        self.alt.setText('SKA1 파일만을 드롭하세요.')
-        self.alt.exec_()
-
-    def alertbox_open11(self, state):
-        self.alt = QMessageBox()
-        self.alt.setIcon(QMessageBox.Information)
-        txt = state
-        self.alt.setWindowTitle('SKA1 파일 내부 필드값 부재')
-        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
-        self.alt.setText(txt)
-        self.alt.exec_()
-
-    def alertbox_open12(self):
-        self.alt = QMessageBox()
-        self.alt.setIcon(QMessageBox.Information)
-        self.alt.setWindowTitle('필수 입력값 오류')
-        self.alt.setWindowIcon(QIcon(self.resource_path("./EY_logo.png")))
-        self.alt.setText('T일은 0이상 70만 미만의 정수로만 입력 바랍니다.')
-        self.alt.exec_()
-
     def alertbox_open13(self):
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         self.alt.setWindowTitle('필수 입력값 오류')
         self.alt.setWindowIcon(QIcon(self.resource_path("./EY_logo.png")))
         self.alt.setText('N일은 0이상 70만 미만의 정수로만 입력 바랍니다.')
-        self.alt.exec_()
-
-    def alertbox_open14(self):
-        self.alt = QMessageBox()
-        self.alt.setIcon(QMessageBox.Information)
-        self.alt.setWindowTitle('전 후 선택 오류')
-        self.alt.setWindowIcon(QIcon(self.resource_path("./EY_logo.png")))
-        self.alt.setText('T일 이전 및 T일 이후가 선택되어 있지 않습니다.')
-        self.alt.exec_()
-
-    def alertbox_open15(self):
-        self.alt = QMessageBox()
-        self.alt.setIcon(QMessageBox.Information)
-        self.alt.setWindowTitle('자릿수 포맷 오류')
-        self.alt.setWindowIcon(QIcon(self.resource_path("./EY_logo.png")))
-        self.alt.setText('연속된 자릿수는 6자리 이상으로 입력해주세요.')
-        self.alt.exec_()
-
-    def alertbox_open16(self):
-        self.alt = QMessageBox()
-        self.alt.setIcon(QMessageBox.Information)
-        self.alt.setWindowTitle('Account 파일 선택 오류')
-        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
-        self.alt.setText('Account 파일만을 드롭하세요.')
-        self.alt.exec_()
-
-    def alertbox_open17(self, state):
-        self.alt = QMessageBox()
-        self.alt.setIcon(QMessageBox.Information)
-        txt = state
-        self.alt.setWindowTitle('필드값 부재')
-        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
-        self.alt.setText(txt)
-        self.alt.exec_()
-
-    def alertbox_open18(self, state):
-        self.alt = QMessageBox()
-        self.alt.setIcon(QMessageBox.Information)
-        txt = state
-        self.alt.setWindowTitle('필수값 형식 오류')
-        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
-        self.alt.setText(txt + ' 에 비연속 값이 포함되어 있습니다.')
         self.alt.exec_()
 
     def alertbox_open19(self):
@@ -6200,25 +6125,25 @@ class MyApp(QWidget):
                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries, #TMPCOA,
                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details
                                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 
-                                                AND JournalEntries.JELINEID = Details.JENumberID 
-                                                AND JournalEntries.GLAccountNumber IN				
+                                        AND JournalEntries.JELINEID = Details.JENumberID 
+                                        AND JournalEntries.GLAccountNumber IN				
                                         (			
-                                            SELECT DISTINCT GLAccountNumber			
-                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]			
-                                            WHERE Year = {year}
-                                            GROUP BY GLAccountNumber
-                                            HAVING COUNT(GLAccountNumber) <= {N}
+                                            SELECT DISTINCT JournalEntries.GLAccountNumber			
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,
+                                            [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                            WHERE JournalEntries.JELINEID = Details.JENumberID 
+                                            GROUP BY JournalEntries.GLAccountNumber
+                                            HAVING COUNT(JournalEntries.GLAccountNumber) <= {N}
                                         ) AND ABS(JournalEntries.Amount) >= {TE}
                                         {Account}
                                         {NewSQL}
                                         {AutoManual}
                                         {DebitCredit}
-                                        AND JournalEntries.Year = {year}
                                         GROUP BY JournalEntries.GLAccountNumber	
                                         ORDER BY JournalEntries.GLAccountNumber
                                         DROP TABLE #TMPCOA
                                     """.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
-                                               Account=self.checked_account4, year=self.pname_year, NewSQL=self.NewSQL,
+                                               Account=self.checked_account4, NewSQL=self.NewSQL,
                                                AutoManual=self.ManualAuto, DebitCredit=self.debitcredit)
 
             ### JE Line - Refer
@@ -6251,21 +6176,22 @@ class MyApp(QWidget):
                                     AND JournalEntries.JELINEID = Details.JENumberID 
                                     AND JournalEntries.GLAccountNumber IN 				
                                         (			
-                                        SELECT DISTINCT GLAccountNumber			
-                                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                                        WHERE Year = {year}
-                                        GROUP BY GLAccountNumber			
-                                        HAVING COUNT(GLAccountNumber) <= {N}			
-                                        ) AND ABS(JournalEntries.Amount) >= {TE}
-                                        {Account}
-                                        {NewSQL}
-                                        {AutoManual}
-                                        {DebitCredit}
-                                        AND JournalEntries.Year = {year}
+                                            SELECT DISTINCT JournalEntries.GLAccountNumber			
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,
+                                            [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                            WHERE JournalEntries.JELINEID = Details.JENumberID 
+                                            GROUP BY JournalEntries.GLAccountNumber
+                                            HAVING COUNT(JournalEntries.GLAccountNumber) <= {N}		
+                                        ) 
+                                    AND ABS(JournalEntries.Amount) >= {TE}
+                                    {Account}
+                                    {NewSQL}
+                                    {AutoManual}
+                                    {DebitCredit}
                                     ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                                     DROP TABLE #TMPCOA
                                 '''.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
-                                           Account=self.checked_account4, year=self.pname_year, NewSQL=self.NewSQL,
+                                           Account=self.checked_account4, NewSQL=self.NewSQL,
                                            NewSelect=self.NewSelect, AutoManual=self.ManualAuto,
                                            DebitCredit=self.debitcredit)
 
@@ -6301,30 +6227,31 @@ class MyApp(QWidget):
                                 , [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details
                                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 
                                 AND JournalEntries.JELINEID = Details.JENumberID 
-                                AND Details.JEIdentifierID IN (				
+                                AND Details.JEIdentifierID IN 
+                                    (				
                                     SELECT DISTINCT Details.JEIdentifierID			
-                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,			
-	                                [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details				
-                                    WHERE JournalEntries.JELINEID = Details.JENumberID AND 
-                                    JournalEntries.GLAccountNumber IN 			
+                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,			
+	                                    [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details				
+                                    WHERE JournalEntries.JELINEID = Details.JENumberID
+                                    AND JournalEntries.GLAccountNumber IN 			
                                             (	
-                                            SELECT DISTINCT JournalEntries.GLAccountNumber	
-                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,#TMPCOA
-                                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber
-                                                AND JournalEntries.Year = {year}
-                                            GROUP BY JournalEntries.GLAccountNumber	
-                                            HAVING COUNT(JournalEntries.GLAccountNumber) <= {N}	
-                                            ) AND ABS(JournalEntries.Amount) >= {TE}
-                                            {Account}
-                                            {NewSQL}
-                                            {AutoManual}
-                                            {DebitCredit}
-                                            AND JournalEntries.Year = {year}
-                                        ) AND JournalEntries.Year = {year}		
+                                            SELECT DISTINCT JournalEntries.GLAccountNumber			
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,
+                                            [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                            WHERE JournalEntries.JELINEID = Details.JENumberID 
+                                            GROUP BY JournalEntries.GLAccountNumber
+                                            HAVING COUNT(JournalEntries.GLAccountNumber) <= {N}
+                                            ) 
+                                    AND ABS(JournalEntries.Amount) >= {TE}
+                                    {Account}
+                                    {NewSQL}
+                                    {AutoManual}
+                                    {DebitCredit}
+                                    ) 	
                                 ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                                 DROP TABLE #TMPCOA
                         '''.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
-                                   Account=self.checked_account4, year=self.pname_year, NewSQL=self.NewSQL,
+                                   Account=self.checked_account4, NewSQL=self.NewSQL,
                                    NewSelect=self.NewSelect, AutoManual=self.ManualAuto, DebitCredit=self.debitcredit)
 
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
@@ -6434,8 +6361,7 @@ class MyApp(QWidget):
                             #TMPCOA,			
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                        AND JournalEntries.JELINEID = Details.JENumberID 				
-                        AND JournalEntries.Year = {year}								
+                        AND JournalEntries.JELINEID = Details.JENumberID 											
                         AND ABS(JournalEntries.Amount) >= {TE} 				
                         {Account}
                         {DebitCredit}
@@ -6444,8 +6370,7 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				
                                 """.format(field=self.selected_project_id, TE=self.temp_TE,
-                                           Account=self.checked_account5,
-                                           year=self.pname_year, DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
+                                           Account=self.checked_account5, DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
                                            AutoManual=self.ManualAuto, NewSelect=self.NewSelect)
 
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
@@ -6480,15 +6405,13 @@ class MyApp(QWidget):
                             #TMPCOA,			
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                        AND JournalEntries.JELINEID = Details.JENumberID 				
-                        AND JournalEntries.Year = {year}  -- FY 입력				
+                        AND JournalEntries.JELINEID = Details.JENumberID 							
                         AND Details.JEIdentifierID IN				
                                 (		
                                  SELECT DISTINCT Details.JEIdentifierID		
                                  FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                                  WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                 AND JournalEntries.Year = {year} -- FY 입력		
                                  AND ABS(JournalEntries.Amount) >= {TE}	
                                  {Account}
                                  {DebitCredit}
@@ -6498,8 +6421,7 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				                                                                       
                                 """.format(field=self.selected_project_id, TE=self.temp_TE,
-                                           Account=self.checked_account5,
-                                           year=self.pname_year, DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
+                                           Account=self.checked_account5, DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
                                            AutoManual=self.ManualAuto, NewSelect=self.NewSelect)
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
@@ -6611,8 +6533,7 @@ class MyApp(QWidget):
                             #TMPCOA,			
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                        AND JournalEntries.JELINEID = Details.JENumberID 				            
-                        AND JournalEntries.Year = {year}				
+                        AND JournalEntries.JELINEID = Details.JENumberID			
                         AND JournalEntries.EntryDate >= {period1}				
                         AND JournalEntries.EntryDate <= {period2}				
                         AND ABS(JournalEntries.Amount) >= {TE}			
@@ -6623,7 +6544,7 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				
                     '''.format(field=self.selected_project_id, Account=self.checked_account6, TE=self.temp_TE,
-                               period1=str(self.tempDate1), period2=str(self.tempDate2), year=self.pname_year,
+                               period1=str(self.tempDate1), period2=str(self.tempDate2),
                                NewSQL=self.NewSQL, DebitCredit=self.debitcredit, NewSelect=self.NewSelect,
                                AutoManual=self.ManualAuto)
 
@@ -6657,15 +6578,13 @@ class MyApp(QWidget):
                             #TMPCOA,			
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                        AND JournalEntries.JELINEID = Details.JENumberID 				
-                        AND JournalEntries.Year = {year}			
+                        AND JournalEntries.JELINEID = Details.JENumberID 							
                         AND Details.JEIdentifierID IN				
                                 (		
                                  SELECT DISTINCT Details.JEIdentifierID		
                                  FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                                  WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                 AND JournalEntries.Year = {year}	
                                  AND JournalEntries.EntryDate >= {period1}	
                                  AND JournalEntries.EntryDate <= {period2}	
                                  AND ABS(JournalEntries.Amount) >= {TE}	
@@ -6677,7 +6596,7 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA						
                     '''.format(field=self.selected_project_id, Account=self.checked_account6, TE=self.temp_TE,
-                               period1=str(self.tempDate1), period2=str(self.tempDate2), year=self.pname_year,
+                               period1=str(self.tempDate1), period2=str(self.tempDate2),
                                NewSQL=self.NewSQL, DebitCredit=self.debitcredit, NewSelect=self.NewSelect,
                                AutoManual=self.ManualAuto)
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -6774,8 +6693,7 @@ class MyApp(QWidget):
                             #TMPCOA,			
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                        AND JournalEntries.JELINEID = Details.JENumberID 				
-                        AND JournalEntries.Year = {year}			
+                        AND JournalEntries.JELINEID = Details.JENumberID 							
                         {Date}				
                         AND ABS(JournalEntries.Amount) >= {TE}		
                         {Account}			
@@ -6785,7 +6703,7 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				
                    '''.format(field=self.selected_project_id, TE=self.temp_TE, Date=self.tempState,
-                              Account=self.checked_account7, year=self.pname_year, NewSQL=self.NewSQL,
+                              Account=self.checked_account7, NewSQL=self.NewSQL,
                               AutoManual=self.ManualAuto, NewSelect=self.NewSelect, DebitCredit=self.debitcredit)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -6818,15 +6736,13 @@ class MyApp(QWidget):
                         #TMPCOA,			
                          [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                    AND JournalEntries.JELINEID = Details.JENumberID 				
-                    AND JournalEntries.Year = {year}				
+                    AND JournalEntries.JELINEID = Details.JENumberID 								
                     AND Details.JEIdentifierID IN				
                             (		
                              SELECT DISTINCT Details.JEIdentifierID		
                              FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                  [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                              WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                             AND JournalEntries.Year = {year}		
                              {Date}	
                              AND ABS(JournalEntries.Amount) >= {TE}	
                              {Account}		
@@ -6837,7 +6753,7 @@ class MyApp(QWidget):
                     ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                     DROP TABLE #TMPCOA				
                    '''.format(field=self.selected_project_id, TE=self.temp_TE, Date=self.tempState,
-                              Account=self.checked_account7, year=self.pname_year, NewSQL=self.NewSQL,
+                              Account=self.checked_account7, NewSQL=self.NewSQL,
                               AutoManual=self.ManualAuto, NewSelect=self.NewSelect, DebitCredit=self.debitcredit)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -6935,8 +6851,7 @@ class MyApp(QWidget):
                                 #TMPCOA,			
                                  [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                             WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                            AND JournalEntries.JELINEID = Details.JENumberID 				
-                            AND JournalEntries.Year = {year}			
+                            AND JournalEntries.JELINEID = Details.JENumberID 						
                             AND ABS(DATEDIFF(dd, JournalEntries.EntryDate ,JournalEntries.EffectiveDate)) >= {N}			
                             AND ABS(JournalEntries.Amount) >= {TE}			
                             {Account}				
@@ -6946,7 +6861,7 @@ class MyApp(QWidget):
                             ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                             DROP TABLE #TMPCOA				
                         '''.format(field=self.selected_project_id, N=self.realNDate, TE=self.temp_TE,
-                                   Account=self.checked_account8, year=self.pname_year, AutoManual=self.ManualAuto,
+                                   Account=self.checked_account8, AutoManual=self.ManualAuto,
                                    NewSQL=self.NewSQL, NewSelect=self.NewSelect, DebitCredit=self.debitcredit)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -6980,26 +6895,24 @@ class MyApp(QWidget):
                                 #TMPCOA,			
                                  [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                             WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                            AND JournalEntries.JELINEID = Details.JENumberID 				
-                            AND JournalEntries.Year = {year}			
+                            AND JournalEntries.JELINEID = Details.JENumberID 						
                             AND Details.JEIdentifierID IN				
                                     (		
                                      SELECT DISTINCT Details.JEIdentifierID		
                                      FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                          [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                                      WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                        AND JournalEntries.Year = {year}
-                                        AND ABS(DATEDIFF(dd, JournalEntries.EntryDate ,JournalEntries.EffectiveDate)) >= {N}
-                                        AND ABS(JournalEntries.Amount) >= {TE}
-                                        {Account}	
-                                        {NewSQL}	
-                                        {DebitCredit}
-                                        {AutoManual}
-                                        )	
+                                     AND ABS(DATEDIFF(dd, JournalEntries.EntryDate ,JournalEntries.EffectiveDate)) >= {N}
+                                     AND ABS(JournalEntries.Amount) >= {TE}
+                                     {Account}	
+                                     {NewSQL}	
+                                     {DebitCredit}
+                                     {AutoManual}
+                                    )	
                             ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                             DROP TABLE #TMPCOA				
                             '''.format(field=self.selected_project_id, N=self.realNDate, TE=self.temp_TE,
-                                       Account=self.checked_account8, year=self.pname_year, AutoManual=self.ManualAuto,
+                                       Account=self.checked_account8, AutoManual=self.ManualAuto,
                                        NewSQL=self.NewSQL, NewSelect=self.NewSelect, DebitCredit=self.debitcredit)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -7096,16 +7009,15 @@ class MyApp(QWidget):
                             #TMPCOA,			
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                        AND JournalEntries.JELINEID = Details.JENumberID 				
-                        AND JournalEntries.Year = {year}  				
+                        AND JournalEntries.JELINEID = Details.JENumberID 							
                         AND JournalEntries.PreparerID IN				
                                 (		
-                                 SELECT DISTINCT PreparerID		
-                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]		
-                                 WHERE 1=1		
-                                 AND Year = {year} 	
-                                 GROUP BY PreparerID		
-                                 HAVING COUNT(PreparerID) <= {N}
+                                 SELECT DISTINCT JournalEntries.PreparerID		
+                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,
+                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details		
+                                 WHERE JournalEntries.JELINEID = Details.JENumberID 
+                                 GROUP BY JournalEntries.PreparerID		
+                                 HAVING COUNT(JournalEntries.PreparerID) <= {N}
                                 )		
                         AND ABS(JournalEntries.Amount) >= {TE}
                         {Account}
@@ -7116,7 +7028,7 @@ class MyApp(QWidget):
                         DROP TABLE #TMPCOA				
                         '''.format(field=self.selected_project_id, TE=self.tempTE, N=self.tempN,
                                    DebitCredit=self.debitcredit,
-                                   Account=self.checked_account9, year=self.pname_year, NewSQL=self.NewSQL,
+                                   Account=self.checked_account9, NewSQL=self.NewSQL,
                                    NewSelect=self.NewSelect, AutoManual=self.ManualAuto)
 
             # Reference
@@ -7137,15 +7049,14 @@ class MyApp(QWidget):
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                         AND JournalEntries.JELINEID = Details.JENumberID 				
                         AND Users.UserName = JournalEntries.PreparerID				
-                        AND JournalEntries.Year = {year} 
                         AND JournalEntries.PreparerID IN				
                                 (		
-                                 SELECT DISTINCT PreparerID		
-                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]		
-                                 WHERE 1=1		
-                                 AND Year = {year}
-                                 GROUP BY PreparerID		
-                                 HAVING COUNT(PreparerID) <= {N}
+                                 SELECT DISTINCT JournalEntries.PreparerID		
+                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,
+                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details		
+                                 WHERE JournalEntries.JELINEID = Details.JENumberID 
+                                 GROUP BY JournalEntries.PreparerID		
+                                 HAVING COUNT(JournalEntries.PreparerID) <= {N}
                                 )		
                         AND ABS(JournalEntries.Amount) >= {TE}
                         {Account}
@@ -7157,7 +7068,7 @@ class MyApp(QWidget):
                         DROP TABLE #TMPCOA				
                         '''.format(field=self.selected_project_id, TE=self.tempTE, N=self.tempN,
                                    DebitCredit=self.debitcredit,
-                                   Account=self.checked_account9, year=self.pname_year, NewSQL=self.NewSQL,
+                                   Account=self.checked_account9, NewSQL=self.NewSQL,
                                    AutoManual=self.ManualAuto)
 
             self.dataframe_refer = pd.read_sql(sql_refer, self.cnxn)
@@ -7193,22 +7104,20 @@ class MyApp(QWidget):
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                         AND JournalEntries.JELINEID = Details.JENumberID 				
-                        AND JournalEntries.Year = {year} 
                         AND Details.JEIdentifierID IN				
                                 (		
                                  SELECT DISTINCT Details.JEIdentifierID		
                                  FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                                  WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                 AND JournalEntries.Year = {year}  
                                  AND JournalEntries.PreparerID IN		
                                         (
-                                         SELECT DISTINCT PreparerID
-                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]
-                                         WHERE 1=1
-                                         AND Year = {year} 
-                                         GROUP BY PreparerID
-                                         HAVING COUNT(PreparerID) <= {N} 
+                                         SELECT DISTINCT JournalEntries.PreparerID		
+                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,
+                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details		
+                                         WHERE JournalEntries.JELINEID = Details.JENumberID 
+                                         GROUP BY JournalEntries.PreparerID		
+                                         HAVING COUNT(JournalEntries.PreparerID) <= {N}
                                         )
                                 AND ABS(JournalEntries.Amount) >= {TE} 
                                 {Account}
@@ -7220,7 +7129,7 @@ class MyApp(QWidget):
                         DROP TABLE #TMPCOA				
                         '''.format(field=self.selected_project_id, TE=self.tempTE, N=self.tempN,
                                    DebitCredit=self.debitcredit,
-                                   Account=self.checked_account9, year=self.pname_year, NewSQL=self.NewSQL,
+                                   Account=self.checked_account9, NewSQL=self.NewSQL,
                                    NewSelect=self.NewSelect, AutoManual=self.ManualAuto)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -7306,15 +7215,15 @@ class MyApp(QWidget):
                                [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details
                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 
                                AND JournalEntries.JELINEID = Details.JENumberID 				        	
-                                           AND ABS(JournalEntries.Amount) >= {TE} {Account}
-                                           AND JournalEntries.Year = {year}	
-                                           {NewSQL}
-                                           {AutoManual}
-                                           {DebitCredit}
+                               AND ABS(JournalEntries.Amount) >= {TE} 
+                               {Account}
+                               {NewSQL}
+                               {AutoManual}
+                               {DebitCredit}
                                ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                                DROP TABLE #TMPCOA			
                             '''.format(field=self.selected_project_id, TE=self.tempTE,
-                                       Account=self.checked_account10, year=self.pname_year,
+                                       Account=self.checked_account10,
                                        NewSQL=self.NewSQL, AutoManual=self.ManualAuto, NewSelect=self.NewSelect,
                                        DebitCredit=self.debitcredit)
 
@@ -7356,18 +7265,15 @@ class MyApp(QWidget):
                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                                                     WHERE JournalEntries.JELINEID = Details.JENumberID 
                                                     AND ABS(JournalEntries.Amount) >= {TE}	
-                                                    AND JournalEntries.Year = {year} 
                                                     {Account}
                                                     {NewSQL}
                                                     {AutoManual}
                                                     {DebitCredit}
                                                     ) 
-                                                    AND JournalEntries.Year = {year}
                                    ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                                    DROP TABLE #TMPCOA			
                             '''.format(field=self.selected_project_id, TE=self.tempTE,
                                        Account=self.checked_account10,
-                                       year=self.pname_year,
                                        NewSQL=self.NewSQL, AutoManual=self.ManualAuto, NewSelect=self.NewSelect,
                                        DebitCredit=self.debitcredit)
 
@@ -7432,8 +7338,7 @@ class MyApp(QWidget):
                             INTO #tmp																
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,																	
                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details																
-                        WHERE JournalEntries.JELINEID = Details.JENumberID 																	
-                        AND JournalEntries.Year = {year}																	
+                        WHERE JournalEntries.JELINEID = Details.JENumberID 																																	
                         AND ABS(JournalEntries.Amount) >= {TE}																	
                         {AutoManual}																	
                                 SELECT															
@@ -7557,7 +7462,7 @@ class MyApp(QWidget):
                         DROP TABLE #TMP																	
                                         '''.format(field=self.selected_project_id, DebitCreditA=self.tempStateA,
                                                    AccountA=self.checked_accountA, AccountB=self.checked_accountB,
-                                                   DebitCreditB=self.tempStateB, TE=self.temp_TE, year=self.pname_year,
+                                                   DebitCreditB=self.tempStateB, TE=self.temp_TE,
                                                    AutoManual=self.ManualAuto)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -7584,8 +7489,7 @@ class MyApp(QWidget):
                             INTO #tmp																
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,																	
                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details																
-                        WHERE JournalEntries.JELINEID = Details.JENumberID 																	
-                        AND JournalEntries.Year = {year}																	
+                        WHERE JournalEntries.JELINEID = Details.JENumberID 															
                         AND ABS(JournalEntries.Amount) >= {TE}																	
                         {AutoManual}																
                                 SELECT 															
@@ -7702,7 +7606,7 @@ class MyApp(QWidget):
                         DROP TABLE #TMP, #TMPCOA																	
             '''.format(field=self.selected_project_id, DebitCreditA=self.tempStateA,
                        AccountA=self.checked_accountA, AccountB=self.checked_accountB,
-                       DebitCreditB=self.tempStateB, TE=self.temp_TE, year=self.pname_year, AutoManual=self.ManualAuto)
+                       DebitCreditB=self.tempStateB, TE=self.temp_TE, AutoManual=self.ManualAuto)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
             self.dataframe['비경상적계정 선택여부'] = ''
@@ -7799,8 +7703,7 @@ class MyApp(QWidget):
                         INTO #JEData															
                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,																
                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details															
-                    WHERE JournalEntries.JELINEID = Details.JENumberID 																
-                    AND JournalEntries.Year = {year}																
+                    WHERE JournalEntries.JELINEID = Details.JENumberID 																															
                     AND ABS(JournalEntries.Amount) >= {TE}																
                     {AutoManual}															
                     SELECT  JournalEntries.BusinessUnit,																
@@ -7828,12 +7731,10 @@ class MyApp(QWidget):
                                                         SELECT DISTINCT Details.JEIdentifierID							
                                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries,							
                                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details							
-                                                        WHERE JournalEntries.JELINEID = Details.JENumberID							
-                                                        AND JournalEntries.Year = {year}							
+                                                        WHERE JournalEntries.JELINEID = Details.JENumberID													
                                                         AND ABS(JournalEntries.Amount) >= {TE}							
                                                         {AutoManual}							
-                                                      ) 								
-                        AND JournalEntries.Year = {year}															                                      
+                                                      ) 													                                      
                     SELECT COA.GLAccountNumber,																
                            MAX(COA.GLAccountName) AS GLAccountName, 															
                            MAX(COA.AccountType) AS AccountType															
@@ -7941,7 +7842,7 @@ class MyApp(QWidget):
                     WHERE #result.GLAccountNumber = COA.GLAccountNumber																
                     ORDER BY 전표번호, 전표라인번호	
                     DROP TABLE #filter, #JEData, #result, #COAData, #JEData2																											
-                '''.format(field=self.selected_project_id, cursor=cursortext, year=self.pname_year, TE=self.temp_TE,
+                '''.format(field=self.selected_project_id, cursor=cursortext, TE=self.temp_TE,
                            AutoManual=self.ManualAuto)
 
             elif self.rbtn2.isChecked():  # JE
@@ -7976,8 +7877,7 @@ class MyApp(QWidget):
                                 INTO #JEData															
                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,																
                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details															
-                            WHERE JournalEntries.JELINEID = Details.JENumberID 																
-                            AND JournalEntries.Year = {year}																
+                            WHERE JournalEntries.JELINEID = Details.JENumberID 																															
                             AND ABS(JournalEntries.Amount) >= {TE}																
                             {AutoManual}															
                             SELECT  JournalEntries.BusinessUnit,																
@@ -8005,12 +7905,10 @@ class MyApp(QWidget):
                                                                 SELECT DISTINCT Details.JEIdentifierID							
                                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries,							
                                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details							
-                                                                WHERE JournalEntries.JELINEID = Details.JENumberID							
-                                                                AND JournalEntries.Year = {year}							
+                                                                WHERE JournalEntries.JELINEID = Details.JENumberID													
                                                                 AND ABS(JournalEntries.Amount) >= {TE}							
                                                                 {AutoManual}							
-                                                              ) 								
-                                AND JournalEntries.Year = {year}															
+                                                              ) 																							
                             SELECT COA.GLAccountNumber,																
                                    MAX(COA.GLAccountName) AS GLAccountName, 															
                                    MAX(COA.AccountType) AS AccountType															
@@ -8115,18 +8013,16 @@ class MyApp(QWidget):
                                 , #JEData2.JEDescription AS 전표헤더적요											
                                 , #JEData2.JELineDescription AS 전표라인적요											
                             FROM #JEData2, #COAData												
-                            WHERE #JEData2.GLAccountNumber = #COAData.GLAccountNumber												
-                            AND #JEData2.Year = {year}												
+                            WHERE #JEData2.GLAccountNumber = #COAData.GLAccountNumber																						
                             AND #JEData2.JEIdentifierID IN --JEIdentifierID												
                                     (										
                                      select distinct JENumber -- JEIdentifierID										
-                                     from #result,#COAData										
-                                     where #result.GLAccountNumber = #COAData.GLAccountNumber										
+                                     from #result																
                                     )										
                             ORDER BY 전표번호, 전표라인번호												                                                                   								
                             DROP TABLE #filter, #JEData, #result, #COAData, #JEData2													
                                     '''.format(field=self.selected_project_id, cursor=cursortext,
-                                               year=self.pname_year, TE=self.temp_TE, AutoManual=self.ManualAuto)
+                                               TE=self.temp_TE, AutoManual=self.ManualAuto)
 
         else:  # 기능영역
             if self.rbtn1.isChecked():  # JE Line
@@ -8163,8 +8059,7 @@ class MyApp(QWidget):
                             INTO #JEData															
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,																
                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details															
-                        WHERE JournalEntries.JELINEID = Details.JENumberID 																
-                        AND JournalEntries.Year = {year}																
+                        WHERE JournalEntries.JELINEID = Details.JENumberID 																															
                         AND ABS(JournalEntries.Amount) >= {TE}																
                         {AutoManual}																
                         SELECT  JournalEntries.BusinessUnit,																
@@ -8193,12 +8088,10 @@ class MyApp(QWidget):
                                                             SELECT DISTINCT Details.JEIdentifierID							
                                                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries,							
                                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details							
-                                                            WHERE JournalEntries.JELINEID = Details.JENumberID							
-                                                            AND JournalEntries.Year = {year}							
+                                                            WHERE JournalEntries.JELINEID = Details.JENumberID												
                                                             AND ABS(JournalEntries.Amount) >= {TE}							
                                                             {AutoManual}							
-                                                           )								
-                            AND JournalEntries.Year = {year}															
+                                                           )																							
                         SELECT COA.GLAccountNumber,																
                                COA.GLAccountName AS GLAccountName, 															
                                COA.AccountType AS AccountType,															
@@ -8331,7 +8224,7 @@ class MyApp(QWidget):
                         ORDER BY 전표번호, 전표라인번호																
                         DROP TABLE #filter, #JEData, #result, #COAData, #JEData2																
                                     '''.format(field=self.selected_project_id, cursor=cursortext,
-                                               year=self.pname_year, TE=self.temp_TE, AutoManual=self.ManualAuto)
+                                               TE=self.temp_TE, AutoManual=self.ManualAuto)
 
             elif self.rbtn2.isChecked():  # JE
                 sql = '''
@@ -8367,8 +8260,7 @@ class MyApp(QWidget):
                         INTO #JEData															
                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,																
                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details															
-                    WHERE JournalEntries.JELINEID = Details.JENumberID 																
-                    AND JournalEntries.Year = {year}																
+                    WHERE JournalEntries.JELINEID = Details.JENumberID 																															
                     AND ABS(JournalEntries.Amount) >= {TE}
                     {AutoManual}																                                                                
                     SELECT  JournalEntries.BusinessUnit,																
@@ -8397,12 +8289,10 @@ class MyApp(QWidget):
                                                         SELECT DISTINCT Details.JEIdentifierID							
                                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries,							
                                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details							
-                                                        WHERE JournalEntries.JELINEID = Details.JENumberID							
-                                                        AND JournalEntries.Year = {year}							
+                                                        WHERE JournalEntries.JELINEID = Details.JENumberID													
                                                         AND ABS(JournalEntries.Amount) >= {TE}							
                                                         {AutoManual}						
-                                                       )								
-                        AND JournalEntries.Year = {year}															
+                                                       )																						
                     SELECT COA.GLAccountNumber,																
                            COA.GLAccountName AS GLAccountName, 															
                            COA.AccountType AS AccountType,															
@@ -8531,18 +8421,16 @@ class MyApp(QWidget):
                         , #JEData2.JEDescription AS 전표헤더적요												
                         , #JEData2.JELineDescription AS 전표라인적요												
                     FROM #JEData2, #COAData													
-                    WHERE CONCAT(#JEData2.GLAccountNumber,#JEData2.Segment01) = CONCAT(#COAData.GLAccountNumber,#COAData.Segment01)													
-                    AND #JEData2.Year = {year}													
+                    WHERE CONCAT(#JEData2.GLAccountNumber,#JEData2.Segment01) = CONCAT(#COAData.GLAccountNumber,#COAData.Segment01)																								
                     AND #JEData2.JEIdentifierID IN --JEIdentifierID													
                             (											
                              select distinct JENumber -- JEIdentifierID											
-                             from #result,#COAData											
-                             where #result.GLAccountNumber = #COAData.GLAccountNumber											
+                             from #result																					
                             )											
                     ORDER BY 전표번호, 전표라인번호																																					
                     DROP TABLE #filter, #JEData, #result, #COAData, #JEData2	        								              
                                     '''.format(field=self.selected_project_id, cursor=cursortext,
-                                               year=self.pname_year, TE=self.temp_TE, AutoManual=self.ManualAuto)
+                                               TE=self.temp_TE, AutoManual=self.ManualAuto)
         readlist = pd.read_sql(sql, self.cnxn)
         dflist.append(readlist)
 
@@ -8621,8 +8509,7 @@ class MyApp(QWidget):
                                     #TMPCOA,			
                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                AND JournalEntries.JELINEID = Details.JENumberID 				
-                                AND JournalEntries.Year = {year}				
+                                AND JournalEntries.JELINEID = Details.JENumberID 							
                                 {Continuous} 		
                                 AND ABS(JournalEntries.Amount) >= {TE}			
                                 {Account}			
@@ -8633,7 +8520,7 @@ class MyApp(QWidget):
                                 DROP TABLE #TMPCOA				
                                         '''.format(field=self.selected_project_id, TE=self.temp_TE,
                                                    Account=self.checked_account13,
-                                                   year=self.pname_year, DebitCredit=self.debitcredit,
+                                                   DebitCredit=self.debitcredit,
                                                    NewSQL=self.NewSQL,
                                                    AutoManual=self.ManualAuto, NewSelect=self.NewSelect,
                                                    Continuous=self.filter_Continuous)
@@ -8669,15 +8556,13 @@ class MyApp(QWidget):
                                         #TMPCOA,			
                                          [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                    AND JournalEntries.JELINEID = Details.JENumberID 				
-                                    AND JournalEntries.Year = {year}  -- FY 입력				
+                                    AND JournalEntries.JELINEID = Details.JENumberID 							
                                     AND Details.JEIdentifierID IN				
                                             (		
                                              SELECT DISTINCT Details.JEIdentifierID		
                                              FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                                  [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                                              WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                             AND JournalEntries.Year = {year} -- FY 입력		
                                              {Continuous}		
                                              AND ABS(JournalEntries.Amount) >= {TE}		
                                              {Account}	
@@ -8689,7 +8574,7 @@ class MyApp(QWidget):
                                     DROP TABLE #TMPCOA				
                                             '''.format(field=self.selected_project_id, TE=self.temp_TE,
                                                        Account=self.checked_account13,
-                                                       year=self.pname_year, DebitCredit=self.debitcredit,
+                                                       DebitCredit=self.debitcredit,
                                                        NewSQL=self.NewSQL,
                                                        AutoManual=self.ManualAuto, NewSelect=self.NewSelect,
                                                        Continuous=self.filter_Continuous)
@@ -8794,7 +8679,6 @@ class MyApp(QWidget):
                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                 AND JournalEntries.JELINEID = Details.JENumberID 
-                AND JournalEntries.Year = {year} 
                 AND ABS(JournalEntries.Amount) >= {TE}
                 {KEY}
                 {Account} 		
@@ -8805,7 +8689,7 @@ class MyApp(QWidget):
                 DROP TABLE #TMPCOA				
                 '''.format(field=self.selected_project_id, KEY=self.tempKey, TE=self.tempTE,
                            DebitCredit=self.debitcredit,
-                           Account=self.checked_account14, year=self.pname_year, NewSQL=self.NewSQL,
+                           Account=self.checked_account14, NewSQL=self.NewSQL,
                            NewSelect=self.NewSelect, AutoManual=self.ManualAuto)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -8840,14 +8724,12 @@ class MyApp(QWidget):
                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                 AND JournalEntries.JELINEID = Details.JENumberID 				
-                AND JournalEntries.Year = {year} 
                 AND Details.JEIdentifierID IN				
                         (		
                          SELECT DISTINCT Details.JEIdentifierID		
                          FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                          WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                         AND JournalEntries.Year = {year}	
                          AND ABS(JournalEntries.Amount) >= {TE} 
                          {KEY}
                          {Account} 		
@@ -8859,7 +8741,7 @@ class MyApp(QWidget):
                 DROP TABLE #TMPCOA				
                 '''.format(field=self.selected_project_id, KEY=self.tempKey, TE=self.tempTE,
                            DebitCredit=self.debitcredit,
-                           Account=self.checked_account14, year=self.pname_year, NewSQL=self.NewSQL,
+                           Account=self.checked_account14, NewSQL=self.NewSQL,
                            NewSelect=self.NewSelect, AutoManual=self.ManualAuto)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -8941,8 +8823,7 @@ class MyApp(QWidget):
                         #TMPCOA,			
                          [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                    AND JournalEntries.JELINEID = Details.JENumberID 				
-                    AND JournalEntries.Year = {year} 			
+                    AND JournalEntries.JELINEID = Details.JENumberID 						
                     AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
                     AND ABS(JournalEntries.Amount) >= {TE} 				
                     {Account}					
@@ -8952,7 +8833,7 @@ class MyApp(QWidget):
                     ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                     DROP TABLE #TMPCOA						
                 '''.format(field=self.selected_project_id, TE=self.tempTE,
-                           Account=self.checked_account15, year=self.pname_year, NewSQL=self.NewSQL,
+                           Account=self.checked_account15, NewSQL=self.NewSQL,
                            NewSelect=self.NewSelect, AutoManual=self.ManualAuto, DebitCredit=self.debitcredit)
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -8987,15 +8868,13 @@ class MyApp(QWidget):
                         #TMPCOA,			
                          [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                    AND JournalEntries.JELINEID = Details.JENumberID 				
-                    AND JournalEntries.Year = {year} 		
+                    AND JournalEntries.JELINEID = Details.JENumberID 					
                     AND Details.JEIdentifierID IN				
                             (		
                              SELECT DISTINCT Details.JEIdentifierID		
                              FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                  [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                              WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                             AND JournalEntries.Year = {year} 	
                              AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
                              AND ABS(JournalEntries.Amount) >= {TE} 	
                              {Account} 	
@@ -9006,7 +8885,7 @@ class MyApp(QWidget):
                     ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                     DROP TABLE #TMPCOA						
                 '''.format(field=self.selected_project_id, TE=self.tempTE,
-                           Account=self.checked_account15, year=self.pname_year, NewSQL=self.NewSQL,
+                           Account=self.checked_account15, NewSQL=self.NewSQL,
                            NewSelect=self.NewSelect, AutoManual=self.ManualAuto, DebitCredit=self.debitcredit)
             self.dataframe = pd.read_sql(sql, self.cnxn)
 
@@ -9083,8 +8962,7 @@ class MyApp(QWidget):
                             #TMPCOA,				
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details				
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 					
-                        AND JournalEntries.JELINEID = Details.JENumberID 					
-                        AND JournalEntries.Year = {year}				
+                        AND JournalEntries.JELINEID = Details.JENumberID 							
                         AND (					
                              SELECT SUM(JournalEntries1.Debit)				
                              FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries1,				
@@ -9100,7 +8978,7 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber					
                         DROP TABLE #TMPCOA									
                     '''.format(field=self.selected_project_id, Account=self.checked_account16, TE=self.temp_TE,
-                               year=self.pname_year, NewSQL=self.NewSQL, DebitCredit=self.debitcredit,
+                               NewSQL=self.NewSQL, DebitCredit=self.debitcredit,
                                NewSelect=self.NewSelect,
                                AutoManual=self.ManualAuto)
 
@@ -9134,15 +9012,13 @@ class MyApp(QWidget):
                             #TMPCOA,				
                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details				
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 					
-                        AND JournalEntries.JELINEID = Details.JENumberID 					                
-                        AND JournalEntries.Year = {year}				
+                        AND JournalEntries.JELINEID = Details.JENumberID 					                				
                         AND Details.JEIdentifierID IN					
                                 (			
                                  SELECT DISTINCT Details.JEIdentifierID			
                                  FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,			
                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details		
-                                 WHERE JournalEntries.JELINEID = Details.JENumberID 			        
-                                 AND JournalEntries.Year = {year}		
+                                 WHERE JournalEntries.JELINEID = Details.JENumberID 			        	
                                  AND (			
                                       SELECT SUM(JournalEntries1.Debit)		
                                       FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries1,		
@@ -9159,7 +9035,7 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber					
                         DROP TABLE #TMPCOA											
                     '''.format(field=self.selected_project_id, Account=self.checked_account16, TE=self.temp_TE,
-                               year=self.pname_year, NewSQL=self.NewSQL, DebitCredit=self.debitcredit,
+                               NewSQL=self.NewSQL, DebitCredit=self.debitcredit,
                                NewSelect=self.NewSelect,
                                AutoManual=self.ManualAuto)
             self.dataframe = pd.read_sql(sql, self.cnxn)
@@ -9258,8 +9134,7 @@ class MyApp(QWidget):
                         #TMPCOA,			
                          [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                    AND JournalEntries.JELINEID = Details.JENumberID 				
-                    AND JournalEntries.Year = {year} 			
+                    AND JournalEntries.JELINEID = Details.JENumberID 							
                     AND JournalEntries.PreparerID = JournalEntries.ApproverID			
                     AND ABS(JournalEntries.Amount) >= {TE} 		
                     {Account}				
@@ -9269,7 +9144,7 @@ class MyApp(QWidget):
                     ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                     DROP TABLE #TMPCOA				            
             """.format(field=self.selected_project_id, TE=self.temp_TE, Account=self.checked_account17,
-                       year=self.pname_year, DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
+                       DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
                        AutoManual=self.ManualAuto, NewSelect=self.NewSelect)
 
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
@@ -9302,15 +9177,13 @@ class MyApp(QWidget):
                                 #TMPCOA,			
                                  [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                             WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                            AND JournalEntries.JELINEID = Details.JENumberID 				
-                            AND JournalEntries.Year = {year}  			
+                            AND JournalEntries.JELINEID = Details.JENumberID 							
                             AND Details.JEIdentifierID IN				
                                     (		
                                      SELECT DISTINCT Details.JEIdentifierID		
                                      FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                          [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
-                                     WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                     AND JournalEntries.Year = {year}
+                                     WHERE JournalEntries.JELINEID = Details.JENumberID 
                                      AND JournalEntries.PreparerID = JournalEntries.ApproverID 
                                      AND ABS(JournalEntries.Amount) >= {TE}	
                                      {Account}	
@@ -9321,7 +9194,7 @@ class MyApp(QWidget):
                             ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                             DROP TABLE #TMPCOA				           
                         """.format(field=self.selected_project_id, TE=self.temp_TE, Account=self.checked_account17,
-                                   year=self.pname_year, DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
+                                   DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
                                    AutoManual=self.ManualAuto, NewSelect=self.NewSelect)
 
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
