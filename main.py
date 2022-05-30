@@ -5268,18 +5268,19 @@ class MyApp(QWidget):
             if self.D7_Date.toPlainText() != '':
                 self.user_date = self.D7_Date.toPlainText().split(',')  # 사용자 입력 일자 추가
 
-                for a in self.user_date:
-                    a = a.strip()
-                    try:
-                        int(a)
-                        if len(a) == 8:
-                            b = a
-                            self.realDate_List.append(b)
-                        else:
-                            self.alertbox_open19()
-
-                    except:
+            for a in self.user_date:
+                a = a.strip()
+                try:
+                    int(a)
+                    if len(a) == 8:
+                        b = a
+                        self.realDate_List.append(b)
+                    else:
                         self.alertbox_open19()
+                        return
+                except:
+                    self.alertbox_open19()
+                    return
 
             self.realDate_List_final = set(self.realDate_List)  # 날짜 중복 제거 완료 (self.realDate_List_final)
             self.checked_date = ''
