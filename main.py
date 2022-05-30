@@ -578,7 +578,7 @@ class MyApp(QWidget):
                                SELECT TOP 1 JournalEntries.GLAccountNumber
                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries
                                WHERE 1=1 {Account}
-        '''.format(field=self.selected_project_id, Account = acc)
+        '''.format(field=self.selected_project_id, Account=acc)
 
         try:
             self.dataframe_check = pd.read_sql(sql, self.cnxn)
@@ -615,7 +615,6 @@ class MyApp(QWidget):
         except:
             self.alertbox_open22()
             return False
-
 
     def NewQueryConcat(self, Segment1, Segment2, Segment3, Segment4, Segment5, UserDefine1, UserDefine2, UserDefine3,
                        UserList1, SourceList1, Manual, Auto):
@@ -5594,7 +5593,6 @@ class MyApp(QWidget):
                     self.tempStateA = 'AND LVL4.GL_Account_Position =' + "'" + 'Credit' + "'"
                 elif self.checkD1.isChecked():
                     self.tempStateA = 'AND LVL4.GL_Account_Position =' + "'" + 'Debit' + "'"
-
 
                 if self.check_account2(self.checked_accountA, self.checked_accountB) != False:
                     self.doAction()
