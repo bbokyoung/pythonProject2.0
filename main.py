@@ -520,6 +520,14 @@ class MyApp(QWidget):
         self.alt.setText('이미 해당 시트명이 존재합니다.')
         self.alt.exec_()
 
+    def alertbox_open6(self):
+        self.alt = QMessageBox()
+        self.alt.setIcon(QMessageBox.Information)
+        self.alt.setWindowTitle('제외 키워드 입력 오류')
+        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
+        self.alt.setText('제외할 키워드를 입력하세요.')
+        self.alt.exec_()
+
     def alertbox_open13(self):
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
@@ -5794,6 +5802,10 @@ class MyApp(QWidget):
 
         if self.tempSheet == '' or self.D14_Key.text() == '':
             self.alertbox_open()
+
+        elif self.D14_Key2C.isChecked() and self.D14_Key2.text() == '':
+            self.alertbox_open6()
+
         # 시트명 중복 확인
         elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
             self.alertbox_open5()
