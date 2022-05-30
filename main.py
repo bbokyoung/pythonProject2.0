@@ -5787,9 +5787,10 @@ class MyApp(QWidget):
         for a in self.baseKey:
             a = a.strip()
             if a.upper() == '[NULL]':
-                b = "((JournalEntries.JEDescription LIKE '' AND JournalEntries.JELineDescription LIKE '') " \
-                    "OR (JournalEntries.JEDescription LIKE ' ' AND JournalEntries.JELineDescription LIKE ' ') " \
-                    "OR (JournalEntries.JEDescription IS NULL AND JournalEntries.JELineDescription IS NULL))"
+                b = "((JournalEntries.JEDescription LIKE '' OR JournalEntries.JEDescription LIKE ' ' OR JournalEntries.JEDescription IS NULL)" \
+                    "AND (JournalEntries.JELineDescription LIKE '' OR JournalEntries.JELineDescription LIKE ' ' OR JournalEntries.JELineDescription IS NULL))"
+            elif a == '':
+                continue
             else:
                 b = "(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%')"
             self.baseKey_clean.append(b)
@@ -5800,10 +5801,10 @@ class MyApp(QWidget):
             for a in self.baseKey2:
                 a = a.strip()
                 if a.upper() == '[NULL]':
-                    b = "(NOT(JournalEntries.JEDescription LIKE '' AND JournalEntries.JELineDescription LIKE '')" \
-                        "AND NOT(JournalEntries.JEDescription LIKE ' ' AND JournalEntries.JELineDescription LIKE ' ')" \
-                        "AND NOT(JournalEntries.JEDescription IS NULL AND JournalEntries.JELineDescription IS NULL))"
-
+                    b = "(NOT (JournalEntries.JEDescription LIKE '' OR JournalEntries.JEDescription LIKE ' ' OR JournalEntries.JEDescription IS NULL)" \
+                        "OR NOT (JournalEntries.JELineDescription LIKE '' OR JournalEntries.JELineDescription LIKE ' ' OR JournalEntries.JELineDescription IS NULL))"
+                elif a == '':
+                    continue
                 else:
                     b = "(NOT(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%'))"
                 self.baseKey2_clean.append(b)
