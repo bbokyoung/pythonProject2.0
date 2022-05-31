@@ -3239,7 +3239,7 @@ class MyApp(QWidget):
     def Dialog14(self): # 실제 시나리오 10번
         self.Addnew14 = AddForm()
         self.Addnew14.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew14.Acount))
-        Titlelabel14 = QLabel('10. 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (TE금액 제시 가능)\n')
+        Titlelabel14 = QLabel('10. 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트\n')
         Titlelabel14.setStyleSheet("color: white; font-weight : bold")
 
         self.dialoglist.add(14)
