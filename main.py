@@ -987,7 +987,7 @@ class MyApp(QWidget):
         self.comboScenario.addItem('07 : 특정 전표 입력자(W)에 의해 생성된 전표')
         self.comboScenario.addItem('08 : 특정 계정(A) 상대계정 리스트 검토')
         self.comboScenario.addItem('09 : 연속된 숫자로 끝나는 금액 검토')
-        self.comboScenario.addItem('10 : 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트 (중요성 금액 제시 가능)')
+        self.comboScenario.addItem('10 : 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트')
         self.comboScenario.addItem('11 : 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토')
         self.comboScenario.addItem('12 : 차/대변 합계가 중요성금액 이상인 전표')
         self.comboScenario.addItem('13 : 전표 입력자와 승인자가 동일한 전표')
