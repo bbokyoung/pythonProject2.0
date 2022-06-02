@@ -20,6 +20,7 @@ from threading import Thread
 
 
 class AddForm(QGroupBox):
+    """Dialog 창에서 공통 조건 입력 UI를 만드는 클래스"""
     def __init__(self):
         SegmentLabel = QLabel('Segment :            ')
         SegmentLabel.setStyleSheet("color: white; font-weight : bold")
@@ -87,9 +88,10 @@ class AddForm(QGroupBox):
 
 
 class Communicate(QObject):
+    """ExtButtonClicked 함수에서 발생하는 시그널을 doneAction 함수로 보내는 함수"""
     def resource_path(self, relative_path):
+        """PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수"""
         try:
-            # PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수
             base_path = sys._MEIPASS
         except Exception:
             base_path = os.path.abspath(".")
@@ -100,9 +102,10 @@ class Communicate(QObject):
 
 
 class Form(QGroupBox):
+    """CoA를 이용하여 계정 트리를 구축하는 클래스"""
     def resource_path(self, relative_path):
+        """PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수"""
         try:
-            # PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수
             base_path = sys._MEIPASS
         except Exception:
             base_path = os.path.abspath(".")
@@ -215,9 +218,10 @@ class Form(QGroupBox):
 
 
 class Form1(QGroupBox):
+    """CoA를 이용하여 계정 트리를 구축하는 클래스"""
     def resource_path(self, relative_path):
+        """PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수"""
         try:
-            # PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수
             base_path = sys._MEIPASS
         except Exception:
             base_path = os.path.abspath(".")
@@ -325,12 +329,13 @@ class Form1(QGroupBox):
 
 
 class DataFrameModel(QAbstractTableModel):
+    """추출된 데이터를 Main UI에 출력하는 클래스"""
     DtypeRole = Qt.UserRole + 1000
     ValueRole = Qt.UserRole + 1001
 
     def resource_path(self, relative_path):
+        """PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수"""
         try:
-            # PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수
             base_path = sys._MEIPASS
         except Exception:
             base_path = os.path.abspath(".")
@@ -397,14 +402,15 @@ class DataFrameModel(QAbstractTableModel):
 class MyApp(QWidget):
     # Resource
     def resource_path(self, relative_path):
+        """PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수"""
         try:
-            # PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수
             base_path = sys._MEIPASS
         except Exception:
             base_path = os.path.abspath(".")
         return os.path.join(base_path, relative_path)
 
     def __init__(self):
+        """class 변수 초기화 및 Dialog별 시그널 생성 함수"""
         super().__init__()
         self.init_UI()
 
@@ -457,12 +463,8 @@ class MyApp(QWidget):
         self.communicateC = Communicate()
         self.communicateC.closeApp2.connect(self.doneActionC)
 
-    def return_print(self, *message):
-        self.io = StringIO()
-        print(*message, file=self.io, end="")
-        return self.io.getvalue()
-
     def MessageBox_Open(self, text):
+        """입력된 text를 표시하는 경고창을 만드는 함수"""
         self.msg = QMessageBox()
         self.msg.setIcon(QMessageBox.Information)
         self.msg.setWindowTitle("Warning")
@@ -471,6 +473,7 @@ class MyApp(QWidget):
         self.msg.exec_()
 
     def MessageBox_Open2(self, text):
+        """프로젝트 연결이 성공했음을 알리는 알림창을 만드는 함수"""
         self.msg = QMessageBox()
         self.msg.setIcon(QMessageBox.Information)
         self.msg.setWindowTitle("Project Connected")
@@ -479,6 +482,7 @@ class MyApp(QWidget):
         self.msg.exec_()
 
     def alertbox_open(self):
+        """각 시나리오별 필수 입력값이 누락되었음을 알리는 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         self.alt.setWindowTitle('필수 입력값 누락')
@@ -487,6 +491,7 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def alertbox_open2(self, state):
+        """필수 입력값의 데이터타입이 숫자가 아닌 경우 발생하는 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         txt = state
@@ -496,6 +501,7 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def alertbox_open3(self):
+        """최대 추출 라인수 50만 건을 초과한 데이터가 추출되었음을 알리는 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         self.alt.setWindowTitle('최대 라인 수 초과 오류')
@@ -504,6 +510,7 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def alertbox_open4(self, state):
+        """조건 입력값의 데이터타입 이상을 알리는 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         txt = state
@@ -513,6 +520,7 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def alertbox_open5(self):
+        """중복된 시나리오 번호(시트명)임을 알리는 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         self.alt.setWindowTitle('시트명 중복')
@@ -521,6 +529,7 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def alertbox_open6(self):
+        """제외 키워드를 activate한 상태에서 제외 키워드를 입력하지 않을 경우의 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         self.alt.setWindowTitle('제외 키워드 입력 오류')
@@ -529,6 +538,7 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def alertbox_open13(self):
+        """전기일과 입력일 간 차이가 70만 일 이상 차이나는 경우 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         self.alt.setWindowTitle('필수 입력값 오류')
@@ -537,6 +547,7 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def alertbox_open19(self):
+        """날짜 입력 형식에서 이상이 있을 경우 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         self.alt.setWindowTitle('날짜 입력 오류')
@@ -545,14 +556,16 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def alertbox_open20(self):
+        """기능영역이 존재하지 않을 경우 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
-        self.alt.setWindowTitle('구분자 선택 오류')
+        self.alt.setWindowTitle('기능영역 오류')
         self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
         self.alt.setText('해당 프로젝트는 기능영역이 존재하지 않습니다.')
         self.alt.exec_()
 
     def alertbox_open21(self):
+        """입력일과 전기일이 모두 선택되거나, 모두 선택되지 않을 경우 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         self.alt.setWindowTitle('날짜 형식 오류')
@@ -561,6 +574,7 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def alertbox_open22(self):
+        """특정 계정코드 입력 조건에 이상이 있을 시 경고창 생성 함수"""
         self.alt = QMessageBox()
         self.alt.setIcon(QMessageBox.Information)
         self.alt.setWindowTitle('계정 입력 오류')
@@ -569,17 +583,20 @@ class MyApp(QWidget):
         self.alt.exec_()
 
     def check_account(self, acc):
+        """특정 계정코드 조건값에 이상이 있는지 확인하는 함수"""
+        ## 예외 처리 - 콤마(,)가 정상적으로 입력되지 않은 경우
         if acc.strip() != '' and (acc.count(',') + 1) * 2 != acc.count("'"):
             self.alertbox_open22()
             return False
 
         sql = '''
-                               SET NOCOUNT ON;
-                               SELECT TOP 1 JournalEntries.GLAccountNumber
-                               FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries
-                               WHERE 1=1 {Account}
-        '''.format(field=self.selected_project_id, Account=acc)
+                                SET NOCOUNT ON;
+                                SELECT TOP 1 JournalEntries.GLAccountNumber
+                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries
+                                WHERE 1=1 {Account}
+         '''.format(field=self.selected_project_id, Account=acc)
 
+        ## 예외처리 - 따옴표(')가 정상적으로 입력되지 않은 경우
         try:
             self.dataframe_check = pd.read_sql(sql, self.cnxn)
         except:
@@ -587,6 +604,9 @@ class MyApp(QWidget):
             return False
 
     def check_account2(self, acc1, acc2):
+        """상대계정 시나리오에서 주계정(A)과 상대게정(B)의 특정 게정코드 입력값에 이상이 있는지 확인하는 함수"""
+
+        ## 예외 처리 - 주계정과 상대계정에서 콤마(,)가 정상적으로 입력되지 않은 경우
         if acc1.strip() != '' and (acc1.count(',') + 1) * 2 != acc1.count("'"):
             self.alertbox_open22()
             return False
@@ -609,6 +629,7 @@ class MyApp(QWidget):
                                WHERE 1=1 {Account}
                 '''.format(field=self.selected_project_id, Account=acc2)
 
+        ## 예외 처리 - 주계정과 상대계정에서 따옴표표(')가 정상적으로 입력되지않은 경우
         try:
             pd.read_sql(sql1, self.cnxn)
             pd.read_sql(sql2, self.cnxn)
@@ -618,6 +639,9 @@ class MyApp(QWidget):
 
     def NewQueryConcat(self, Segment1, Segment2, Segment3, Segment4, Segment5, UserDefine1, UserDefine2, UserDefine3,
                        UserList1, SourceList1, Manual, Auto):
+        """Segment01 ~ 05, UserDefined1 ~ 3, 전표입력자, 전표유형, 수자동 전표 등의 조건 입력값을 쿼리 조건문으로 변환하는 함수"""
+
+        ## Segment01
         SplitedSegment1 = Segment1.text().split(',')
         SplitedSegment1List = []
         for a in SplitedSegment1:
@@ -629,6 +653,7 @@ class MyApp(QWidget):
                 SplitedSegment1List.append(b)
         Segment1Clean = str(' OR '.join(SplitedSegment1List))
 
+        ## Segment02
         SplitedSegment2 = Segment2.text().split(',')
         SplitedSegment2List = []
         for a in SplitedSegment2:
@@ -640,6 +665,7 @@ class MyApp(QWidget):
                 SplitedSegment2List.append(b)
         Segment2Clean = str(' OR '.join(SplitedSegment2List))
 
+        ## Segment03
         SplitedSegment3 = Segment3.text().split(',')
         SplitedSegment3List = []
         for a in SplitedSegment3:
@@ -651,6 +677,7 @@ class MyApp(QWidget):
                 SplitedSegment3List.append(b)
         Segment3Clean = str(' OR '.join(SplitedSegment3List))
 
+        ## Segment04
         SplitedSegment4 = Segment4.text().split(',')
         SplitedSegment4List = []
         for a in SplitedSegment4:
@@ -662,6 +689,7 @@ class MyApp(QWidget):
                 SplitedSegment4List.append(b)
         Segment4Clean = str(' OR '.join(SplitedSegment4List))
 
+        ## Segment05
         SplitedSegment5 = Segment5.text().split(',')
         SplitedSegment5List = []
         for a in SplitedSegment5:
@@ -673,6 +701,7 @@ class MyApp(QWidget):
                 SplitedSegment5List.append(b)
         Segment5Clean = str(' OR '.join(SplitedSegment5List))
 
+        ## UserDefined1
         SplitedUserDefine1 = UserDefine1.text().split(',')
         SplitedUserDefine1List = []
         for a in SplitedUserDefine1:
@@ -684,6 +713,7 @@ class MyApp(QWidget):
                 SplitedUserDefine1List.append(b)
         UserDefine1Clean = str(' OR '.join(SplitedUserDefine1List))
 
+        ## UserDefined2
         SplitedUserDefine2 = UserDefine2.text().split(',')
         SplitedUserDefine2List = []
         for a in SplitedUserDefine2:
@@ -695,6 +725,7 @@ class MyApp(QWidget):
                 SplitedUserDefine2List.append(b)
         UserDefine2Clean = str(' OR '.join(SplitedUserDefine2List))
 
+        ## UserDefined3
         SplitedUserDefine3 = UserDefine3.text().split(',')
         SplitedUserDefine3List = []
         for a in SplitedUserDefine3:
@@ -706,6 +737,7 @@ class MyApp(QWidget):
                 SplitedUserDefine3List.append(b)
         UserDefine3Clean = str(' OR '.join(SplitedUserDefine3List))
 
+        ## PerparerID(전표입력자)
         SplitedUserList1 = UserList1.text().split(',')
         SplitedUserList1List = []
         for a in SplitedUserList1:
@@ -720,6 +752,7 @@ class MyApp(QWidget):
                 SplitedUserList1List.append(b)
         UserList1Clean = str(' OR '.join(SplitedUserList1List))
 
+        ## Source(전표유형)
         SplitedSourceList1 = SourceList1.text().split(',')
         SplitedSourceList1List = []
         for a in SplitedSourceList1:
@@ -731,6 +764,7 @@ class MyApp(QWidget):
                 SplitedSourceList1List.append(b)
         SourceList1Clean = str(' OR '.join(SplitedSourceList1List))
 
+        ## 조건 병합
         ConcatSQLlist = [Segment1Clean, Segment2Clean, Segment3Clean, Segment4Clean, Segment5Clean, UserDefine1Clean,
                          UserDefine2Clean, UserDefine3Clean]
         ConcatSQLlistClean = []
@@ -739,6 +773,7 @@ class MyApp(QWidget):
                 ConcatSQLlistClean.append("(" + i + ")")
         ConcatSQL = str(' AND '.join(ConcatSQLlistClean))
 
+        ## 조건이 존재하는 칼럼을 Select 절에 추가
         ConcatSQL3List = []
         if Segment1.text() != '':
             ConcatSQL3List.append('JournalEntries.Segment01')
@@ -777,6 +812,7 @@ class MyApp(QWidget):
         else:
             ConcatSQL2 = ConcatSQL2
 
+        ## 수/자동 전표
         AutoManual = ''
 
         if Manual.isChecked() and Auto.isChecked():
@@ -788,13 +824,15 @@ class MyApp(QWidget):
 
         return ConcatSQL2, ConcatSQL3Clean, AutoManual
 
+    ### 사용자가 선택한 계정에 대하여 checked_account로 계정 조건문을 업데이트
     def AccountUpdate(self, AccountText):
         AccountText.setPlainText(checked_account)
 
+    ### 상대계정 시나리오에서 사용자가 선택한 주계정 A에 대하여 checked_account_A로 계정 조건문을 업데이트
     def AccountUpdate_A(self, AccountText):
         AccountText.setPlainText(checked_account_A)
 
-    ### 상대계정 시나리오에서 사용자가 선택한 계정 B에 대하여 checked_account_B로 계정 조건문을 업데이트
+    ### 상대계정 시나리오에서 사용자가 선택한 상대계정 B에 대하여 checked_account_B로 계정 조건문을 업데이트
     def AccountUpdate_B(self, AccountText):
         AccountText.setPlainText(checked_account_B)
 
@@ -838,11 +876,11 @@ class MyApp(QWidget):
         self.show()
 
     def connectButtonClicked(self):
+        """Project connect 버튼 클릭시 SQL 서버와 프로그램을 연결하는 함수"""
 
         password = ''
         ecode = self.line_ecode.text().strip()
         ecode = "'" + ecode + "'"
-
         user = 'guest'
         server = self.selected_server_name
         db = 'master'
@@ -869,17 +907,16 @@ class MyApp(QWidget):
                            WHERE EngagementCode IN ({ecode})
                            AND DeletedBy IS NULL
                      """
-
+        ## 예외 처리 - project name을 찾는 SQL query에서 오류가 발생하는 경우
         try:
             selected_project_names = pd.read_sql(sql_query, self.cnxn)
-
         except:
             self.MessageBox_Open("Engagement Code를 입력하세요.")
             self.ProjectCombobox.clear()
             self.ProjectCombobox.addItem("프로젝트가 없습니다")
             return
 
-        # 예외처리 - 해당 ecode에 아무런 프로젝트가 없는 경우
+        # 예외처리 - 입력된 ecode에 해당하는 프로젝트가 존재하지 않는 경우
         if len(selected_project_names) == 0:
             self.MessageBox_Open("해당 Engagement Code 내 프로젝트가 존재하지 않습니다.")
             self.ProjectCombobox.clear()
@@ -891,8 +928,10 @@ class MyApp(QWidget):
         ## 서버 연결 시 - 기존 저장 정보를 초기화(메모리 관리)
         del self.selected_project_id, self.dataframe, self.scenario_dic, self.my_query
 
+        ## 추출 시나리오 query 저장 변수
         self.my_query = pd.DataFrame(columns=["Sheet name", "Scenario number", "Query"])
 
+        ## 해당 ecode의 프로젝트들을 combo box에 표시
         self.ProjectCombobox.clear()
         self.ProjectCombobox.addItem("--프로젝트 목록--")
         for i in range(len(selected_project_names)):
@@ -900,6 +939,7 @@ class MyApp(QWidget):
 
         self.combo_sheet.clear()
 
+        ## 서버 연결시 - 기존 저장 정보 초기화(메모리 관리)
         self.selected_project_id = None
         self.dataframe = None
         self.dataframe_refer = None
@@ -908,14 +948,15 @@ class MyApp(QWidget):
         self.string_date_list = []
         self.finalDate = []
         self.clickCount = 0
-
         gc.collect()
 
     def Server_ComboBox_Selected(self, text):
+        """콤보박스에서 선택된 SQL 서버를 class 변수에 담는 함수"""
         self.selected_server_name = text
 
     def Project_ComboBox_Selected(self, text):
-        ## 예외처리 - 서버가 연결되지 않은 상태로 Project name Combo box를 건드리는 경우
+        """콤보박스에서 선택된 프로젝트 정보를 class 변수에 담는 함수"""
+        ## 예외처리 - 서버가 연결되지 않은 상태로 Projectname Combobox를 건드리는 경우
         if self.cnxn is None:
             return
 
@@ -923,7 +964,7 @@ class MyApp(QWidget):
         ecode = "'" + ecode + "'"
 
         pname = text
-        self.pname_year = "20" + str(pname)[2:4]  # str
+        self.pname_year = "20" + str(pname)[2:4]
         cursor = self.cnxn.cursor()
 
         sql_query = f"""
@@ -934,7 +975,7 @@ class MyApp(QWidget):
                                 AND DeletedBy is Null
                              """
 
-        ## 예외처리 - 에러 표시인 "프로젝트가 없습니다"가 선택되어 있는 경우
+        ## 예외처리 - 에러 표시인 "프로젝트가 없습니다"가 콤보박스에서 선택되어 있는 경우
         try:
             self.selected_project_id = pd.read_sql(sql_query, self.cnxn).iloc[0, 0]
 
@@ -942,6 +983,7 @@ class MyApp(QWidget):
             self.selected_project_id = None
 
     def Connect_ServerInfo_Group(self):
+        """SQL 서버 상의 프로젝트와 연결하기 위한 정보를 입력하는 UI"""
 
         groupbox = QGroupBox('접속 정보')
         self.setStyleSheet('QGroupBox  {color: white;}')
@@ -1042,22 +1084,29 @@ class MyApp(QWidget):
         return groupbox
 
     def ComboSmall_Selected(self, text):
+        """선택된 시나리오 유형 정보를 class 변수에 저장하는 함수"""
         self.selected_scenario_subclass_index = self.comboScenario.currentIndex()
 
     def connectDialog(self):
+        """입력 정보를 바탕으로 해당 시나리오의 Dialog 창으로 연결하는 함수"""
+
+        ## 예외처리 - SQL 서버와 연결되지 않은 상태에서 Input conditions 버튼을 누른 경우
         if self.cnxn is None:
             self.MessageBox_Open("SQL 서버가 연결되어 있지 않습니다.")
             return
 
+        ## 예외처리 - 프로젝트가 선택되어 있지 않은 경우
         elif self.selected_project_id is None:
             self.MessageBox_Open("프로젝트가 선택되지 않았습니다.")
             return
 
+        ## 예외처리 - 시나리오 유형을 선택하지 않은 경우
         elif self.selected_scenario_subclass_index == 0:
             self.MessageBox_Open("시나리오가 선택되지 않았습니다.")
             return
 
         else:
+            ## 예외처리 - 접근 권한이 없는 프로젝트를 선택한 경우
             try:
                 cursor = self.cnxn.cursor()
                 sql = '''
@@ -1110,6 +1159,7 @@ class MyApp(QWidget):
 
             except:
                 self.MessageBox_Open("접근 권한이 없는 프로젝트 입니다.")
+
 
     def Dialog4(self): # 실제 시나리오 1번
         self.Addnew4 = AddForm()
@@ -5178,6 +5228,7 @@ class MyApp(QWidget):
         except:
             return str(row)
 
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 2번)
     def Thread5(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew5.SegmentBox1,
                                                                            self.Addnew5.SegmentBox2,
@@ -5490,7 +5541,7 @@ class MyApp(QWidget):
                     ### 중요성 금액이 실수가 아닌 경우
                     self.alertbox_open2('중요성 금액')
 
-    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 4번)
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 5번)
     def Thread8(self):
         ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew8.SegmentBox1,
@@ -5742,6 +5793,16 @@ class MyApp(QWidget):
                 ### 중요성 금액 실수값인지 확인
                 float(self.temp_TE)
 
+                ## 예외 처리 - 기능영역이 존재하지 않음에도 기능영역을 체크한 경우
+                if self.checkF.isChecked():
+
+                    check_CoAsegment_query = """SELECT Segment01 FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts]""".format(field=self.selected_project_id)
+                    check_CoA = pd.read_sql(check_CoAsegment_query, self.cnxn)
+
+                    if check_CoA.iloc[:, 0].isnull().sum() == len(check_CoA):
+                        self.alertbox_open20()
+                        return
+
                 ### 계정 B 미입력 시, 계정 B 쿼리 조건문 삭제
                 if self.Addnew12_B.Acount.toPlainText() == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()' or self.Addnew12_B.Acount.toPlainText() == '':
                     self.checked_accountA = self.Addnew12_A.Acount.toPlainText()
@@ -5790,6 +5851,7 @@ class MyApp(QWidget):
             except ValueError:
                 self.alertbox_open2('중요성 금액') ### 중요성 금액이 실수가 아닌 경우
 
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 8-2번)
     def ThreadC(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.AddnewC.SegmentBox1,
                                                                            self.AddnewC.SegmentBox2,
@@ -5825,6 +5887,17 @@ class MyApp(QWidget):
 
         ## JE와 CoA 상에 기능영역이 존재하는 경우
         elif self.checkF2.isChecked():
+
+            ## 예외 처리 - 기능영역이 존재하지 않음에도 기능영역을 체크한 경우
+            if self.checkF.isChecked():
+
+                check_CoAsegment_query = """SELECT Segment01 FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts]""".format(
+                    field=self.selected_project_id)
+                check_CoA = pd.read_sql(check_CoAsegment_query, self.cnxn)
+
+                if check_CoA.iloc[:, 0].isnull().sum() == len(check_CoA):
+                    self.alertbox_open20()
+                    return
 
             try:
                 float(self.temp_TE)
@@ -5874,6 +5947,7 @@ class MyApp(QWidget):
             except:
                 self.alertbox_open2('중요성금액')
 
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 9번)
     def Thread13(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew13.SegmentBox1,
                                                                            self.Addnew13.SegmentBox2,
@@ -6180,6 +6254,7 @@ class MyApp(QWidget):
                 except ValueError:
                     self.alertbox_open2('중요성 금액') ### 중요성 금액이 실수가 아닌 경우
 
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 13번)
     def Thread17(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew17.SegmentBox1,
                                                                            self.Addnew17.SegmentBox2,
@@ -6223,6 +6298,7 @@ class MyApp(QWidget):
             if self.check_account(self.checked_account17) == False:
                 return
 
+            ## 예외 처리 - 중요성금액이 양수가 아닌 경우
             try:
                 float(self.temp_TE)
             except ValueError:
@@ -9531,7 +9607,7 @@ class MyApp(QWidget):
 
             self.communicate17.closeApp.emit()
 
-
+    ### DataFrameModel 클래스와 연결하는 함수
     @pyqtSlot(QModelIndex)
     def slot_clicked_item(self, QModelIndex):
         self.stk_w.setCurrentIndex(QModelIndex.row())
