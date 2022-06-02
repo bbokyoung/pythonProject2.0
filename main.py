@@ -974,7 +974,7 @@ class MyApp(QWidget):
         for i in [1, 2, 3, 4, 6, 7, 8]:
             self.cb_server.addItem(f'KRSEOVMPPACSQ0{i}\INST1')
 
-        ### Scenario 유형 콤보박스 - 소분류 수정
+        ### Scenario 유형 콤보박스 - 소분류
         self.comboScenario = QComboBox(self)
 
         self.comboScenario.addItem('--시나리오 목록--')
@@ -1350,7 +1350,7 @@ class MyApp(QWidget):
         ### 버튼 1 - Extract Data
         self.btn2 = QPushButton('   Extract Data', self.dialog5)
         self.btn2.setStyleSheet('color:white; background-image : url(./bar.png)')
-        self.btn2.clicked.connect(self.Thread5)  ###수정
+        self.btn2.clicked.connect(self.Thread5)
         font9 = self.btn2.font()
         font9.setBold(True)
         self.btn2.setFont(font9)
@@ -3017,11 +3017,14 @@ class MyApp(QWidget):
             self.dialog12.activateWindow()
         else:
             self.cursorCondition.setText(fname[0])
-            self.wb2 = pd.ExcelFile(fname[0])
-            wbname = self.wb2.sheet_names
-            for name in wbname:
-                self.listCursor.addItem(str(name))
-            self.dialog12.activateWindow()
+            try:
+                self.wb2 = pd.ExcelFile(fname[0])
+                wbname = self.wb2.sheet_names
+                for name in wbname:
+                    self.listCursor.addItem(str(name))
+                self.dialog12.activateWindow()
+            except:
+                self.MessageBox_Open("선택된 파일이 Excel 파일이 아닙니다.")
 
     def Dialog13(self): # 실제 시나리오 9번
         self.Addnew13 = AddForm()
@@ -3137,12 +3140,10 @@ class MyApp(QWidget):
         font3.setBold(True)
         label_amount.setFont(font3)
 
-        #### 수정 시작 ####
         ### Line Edit - 중요성 금액
         self.D13_TE = QLineEdit(self.dialog13)
         self.D13_TE.setStyleSheet("background-color: white;")
         self.D13_TE.setPlaceholderText('중요성 금액을 입력하세요')
-        #### 수정 끝 ####
 
         ### 라벨 3 - 계정 트리
         label_tree = QLabel('특정 계정명 : ', self.dialog13)
@@ -3204,7 +3205,7 @@ class MyApp(QWidget):
         sublayout1.addWidget(label_Continuous, 2, 0)
         sublayout1.addWidget(self.text_continuous, 2, 1)
         sublayout1.addWidget(label_amount, 3, 0)
-        sublayout1.addWidget(self.D13_TE, 3, 1) #### 수정 시작 ####
+        sublayout1.addWidget(self.D13_TE, 3, 1)
         sublayout1.addWidget(label_tree, 4, 0)
         sublayout1.addWidget(self.new_tree, 4, 1)
         sublayout1.addWidget(self.Addnew13.btnMid, 5, 1)
@@ -5544,22 +5545,27 @@ class MyApp(QWidget):
                     self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
 
     def Thread12(self):
+        ## 수자동 선택 버튼을 모두 클릭하거나 모두 클릭하지 않은 경우
         if (self.Manual.isChecked() and self.Auto.isChecked()) or (
                 not (self.Manual.isChecked()) and not (self.Auto.isChecked())):
             self.ManualAuto = ''
 
+        ## 수동 버튼을 클릭한 경우
         elif self.Manual.isChecked():
             self.ManualAuto = "AND Details.SystemManualIndicator = 'Manual' "
 
+        ## 자동 버튼을 클릭한 경우
         elif self.Auto.isChecked():
             self.ManualAuto = "AND Details.SystemManualIndicator = 'System' "
 
         self.temp_TE = self.D12_TE.text()
         self.temp_Sheet = self.D12_Sheet.text()
 
-        if self.temp_Sheet == '' or self.Addnew12_A.Acount.toPlainText() == 'AND LVL4.GL_Account_Number IN ()' or self.Addnew12_A.Acount.toPlainText() == '':  # 필수값 누락
+        ## 예외 처리 - 필수 입력값 누락
+        if self.temp_Sheet == '' or self.Addnew12_A.Acount.toPlainText() == 'AND LVL4.GL_Account_Number IN ()' or self.Addnew12_A.Acount.toPlainText() == '':
             self.alertbox_open()
 
+        ## 예외 처리 - 중복된 시트명
         elif self.combo_sheet.findText(self.temp_Sheet + '_Reference') != -1:
             self.alertbox_open5()
 
@@ -5621,85 +5627,71 @@ class MyApp(QWidget):
         if self.temp_TE == '':
             self.temp_TE = 0
 
-        if self.listCursor.currentText() == '':
+        ## 예외 처리 - 필수 입력값 누락
+        if self.listCursor.currentText() == '' or self.tempSheet == '' or self.cursorpath == '':
             self.alertbox_open()
 
-        # 기능영역
+        ## 예외 처리 - 시트명 중복 확인
+        elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
+            self.alertbox_open5()
+
+        elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
+            self.alertbox_open5()
+
+        ## 예외 처리 - 커서 지정 경로 상에 파일이 존재하지 않을 경우
+        elif not os.path.isfile(self.cursorpath):
+            self.MessageBox_Open("경로에 해당 파일이 존재하지 않습니다.")
+
+        ## JE와 CoA 상에 기능영역이 존재하는 경우
         elif self.checkF2.isChecked():
-            sql = '''
-                       SET NOCOUNT ON;
-                       SELECT TOP 100 JENumber, JELineNumber, GLAccountNumber, Debit, Credit, Amount, Segment01
-                       FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries]'''.format(field=self.selected_project_id)
+
             try:
                 float(self.temp_TE)
-                self.dataframe = pd.read_sql(sql, self.cnxn)
-                if self.dataframe['Segment01'].isnull().sum() == len(self.dataframe):
-                    self.alertbox_open20()
+                self.wbC = self.wb2.parse(self.listCursor.currentText())
+
+                ## 예외 처리 - 선택된 sheet가 커서 reference 시트가 아닌 경우
+                if len(self.wbC.columns) != 17:
+                    self.alertbox_open4('Cursor 필드가 존재하지 않습니다.')
+
+                ## 예외 처리 - 비경상적 계정이 아무 것도 선택되지 않은 경우
+                elif self.wbC['비경상적계정 선택여부'].notnull().any() == False:
+                    self.alertbox_open4('Check된 조건이 없습니다.')
+
+                ## 예외 처리 - 필수 커서 입력 값에 Null이 존재하는 경우
+                elif self.wbC.iloc[:, [1, 5, 8, 12]].isnull().any().any():
+                    self.alertbox_open4('필요 조건 필드를 충족하지 않습니다.')
                 else:
-                    self.wbC = self.wb2.parse(self.listCursor.currentText())
-                    if self.tempSheet == '' or self.cursorpath == '':
-                        self.alertbox_open()
-                        # 시트명 중복 확인
-                    elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
-                        self.alertbox_open5()
-
-                    elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
-                        self.alertbox_open5()
-
-                    elif not os.path.isfile(self.cursorpath):
-                        self.MessageBox_Open("경로에 해당 파일이 존재하지 않습니다.")
-                    elif len(self.wbC.columns) <= 16:
-                        self.alertbox_open4('Cursor 필드가 존재하지 않습니다.')
-                    elif self.wbC['비경상적계정 선택여부'].notnull().any() == False:
-                        self.alertbox_open4('Check된 조건이 없습니다.')
-                    elif self.wbC.iloc[:, [1, 5, 8, 12]].isnull().any().any():
-                        self.alertbox_open4('필요 조건 필드를 충족하지 않습니다.')
-                    else:
-                        try:
-                            self.doAction()
-                            self.thC = Thread(target=self.extButtonClickedC)
-                            self.thC.start()
-                        except ValueError:
-                            try:
-                                float(self.temp_TE)
-                                self.alertbox_open4('필요 조건필드의 데이터 타입을 확인 바랍니다.')
-                            except:
-                                self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
-            except:
-                self.alertbox_open20()
-        # 일반
-        else:
-            self.wbC = self.wb2.parse(self.listCursor.currentText())
-
-            if self.tempSheet == '' or self.cursorpath == '':
-                self.alertbox_open()
-                # 시트명 중복 확인
-            elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
-                self.alertbox_open5()
-
-            elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
-                self.alertbox_open5()
-
-            elif not os.path.isfile(self.cursorpath):
-                self.MessageBox_Open("경로에 해당 파일이 존재하지 않습니다.")
-            elif len(self.wbC.columns) <= 14:
-                self.alertbox_open4('Cursor 필드가 존재하지 않습니다.')
-            elif self.wbC['비경상적계정 선택여부'].notnull().any() == False:
-                self.alertbox_open4('Check된 조건이 없습니다.')
-            elif self.wbC.iloc[:, [0, 4, 6, 10]].isnull().any().any():
-                self.alertbox_open4('필요 조건 필드를 충족하지 않습니다.')
-            else:
-                try:
-                    float(self.temp_TE)
                     self.doAction()
                     self.thC = Thread(target=self.extButtonClickedC)
                     self.thC.start()
-                except ValueError:
-                    try:
-                        float(self.temp_TE)
-                        self.alertbox_open4('필요 조건필드의 데이터 타입을 확인 바랍니다.')
-                    except:
-                        self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
+
+            except:
+                self.alertbox_open2('중요성금액')
+
+        ## JE와 CoA 상에 기능영역이 존재하지 않는 경우
+        else:
+            try:
+                float(self.temp_TE)
+                self.wbC = self.wb2.parse(self.listCursor.currentText())
+
+                ## 예외 처리 - 선택된 sheet가 커서 reference 시트가 아닌 경우
+                if len(self.wbC.columns) != 15:
+                    self.alertbox_open4('Cursor 필드가 존재하지 않습니다.')
+
+                ## 예외 처리 - 비경상적 계정이 아무 것도 선택되지 않은 경우
+                elif self.wbC['비경상적계정 선택여부'].notnull().any() == False:
+                    self.alertbox_open4('Check된 조건이 없습니다.')
+
+                ## 예외 처리 - 필수 커서 입력 값에 Null이 존재하는 경우
+                elif self.wbC.iloc[:, [0, 4, 6, 10]].isnull().any().any():
+                    self.alertbox_open4('필요 조건 필드를 충족하지 않습니다.')
+                else:
+                    self.doAction()
+                    self.thC = Thread(target=self.extButtonClickedC)
+                    self.thC.start()
+
+            except:
+                self.alertbox_open2('중요성금액')
 
     def Thread13(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew13.SegmentBox1,
@@ -7669,36 +7661,44 @@ class MyApp(QWidget):
             self.viewtable.setModel(model)
             self.communicate12.closeApp.emit()
 
+    def CursorChange(self, row):
+        """Cursor 입력값들에 적절하게 따옴표를 넣어주는 함수"""
+        if row == 'NULL':
+            return row
+        else:
+            return "'{}'".format(row)
+
     def extButtonClickedC(self):
         dflist = []
         cursorindex = []
-        cursortext = ''
+
         if self.checkF2.isChecked():
             index = self.wbC[self.wbC.iloc[:, 16].notnull()].iloc[:, [0, 1, 5, 7, 8, 12]]
+            index.iloc[:, 0] = index.iloc[:, 0].fillna('NULL')
+            index.iloc[:, 3] = index.iloc[:, 3].fillna('NULL')
+            for i in range(len(index.columns)):
+                index.iloc[:,i] = index.iloc[:,i].apply(lambda row : self.CursorChange(row))
+
             for i in range(len(index)):
-                cursorindex.append("('" + str(index.iloc[i, 0]) + "'" + ',' +
-                                   "'" + str(index.iloc[i, 1]) + "'" + ',' +
-                                   "'" + str(index.iloc[i, 2]) + "'" + ',' +
-                                   "'" + str(index.iloc[i, 3]) + "'" + ',' +
-                                   "'" + str(index.iloc[i, 4]) + "'" + ',' +
-                                   "'" + str(index.iloc[i, 5]) + "')")
-                if i != (len(index) - 1):
-                    cursorindex.append(",")
+                cursorindex.append("(" + str(index.iloc[i, 0]) + ","
+                                       + str(index.iloc[i, 1]) + ","
+                                       + str(index.iloc[i, 2]) + ","
+                                       + str(index.iloc[i, 3]) + ","
+                                       + str(index.iloc[i, 4]) + ","
+                                       + str(index.iloc[i, 5]) + ")")
+            cursortext = ',\n'.join(cursorindex)
+
         else:
             index = self.wbC[self.wbC.iloc[:, 14].notnull()].iloc[:, [0, 4, 6, 10]]
+            for i in range(len(index.columns)):
+                index.iloc[:,i] = index.iloc[:,i].apply(lambda row : self.CursorChange(row))
+
             for i in range(len(index)):
-                cursorindex.append("('" + str(index.iloc[i, 0]) + "'" + ',' +
-                                   "'" + str(index.iloc[i, 1]) + "'" + ',' +
-                                   "'" + str(index.iloc[i, 2]) + "'" + ',' +
-                                   "'" + str(index.iloc[i, 3]) + "')")
-                if i != (len(index) - 1):
-                    cursorindex.append(",")
-
-        # cursorindex = ["'" + str(index.iloc[i, 0]) + "'" + ',' + "'" + index.iloc[i, 1] + "'" + ',' + "'" + str(index.iloc[i, 2]) + "'" + ',' + "'" + index.iloc[i, 3] + "'" for i in range(len(index))]
-
-        for tempcursor in cursorindex:
-            cursor = self.cnxn.cursor()
-            cursortext = cursortext + tempcursor + '\n'
+                cursorindex.append("(" + str(index.iloc[i, 0]) +  ','
+                                       + str(index.iloc[i, 1]) +  ','
+                                       + str(index.iloc[i, 2]) +  ','
+                                       + str(index.iloc[i, 3]) +  ')')
+            cursortext = ',\n'.join(cursorindex)
 
         if not self.checkF2.isChecked():  # 기본
             if self.rbtn1.isChecked():  # JE Line
