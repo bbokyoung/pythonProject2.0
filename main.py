@@ -2249,15 +2249,21 @@ class MyApp(QWidget):
         self.dialog8.setWindowModality(Qt.NonModal)
         self.dialog8.show()
 
-    def Dialog9(self): # 실제 시나리오 6번
+    ### 시나리오 6. 전표 작성 빈도수가 N회 이하인 작성자에 의한 생성된 전표
+    def Dialog9(self): 
         self.Addnew9 = AddForm()
         self.Addnew9.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew9.Acount))
+        
+        ### 상단 라벨
         Titlelabel9 = QLabel('6. 전표 작성 빈도수가 N회 이하인 작성자에 의한 생성된 전표\n')
         Titlelabel9.setStyleSheet("color: white; font-weight : bold")
 
+        ### 다이얼로그 추가
         self.dialoglist.add(9)
         self.dialog9 = QDialog()
         groupbox = QGroupBox('접속 정보')
+        
+        ### 계정 트리
         cursor = self.cnxn.cursor()
 
         sql = '''
@@ -2308,9 +2314,11 @@ class MyApp(QWidget):
                         self.new_tree.grandgrandchild.setCheckState(0, Qt.Unchecked)
         self.new_tree.get_selected_leaves()  # 초기값 모두 선택 (추가)
 
+        ### 디자인 설정
         self.dialog9.setStyleSheet('background-color: #2E2E38')
         self.dialog9.setWindowIcon(QIcon(self.resource_path("./EY_logo.png")))
 
+        ### 데이터 추출 버튼
         self.btn2 = QPushButton('   Extract Data', self.dialog9)
         self.btn2.setStyleSheet('color:white;  background-image : url(./bar.png)')
         self.btn2.clicked.connect(self.Thread9)
@@ -2319,6 +2327,7 @@ class MyApp(QWidget):
         font9.setBold(True)
         self.btn2.setFont(font9)
 
+        ### 창 닫기 버튼
         self.btnDialog = QPushButton("  Close", self.dialog9)
         self.btnDialog.setStyleSheet('color:white;  background-image : url(./bar.png)')
         self.btnDialog.clicked.connect(self.dialog_close9)
@@ -2327,7 +2336,7 @@ class MyApp(QWidget):
         font10.setBold(True)
         self.btnDialog.setFont(font10)
 
-        # JE Line / JE 라디오 버튼
+        ### JE Line / JE 라디오 버튼
         self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog9)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
@@ -2340,6 +2349,7 @@ class MyApp(QWidget):
         font12.setBold(True)
         self.rbtn2.setFont(font12)
 
+        ### 작성빈도수
         label_N = QLabel('작성빈도수* : ', self.dialog9)
         label_N.setStyleSheet("color: yellow;")
 
@@ -2351,6 +2361,7 @@ class MyApp(QWidget):
         self.D9_N.setStyleSheet("background-color: white;")
         self.D9_N.setPlaceholderText('작성 빈도수를 입력하세요')
 
+        ###중요성 금액
         labelD9_TE = QLabel('중요성 금액 : ', self.dialog9)
         labelD9_TE.setStyleSheet("color: white;")
 
@@ -2362,15 +2373,18 @@ class MyApp(QWidget):
         self.D9_TE.setStyleSheet("background-color: white;")
         self.D9_TE.setPlaceholderText('중요성 금액을 입력하세요')
 
+        ###데이터 추출 버튼 & 창 닫기 버튼 사이즈 조절
         self.btn2.resize(110, 30)
         self.btnDialog.resize(110, 30)
 
+        ### 특정 계정명 라벨
         label_tree = QLabel('특정 계정명 : ', self.dialog9)
         label_tree.setStyleSheet("color: white;")
         font4 = label_tree.font()
         font4.setBold(True)
         label_tree.setFont(font4)
 
+        ### 시나리오 번호
         labelSheet = QLabel('시나리오 번호* : ', self.dialog9)
         labelSheet.setStyleSheet("color: yellow;")
 
@@ -2382,18 +2396,20 @@ class MyApp(QWidget):
         self.D9_Sheet.setStyleSheet("background-color: white;")
         self.D9_Sheet.setPlaceholderText('※ 입력 예시 : F01')
 
+        ### 차변 / 대변 라벨
         labelDC = QLabel('차변/대변 : ', self.dialog9)
         labelDC.setStyleSheet("color: white;")
         font1 = labelDC.font()
         font1.setBold(True)
         labelDC.setFont(font1)
 
-        # 차변/대변 체크박스로 구현
+        ### 차변 / 대변 체크 박스
         self.checkC = QCheckBox('Credit', self.dialog9)
         self.checkD = QCheckBox('Debit', self.dialog9)
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
+        ### 수동 / 자동 체크 박스
         labelManual = QLabel('수동/자동 : ', self.dialog9)
         labelManual.setStyleSheet("color: white; font-weight : bold")
         self.Manual = QCheckBox('수동', self.dialog9)
@@ -2405,6 +2421,7 @@ class MyApp(QWidget):
         self.D9_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
         self.D9_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
 
+        ### 중간 Layout
         layout1 = QGridLayout()
         layout1.addWidget(self.rbtn1, 0, 0)
         layout1.addWidget(self.rbtn2, 0, 1)
@@ -2423,16 +2440,19 @@ class MyApp(QWidget):
         layout1.addWidget(self.Addnew9.UserLabel, 8, 0)
         layout1.addWidget(self.Addnew9.User, 8, 1)
 
+        ### 차대변 체크박스 Layout
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
 
+        ### 수자동 체크박스 Layout
         layout_am = QHBoxLayout()
         layout_am.addWidget(labelManual)
         layout_am.addWidget(self.Manual)
         layout_am.addWidget(self.Auto)
 
+        ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
         layout2.addStretch()
         layout2.addStretch()
@@ -2441,6 +2461,7 @@ class MyApp(QWidget):
 
         layout2.setContentsMargins(-1, 10, -1, -1)
 
+        ### Main Layout
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel9)
@@ -2450,10 +2471,10 @@ class MyApp(QWidget):
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
 
+        ### Main Layout 창 크기 조절, 상단 ? 삭제, 창 라벨 설정
         self.dialog9.setLayout(main_layout)
         self.dialog9.setGeometry(100, 100, 1000, 600)
 
-        # ? 제거
         self.dialog9.setWindowFlags(Qt.WindowCloseButtonHint)
 
         self.dialog9.setWindowTitle("Scenario6")
@@ -3330,17 +3351,22 @@ class MyApp(QWidget):
         self.dialog13.setWindowModality(Qt.NonModal)
         self.dialog13.show()
 
-    def Dialog14(self): # 실제 시나리오 10번
+    ### 시나리오 10. 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트
+    def Dialog14(self): 
         self.Addnew14 = AddForm()
         self.Addnew14.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew14.Acount))
+        
+        ### 상단 라벨
         Titlelabel14 = QLabel('10. 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트\n')
         Titlelabel14.setStyleSheet("color: white; font-weight : bold")
 
+        ### 다이얼로그 추가 및 디자인 설정
         self.dialoglist.add(14)
         self.dialog14 = QDialog()
         self.dialog14.setStyleSheet('background-color: #2E2E38')
         self.dialog14.setWindowIcon(QIcon(self.resource_path("./EY_logo.png")))
 
+        ### 계정 트리
         cursor = self.cnxn.cursor()
 
         sql = '''
@@ -3391,6 +3417,7 @@ class MyApp(QWidget):
                         self.new_tree.grandgrandchild.setCheckState(0, Qt.Unchecked)
         self.new_tree.get_selected_leaves()  # 초기값 모두 선택 (추가)
 
+        ### 데이터 추출 버튼
         self.btn2 = QPushButton('   Extract Data', self.dialog14)
         self.btn2.setStyleSheet('color:white;  background-image : url(./bar.png)')
         self.btn2.clicked.connect(self.Thread14)
@@ -3399,6 +3426,7 @@ class MyApp(QWidget):
         font9.setBold(True)
         self.btn2.setFont(font9)
 
+        ### 창 닫기 버튼
         self.btnDialog = QPushButton("   Close", self.dialog14)
         self.btnDialog.setStyleSheet(
             'color:white;  background-image : url(./bar.png)')
@@ -3408,6 +3436,7 @@ class MyApp(QWidget):
         font10.setBold(True)
         self.btnDialog.setFont(font10)
 
+        ### 데이터 추출 버튼 & 창 닫기 버튼 사이즈 조절
         self.btn2.resize(110, 30)
         self.btnDialog.resize(110, 30)
 
@@ -3424,28 +3453,33 @@ class MyApp(QWidget):
         font12.setBold(True)
         self.rbtn2.setFont(font12)
 
+        ### 특정단어 (포함)
         labelKeyword = QLabel('Key Words* : ', self.dialog14)
         labelKeyword.setStyleSheet("color: yellow;")
         font1 = labelKeyword.font()
         font1.setBold(True)
         labelKeyword.setFont(font1)
 
+        ### 특정단어 (제외)
         labelKeyword2 = QLabel('Except Key Words : ', self.dialog14)
         labelKeyword2.setStyleSheet("color: white;")
         font3 = labelKeyword2.font()
         font3.setBold(True)
         labelKeyword2.setFont(font3)
 
+        ### 특정단어 (포함) QLineEdit
         self.D14_Key = QLineEdit(self.dialog14)
         self.D14_Key.setStyleSheet("background-color: white;")
         self.D14_Key.setPlaceholderText('검색할 단어를 입력하세요(구분자:",")')
 
+        ### 특정단어 (제외) QLineEdit & Activate 체크박스
         self.D14_Key2 = QLineEdit(self.dialog14)
         self.D14_Key2.setStyleSheet("background-color: white;")
         self.D14_Key2.setPlaceholderText('제외할 단어를 입력하세요(구분자:",")')
         self.D14_Key2C = QCheckBox('Activate')
         self.D14_Key2C.setStyleSheet("color: white; font-weight: bold")
 
+        ### 중요성 금액
         labelD14_TE = QLabel('중요성 금액 : ', self.dialog14)
         labelD14_TE.setStyleSheet("color: white;")
 
@@ -3457,12 +3491,14 @@ class MyApp(QWidget):
         self.D14_TE.setStyleSheet("background-color: white;")
         self.D14_TE.setPlaceholderText('중요성 금액을 입력하세요')
 
+        ### 특정 계정명 라벨
         label_tree = QLabel('특정 계정 : ', self.dialog14)
         label_tree.setStyleSheet("color: white;")
         font4 = label_tree.font()
         font4.setBold(True)
         label_tree.setFont(font4)
 
+        ### 시나리오 번호
         labelSheet = QLabel('시나리오 번호* : ', self.dialog14)
         labelSheet.setStyleSheet("color: yellow;")
 
@@ -3474,18 +3510,20 @@ class MyApp(QWidget):
         self.D14_Sheet.setStyleSheet("background-color: white;")
         self.D14_Sheet.setPlaceholderText('※ 입력 예시 : F01')
 
+        ### 차변 / 대변 라벨
         labelDC = QLabel('차변/대변 : ', self.dialog14)
         labelDC.setStyleSheet("color: white;")
         font1 = labelDC.font()
         font1.setBold(True)
         labelDC.setFont(font1)
 
-        # 차변/대변 체크박스로 구현
+        ### 수동 / 자동 체크 박스
         self.checkC = QCheckBox('Credit', self.dialog14)
         self.checkD = QCheckBox('Debit', self.dialog14)
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
+        ### 수동 / 자동 체크 박스
         labelManual = QLabel('수동/자동 : ', self.dialog14)
         labelManual.setStyleSheet("color: white; font-weight : bold")
         self.Manual = QCheckBox('수동', self.dialog14)
@@ -3499,6 +3537,7 @@ class MyApp(QWidget):
 
         self.D14_Key2C.stateChanged.connect(self.D14_LabelC)
 
+        ### 중간 Layout
         layout1 = QGridLayout()
         layout1.addWidget(self.rbtn1, 0, 0)
         layout1.addWidget(self.rbtn2, 0, 1)
@@ -3520,16 +3559,19 @@ class MyApp(QWidget):
         layout1.addWidget(self.Addnew14.UserLabel, 10, 0)
         layout1.addWidget(self.Addnew14.User, 10, 1)
 
+        ### 차대변 체크박스 Layout
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
 
+        ### 수자동 체크박스 Layout
         layout_am = QHBoxLayout()
         layout_am.addWidget(labelManual)
         layout_am.addWidget(self.Manual)
         layout_am.addWidget(self.Auto)
 
+        ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
         layout2.addStretch()
         layout2.addStretch()
@@ -3537,6 +3579,7 @@ class MyApp(QWidget):
         layout2.addWidget(self.btnDialog)
         layout2.setContentsMargins(-1, 10, -1, -1)
 
+        ### Main Layout
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel14)
@@ -3548,7 +3591,7 @@ class MyApp(QWidget):
         self.dialog14.setLayout(main_layout)
         self.dialog14.setGeometry(100, 100, 1000, 600)
 
-        # ? 제거
+        ### 상단 ? 삭제, 창 라벨 설정
         self.dialog14.setWindowFlags(Qt.WindowCloseButtonHint)
 
         self.dialog14.setWindowTitle("Scenario10")
@@ -4604,32 +4647,36 @@ class MyApp(QWidget):
             if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
         self.th8.join()
-
-    def doneAction9(self):  # 시나리오 6번
+        
+    ### 결과값과 관련한 팝업 함수 (시나리오 6번)
+    def doneAction9(self):  
         self.Action.close()
         self.timerVar.stop()
 
+        ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
             self.alertbox_open3()
 
+        ### 추출 데이터가 존재하지 않을 경우
         if len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame({'No Data': ["[전표작성 빈도수: " + str(self.tempN) + "," + " 중요성금액: " + str(
                 self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
             model = DataFrameModel(self.dataframe)
             model_refer = DataFrameModel(self.dataframe_refer)
             self.viewtable.setModel(model)
+            ### JE Line 기준
             if self.rbtn1.isChecked():
                 self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
                 self.combo_sheet.addItem(self.tempSheet + '_Reference')
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
-
+            ### JE 기준
             elif self.rbtn2.isChecked():
                 self.scenario_dic[self.tempSheet + '_Journals'] = self.dataframe
                 self.combo_sheet.addItem(self.tempSheet + '_Journals')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
-
+            ### JE Line 기준
             if self.rbtn1.isChecked():
 
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표작성 빈도수가 " + str(self.tempN)
@@ -4637,6 +4684,7 @@ class MyApp(QWidget):
                                                       + str(len(self.dataframe) - 1) + "건 추출되었습니다. <br> - 중요성금액("
                                                       + str(self.tempTE) + ")을 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+            ### JE 기준
             else:
 
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표작성 빈도수가 " + str(self.tempN)
@@ -4647,7 +4695,9 @@ class MyApp(QWidget):
             if buttonReply == QMessageBox.Ok:
                 self.dialog9.activateWindow()
 
+        ### 추출 데이터가 300건 초과일 경우
         else:
+            ### JE Line 기준
             if self.rbtn1.isChecked():
 
                 if len(self.dataframe) > 300:
@@ -4666,7 +4716,7 @@ class MyApp(QWidget):
                                                           , QMessageBox.Ok)
                 if buttonReply == QMessageBox.Ok:
                     self.dialog9.activateWindow()
-
+            ### JE 기준
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표작성 빈도수가 " + str(self.tempN)
                                                       + "회 이하인 작성자에 의해 생성된 전표가 "
@@ -4885,22 +4935,28 @@ class MyApp(QWidget):
 
         self.th13.join()
 
+    ### 결과값과 관련한 팝업 함수 (시나리오 10번)
     def doneAction14(self):
         self.Action.close()
         self.timerVar.stop()
+        
+        ### 제외단어 Activate 체크 유무에 따른 tempword
         if self.D14_Key2C.isChecked():
             tempword = ", " + str(self.baseKey2) + "이/가 제외"
         else:
             tempword = ''
 
+        ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
             self.alertbox_open3()
 
+        ### 추출 데이터가 존재하지 않을 경우
         if len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame({'No Data': ["[전표 적요 특정단어: " + str(self.baseKey) + "," + " 중요성금액: " + str(
                 self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
             model = DataFrameModel(self.dataframe)
             self.viewtable.setModel(model)
+            ### JE Line 기준
             if self.rbtn1.isChecked():
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
@@ -4912,6 +4968,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성금액(" + str(self.tempTE)
                                                       + ")을 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+            ### JE 기준    
             else:
                 self.scenario_dic[self.tempSheet + '_Journals'] = self.dataframe
                 self.combo_sheet.addItem(self.tempSheet + '_Journals')
@@ -4926,7 +4983,9 @@ class MyApp(QWidget):
             if buttonReply == QMessageBox.Ok:
                 self.dialog14.activateWindow()
 
+        ### 추출 데이터가 300건 초과일 경우
         else:
+            ### JE Line 기준
             if self.rbtn1.isChecked():
                 if len(self.dataframe) > 300:
                     buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표 적요에 "
@@ -4946,6 +5005,7 @@ class MyApp(QWidget):
                                                           , QMessageBox.Ok)
                 if buttonReply == QMessageBox.Ok:
                     self.dialog14.activateWindow()
+            ### JE 기준
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표 적요에 "
                                                       + str(self.baseKey) + "이/가 포함"
@@ -5622,8 +5682,11 @@ class MyApp(QWidget):
                             self.alertbox_open2('N') ### N이 정수가 아닌 경우
                         except:
                             self.alertbox_open2('중요성금액과 N') ### 중요성 금액과 N의 형식이 잘못된 경우
-
+                            
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 6번)
     def Thread9(self):
+        
+        ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew9.SegmentBox1,
                                                                            self.Addnew9.SegmentBox2,
                                                                            self.Addnew9.SegmentBox3,
@@ -5634,60 +5697,74 @@ class MyApp(QWidget):
                                                                            self.Addnew9.UserDefine3,
                                                                            self.Addnew9.User, self.Addnew9.source,
                                                                            self.Manual, self.Auto)
-        self.tempN = self.D9_N.text()  # 필수값
-        self.tempTE = self.D9_TE.text()
-        self.tempSheet = self.D9_Sheet.text()
-
+        self.tempN = self.D9_N.text()  # 전표 작성 빈도수 N회
+        self.tempTE = self.D9_TE.text() # 중요성 금액
+        self.tempSheet = self.D9_Sheet.text() # 시나리오 번호
+        
+         ### 계정 미선택시 계정 조건 제거
         if self.Addnew9.Acount.toPlainText() == '':
             self.checked_account9 = ''
 
         else:
             self.checked_account9 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew9.Acount.toPlainText() + ')'
 
+        ### 필수 입력값 누락 검토    
         if self.tempN == '' or self.tempSheet == '':
             self.alertbox_open()
-        # 시트명 중복 확인
+            
+        ### Result & Reference 시나리오 번호(시트명) 중복 검토
         elif self.rbtn1.isChecked() and (
                 self.combo_sheet.findText(self.tempSheet + '_Result') != -1 or self.combo_sheet.findText(
             self.tempSheet + '_Reference') != -1):
             self.alertbox_open5()
-
+            
+        ### Journals 시나리오 번호(시트명) 중복 검토
         elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
             self.alertbox_open5()
-
+            
+        ### 중요성 금액 미입력시 0원
         else:
             if self.tempTE == '': self.tempTE = 0
-
+                
+            ### 계정 입력 값 검토
             if self.check_account(self.checked_account9) != False:
                 try:
+                    ### N 정수값인지 확인
                     int(self.tempN)
+                    ### 중요성 금액 실수값인지 확인
                     float(self.tempTE)
+                    
+                    ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
                     if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                             not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
                         self.debitcredit = ''
-                    elif self.checkD.isChecked():  # Credit 이 0
+                        
+                    ### Debit을 선택했을 시, Credit이 0원    
+                    elif self.checkD.isChecked(): 
                         self.debitcredit = 'AND JournalEntries.Credit = 0'
-                    elif self.checkC.isChecked():  # Debit 이 0
+                    ### Credit을 선택했을 시, Debit이 0원    
+                    elif self.checkC.isChecked(): 
                         self.debitcredit = 'AND JournalEntries.Debit = 0'
 
                     self.doAction()
                     self.th9 = Thread(target=self.extButtonClicked9)
                     self.th9.daemon = True
                     self.th9.start()
-
+                    
+                ### 추가 예외처리 (팝업)
                 except ValueError:
                     try:
                         int(self.tempN)
                         try:
                             float(self.tempTE)
                         except:
-                            self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')
+                            self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.') # 중요성금액이 실수가 아닌 경우
                     except:
                         try:
                             float(self.tempTE)
-                            self.alertbox_open4('작성빈도수를 숫자로만 입력해주시기 바랍니다.')
+                            self.alertbox_open4('작성빈도수를 숫자로만 입력해주시기 바랍니다.') # 작성빈도수가 정수가 아닌 경우
                         except:
-                            self.alertbox_open4('작성빈도수와 중요성금액을 숫자로만 입력해주시기 바랍니다.')
+                            self.alertbox_open4('작성빈도수와 중요성금액을 숫자로만 입력해주시기 바랍니다.') # 중요성금액이 실수가 아니고 작성빈도수가 정수가 아닌 경우
 
     def Thread10(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew10.SegmentBox1,
@@ -6028,8 +6105,10 @@ class MyApp(QWidget):
             self.th13 = Thread(target=self.extButtonClicked13)
             self.th13.daemon = True
             self.th13.start()
-
+            
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 10번)
     def Thread14(self):
+        ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew14.SegmentBox1,
                                                                            self.Addnew14.SegmentBox2,
                                                                            self.Addnew14.SegmentBox3,
@@ -6041,28 +6120,33 @@ class MyApp(QWidget):
                                                                            self.Addnew14.User, self.Addnew14.source,
                                                                            self.Manual, self.Auto)
 
-        self.tempTE = self.D14_TE.text()
-        self.tempSheet = self.D14_Sheet.text()
-
+        self.tempTE = self.D14_TE.text() # 중요성 금액
+        self.tempSheet = self.D14_Sheet.text() # 시나리오 번호
+        
+        ### 계정 미선택시 계정 조건 제거
         if self.Addnew14.Acount.toPlainText() == '':
             self.checked_account14 = ''
 
         else:
             self.checked_account14 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew14.Acount.toPlainText() + ')'
 
+        ### 필수 입력값 누락 검토
         if self.tempSheet == '' or self.D14_Key.text().strip() == '':
             self.alertbox_open()
-
+            
+        ### 제외 키워드를 activate한 상태에서 제외 키워드를 입력하지 않을 경우, 경고창 생성
         elif self.D14_Key2C.isChecked() and self.D14_Key2.text().strip() == '':
             self.alertbox_open6()
 
-        # 시트명 중복 확인
+        ### Result 시나리오 번호(시트명) 중복 검토
         elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
             self.alertbox_open5()
-
+            
+        ### Journals 시나리오 번호(시트명) 중복 검토
         elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
             self.alertbox_open5()
-
+            
+        ### 콤마(,) 구분자를 이용하여 전표 적요 특정단어 입력 (포함 단어)
         else:
             self.baseKey = self.D14_Key.text().split(',')
             self.baseKey_clean = []
@@ -6076,7 +6160,8 @@ class MyApp(QWidget):
                 else:
                     b = "(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%')"
                 self.baseKey_clean.append(b)
-
+                
+        ### 콤마(,) 구분자를 이용하여 전표 적요 특정단어 입력 (제외 단어)
             self.baseKey2 = self.D14_Key2.text().split(',')
             self.baseKey2_clean = []
             if self.D14_Key2C.isChecked():
@@ -6095,19 +6180,27 @@ class MyApp(QWidget):
 
             else:
                 self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ')'
-
+                
+            ### 중요성 금액 미입력시 0원
             if self.tempTE == '': self.tempTE = 0
-
+                
+            ### 계정 입력 값 검토
             if self.check_account(self.checked_account14) != False:
 
                 try:
+                    ### 중요성 금액 실수값인지 확인
                     float(self.tempTE)
+                    
+                    ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
                     if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                             not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
                         self.debitcredit = ''
-                    elif self.checkD.isChecked():  # Credit 이 0
+                        
+                    ### Debit을 선택했을 시, Credit이 0원
+                    elif self.checkD.isChecked():  
                         self.debitcredit = 'AND JournalEntries.Credit = 0'
-                    elif self.checkC.isChecked():  # Debit 이 0
+                    ### Credit을 선택했을 시, Debit이 0원
+                    elif self.checkC.isChecked():  
                         self.debitcredit = 'AND JournalEntries.Debit = 0'
 
                     self.doAction()
@@ -6115,11 +6208,12 @@ class MyApp(QWidget):
                     self.th14.daemon = True
                     self.th14.start()
 
+                ### 추가 예외처리 (팝업)
                 except ValueError:
                     try:
                         float(self.tempTE)
                     except:
-                        self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')
+                        self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.') # 중요성금액이 실수가 아닌 경우
 
 
     def Thread15(self):
@@ -7278,11 +7372,14 @@ class MyApp(QWidget):
                 self.viewtable.setModel(model)
 
             self.communicate8.closeApp.emit()
-
+            
+    ### 쿼리문 관련 함수 (시나리오 6번)
     def extButtonClicked9(self):
-        cursor = self.cnxn.cursor()
+        
+        ### 쿼리 연동
+        cursor = self.cnxn.cursor() 
 
-        if self.rbtn1.isChecked():  # Result
+        if self.rbtn1.isChecked():  # JE Line- Result
             sql = '''
                         SET NOCOUNT ON				
                         SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
@@ -7376,7 +7473,7 @@ class MyApp(QWidget):
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
 
-        elif self.rbtn2.isChecked():  # Journals
+        elif self.rbtn2.isChecked():  # JE- Journals
             sql = '''
                         SET NOCOUNT ON				
                         SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
@@ -7435,17 +7532,18 @@ class MyApp(QWidget):
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
 
-        ### 마지막 시트 쿼리 내역 추가
+        ### Reference 추출 시, 쿼리 저장
         if self.rbtn1.isChecked():
             self.my_query.loc[self.tempSheet + "_Reference"] = [self.tempSheet + "_Reference", "Scenario06",
                                                                 "---Filtered Result_1  Scenario06---\n" + sql_refer]
+         ### JE Line- Result 추출 시, 쿼리 저장                                                        
             self.my_query.loc[self.tempSheet + "_Result"] = [self.tempSheet + "_Result", "Scenario06",
                                                              "---Filtered Result_2  Scenario06---\n" + sql]
-
+        ### JE- Journals 추출 시, 쿼리 저장                                                       
         elif self.rbtn2.isChecked():
             self.my_query.loc[self.tempSheet + "_Journals"] = [self.tempSheet + "_Journals", "Scenario06",
                                                                "---Filtered JE  Scenario06---\n" + sql]
-
+        ### 50만건 초과 추출 시, 상위 1000건 반환
         if len(self.dataframe) > 500000:
             model = DataFrameModel(self.dataframe.head(1000))
             self.viewtable.setModel(model)
@@ -7461,10 +7559,12 @@ class MyApp(QWidget):
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
             self.communicate9.closeApp.emit()
-
+                                                             
+        ### 0건 추출 시, 문구 반환
         elif len(self.dataframe) == 0:
             self.communicate9.closeApp.emit()
-
+                                                             
+        ### 0건이 아닐 경우, 시트&데이터 추출
         else:
             if self.rbtn1.isChecked():
                 self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
@@ -8964,13 +9064,14 @@ class MyApp(QWidget):
                 self.viewtable.setModel(model)
 
             self.communicate13.closeApp.emit()
-
+                                                             
+    ### 쿼리문 관련 함수 (시나리오 10번)
     def extButtonClicked14(self):
-
+        
+        ### 쿼리 연동
         cursor = self.cnxn.cursor()
 
-        # sql 문 수정
-        if self.rbtn1.isChecked():  # Result
+        if self.rbtn1.isChecked():  # JE Line- Result
 
             sql = '''
                 SET NOCOUNT ON				
@@ -9015,7 +9116,7 @@ class MyApp(QWidget):
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
 
-        elif self.rbtn2.isChecked():  # Journals
+        elif self.rbtn2.isChecked():  # JE- Journals
 
             sql = '''
                 SET NOCOUNT ON				
@@ -9067,14 +9168,15 @@ class MyApp(QWidget):
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
 
-        ### 마지막 시트 쿼리 내역 추가
+        ### JE Line- Result 추출 시, 쿼리 저장
         if self.rbtn1.isChecked():
             self.my_query.loc[self.tempSheet + "_Result"] = [self.tempSheet + "_Result", "Scenario10",
                                                              "---Filtered Result  Scenario10---\n" + sql]
+        ### JE- Journals 추출 시, 쿼리 저장                                                     
         elif self.rbtn2.isChecked():
             self.my_query.loc[self.tempSheet + "_Journals"] = [self.tempSheet + "_Journals", "Scenario10",
                                                                "---Filtered JE  Scenario10---\n" + sql]
-
+        ### 50만건 초과 추출 시, 상위 1000건 반환
         if len(self.dataframe) > 500000:
             model = DataFrameModel(self.dataframe.head(1000))
             self.viewtable.setModel(model)
@@ -9090,10 +9192,12 @@ class MyApp(QWidget):
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
             self.communicate14.closeApp.emit()
-
+            
+        ### 0건 추출 시, 문구 반환
         elif len(self.dataframe) == 0:
             self.communicate14.closeApp.emit()
-
+            
+        ### 0건이 아닐 경우, 시트&데이터 추출
         else:
             if self.rbtn1.isChecked():
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
