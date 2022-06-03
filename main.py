@@ -154,6 +154,7 @@ class Form(QGroupBox):
         self.tree.setHeaderHidden(True)
         self.tree.itemClicked.connect(self.get_selected_leaves)
 
+    ### 계정 트리 Unselect All 클릭 시 적용
     def unselect_all(self):
         def recurse_unselect(parent):
             for i in range(parent.childCount()):
@@ -169,6 +170,7 @@ class Form(QGroupBox):
 
         recurse_unselect(self.tree.invisibleRootItem())
 
+    ### 계정 트리 Select All 클릭 시 적용
     def select_all(self):
         def recurse_select(parent):
             for i in range(parent.childCount()):
@@ -184,6 +186,7 @@ class Form(QGroupBox):
 
         recurse_select(self.tree.invisibleRootItem())
 
+    ### 계정 트리 선택된 값 가지고 오기
     def get_selected_leaves(self):
         checked_items = []
 
@@ -207,7 +210,6 @@ class Form(QGroupBox):
             checked_name = checked_name + ',' + '\'' + i + '\''
 
         checked_name = checked_name[1:]
-
 
 
 class Form1(QGroupBox):
@@ -263,6 +265,7 @@ class Form1(QGroupBox):
         self.tree.setHeaderHidden(True)
         self.tree.itemClicked.connect(self.get_selected_leaves_1)
 
+    ### 계정 트리 Unselect All 클릭 시 적용
     def unselect_all(self):
         def recurse_unselect(parent):
             for i in range(parent.childCount()):
@@ -278,6 +281,7 @@ class Form1(QGroupBox):
 
         recurse_unselect(self.tree.invisibleRootItem())
 
+    ### 계정 트리 Select All 클릭 시 적용
     def select_all(self):
         def recurse_select(parent):
             for i in range(parent.childCount()):
@@ -293,6 +297,7 @@ class Form1(QGroupBox):
 
         recurse_select(self.tree.invisibleRootItem())
 
+    ### 계정 트리 선택된 값 가지고 오기
     def get_selected_leaves_1(self):
         checked_items = []
 
@@ -456,7 +461,7 @@ class MyApp(QWidget):
         """입력된 text를 표시하는 경고창을 만드는 함수"""
         self.msg = QMessageBox()
         self.msg.setIcon(QMessageBox.Information)
-        self.msg.setWindowTitle("Warning")
+        self.msg.setWindowTitle("Message")
         self.msg.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
         self.msg.setText(text)
         self.msg.exec_()
