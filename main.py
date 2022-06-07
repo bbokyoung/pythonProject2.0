@@ -1159,19 +1159,22 @@ class MyApp(QWidget):
             except:
                 self.MessageBox_Open("접근 권한이 없는 프로젝트 입니다.")
 
-    def Dialog4(self):  # 실제 시나리오 1번
+    ### 시나리오 1. 계정 사용빈도 N번 이하인 계정이 포함된 전표리스트
+    def Dialog4(self):
         self.Addnew4 = AddForm()
         self.Addnew4.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew4.Acount))
 
+        ### 상단 라벨
         Titlelabel4 = QLabel('1. 계정 사용빈도 N번 이하인 계정이 포함된 전표리스트\n')
         Titlelabel4.setStyleSheet("color: white; font-weight : bold")
 
+        ### 다이얼로그 추가 및 디자인 설정
         self.dialoglist.add(4)
         self.dialog4 = QDialog()
         self.dialog4.setStyleSheet('background-color: #2E2E38')
         self.dialog4.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
 
-        # 트리 작업
+        ### 계정 트리
         cursor = self.cnxn.cursor()
 
         sql = '''
@@ -1226,7 +1229,6 @@ class MyApp(QWidget):
         self.btn2 = QPushButton('   Extract Data', self.dialog4)
         self.btn2.setStyleSheet('color:white; background-image : url(./bar.png)')
         self.btn2.clicked.connect(self.Thread4)
-
         font9 = self.btn2.font()
         font9.setBold(True)
         self.btn2.setFont(font9)
@@ -1235,7 +1237,6 @@ class MyApp(QWidget):
         self.btnDialog = QPushButton('   Close', self.dialog4)
         self.btnDialog.setStyleSheet('color:white;  background-image : url(./bar.png)')
         self.btnDialog.clicked.connect(self.dialog_close4)
-
         font10 = self.btnDialog.font()
         font10.setBold(True)
         self.btnDialog.setFont(font10)
@@ -1257,7 +1258,6 @@ class MyApp(QWidget):
         ### 라벨 1 - 사용빈도
         label_freq = QLabel('사용 빈도(N)* :', self.dialog4)
         label_freq.setStyleSheet('color: yellow;')
-
         font1 = label_freq.font()
         font1.setBold(True)
         label_freq.setFont(font1)
@@ -1270,7 +1270,6 @@ class MyApp(QWidget):
         ### 라벨 2 - 중요성 금액
         label_TE = QLabel('중요성 금액: ', self.dialog4)
         label_TE.setStyleSheet('color: white;')
-
         font2 = label_TE.font()
         font2.setBold(True)
         label_TE.setFont(font2)
@@ -1283,7 +1282,6 @@ class MyApp(QWidget):
         ### 라벨 3 - 시트명
         labelSheet = QLabel('시나리오 번호* : ', self.dialog4)
         labelSheet.setStyleSheet("color: yellow;")
-
         font5 = labelSheet.font()
         font5.setBold(True)
         labelSheet.setFont(font5)
@@ -1293,13 +1291,14 @@ class MyApp(QWidget):
         self.D4_Sheet.setStyleSheet("background-color: white;")
         self.D4_Sheet.setPlaceholderText('※ 입력 예시 : F01')
 
+        ### 계정 선택 라벨
         label_tree = QLabel('특정 계정명 : ', self.dialog4)
         label_tree.setStyleSheet("color: white;")
         font4 = label_tree.font()
         font4.setBold(True)
         label_tree.setFont(font4)
 
-        # 차변/대변 체크박스로 구현
+        ### 차변 / 대변 체크 박스
         labelDC = QLabel('차변/대변 : ', self.dialog4)
         labelDC.setStyleSheet("color: white;")
         font1 = labelDC.font()
@@ -1310,6 +1309,7 @@ class MyApp(QWidget):
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
+        ### 수동 / 자동 체크 박스
         labelManual = QLabel('수동/자동 : ', self.dialog4)
         labelManual.setStyleSheet("color: white; font-weight : bold")
         self.Manual = QCheckBox('수동', self.dialog4)
@@ -1317,11 +1317,12 @@ class MyApp(QWidget):
         self.Manual.setStyleSheet("color: white;")
         self.Auto.setStyleSheet("color: white;")
 
-        self.D4_N.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
-        self.D4_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
-        self.D4_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+        ### LineEdit만 창 크기에 따라 확대/축소
+        self.D4_N.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.D4_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.D4_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        ### 요소 배치
+        ### 최상단 Layout
         layout1 = QGridLayout()
         layout1.addWidget(self.rbtn1, 0, 0)
         layout1.addWidget(self.rbtn2, 0, 1)
@@ -1340,23 +1341,26 @@ class MyApp(QWidget):
         layout1.addWidget(self.Addnew4.UserLabel, 8, 0)
         layout1.addWidget(self.Addnew4.User, 8, 1)
 
+        ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
         layout2.addWidget(self.btn2)
         layout2.addWidget(self.btnDialog)
-
         layout2.setContentsMargins(-1, 10, -1, -1)
 
+        ### 차대변 체크박스 Layout
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
 
+        ### 수자동 체크박스 Layout
         layout_am = QHBoxLayout()
         layout_am.addWidget(labelManual)
         layout_am.addWidget(self.Manual)
         layout_am.addWidget(self.Auto)
 
+        ### Main Layout
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel4)
@@ -1368,25 +1372,28 @@ class MyApp(QWidget):
         self.dialog4.setLayout(main_layout)
         self.dialog4.setGeometry(100, 100, 1000, 600)
 
-        # ? 제거
+        ### Main Layout 창 크기 조절, 상단 ? 삭제, 창 라벨 설정
         self.dialog4.setWindowFlags(Qt.WindowCloseButtonHint)
-
         self.dialog4.setWindowTitle('Scenario1')
         self.dialog4.setWindowModality(Qt.NonModal)
         self.dialog4.show()
 
-    def Dialog5(self):  # 실제 시나리오 2번
+    ### 시나리오 2. 당기 생성된 계정리스트 추출
+    def Dialog5(self):
         self.Addnew5 = AddForm()
         self.Addnew5.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew5.Acount))
 
+        ### 상단 라벨
         Titlelabel5 = QLabel('2. 당기 생성된 계정리스트 추출\n')
         Titlelabel5.setStyleSheet("color: white; font-weight : bold")
 
+        ### 다이얼로그 추가 및 디자인 설정
         self.dialoglist.add(5)
         self.dialog5 = QDialog()
         self.dialog5.setStyleSheet('background-color: #2E2E38')
         self.dialog5.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
 
+        ### JE Line / JE 선택 라디오 버튼
         self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog5)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
@@ -1464,7 +1471,7 @@ class MyApp(QWidget):
                         self.new_tree2.grandgrandchild.setCheckState(0, Qt.Unchecked)
         self.new_tree2.get_selected_leaves()  # 초기값 모두 선택 (추가)
 
-        # 차변/대변 체크박스로 구현
+        ### 차변 / 대변 체크 박스
         labelDC = QLabel('차변/대변 : ', self.dialog5)
         labelDC.setStyleSheet("color: white;")
         font1 = labelDC.font()
@@ -1475,7 +1482,7 @@ class MyApp(QWidget):
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
-        # 수동/자동
+        ### 수동 / 자동 체크 박스
         labelManual = QLabel('수동/자동 : ', self.dialog5)
         labelManual.setStyleSheet("color: white; font-weight : bold")
         self.Manual = QCheckBox('수동', self.dialog5)
@@ -1489,6 +1496,9 @@ class MyApp(QWidget):
         font5 = labelSheet.font()
         font5.setBold(True)
         labelSheet.setFont(font5)
+        self.D5_Sheet = QLineEdit(self.dialog5)
+        self.D5_Sheet.setStyleSheet("background-color: white;")
+        self.D5_Sheet.setPlaceholderText('※ 입력 예시 : F01')
 
         ### 라벨 3 - 계정 트리
         label_tree = QLabel('특정 계정명* : ', self.dialog5)
@@ -1497,23 +1507,17 @@ class MyApp(QWidget):
         font40.setBold(True)
         label_tree.setFont(font40)
 
-        # 중요성 금액
+        ### 중요성 금액
         label_TE = QLabel('중요성 금액 : ', self.dialog5)
         label_TE.setStyleSheet("color: white;")
         font5 = label_TE.font()
         font5.setBold(True)
         label_TE.setFont(font5)
-
-        ### LineEdit 1 - 시트명
-        self.D5_Sheet = QLineEdit(self.dialog5)
-        self.D5_Sheet.setStyleSheet("background-color: white;")
-        self.D5_Sheet.setPlaceholderText('※ 입력 예시 : F01')
-
         self.D5_TE = QLineEdit(self.dialog5)
         self.D5_TE.setStyleSheet("background-color: white;")
         self.D5_TE.setPlaceholderText('중요성 금액을 입력하세요')
 
-        ### Layout 구성=====================================================================
+        ### 최상단 Layout
         layout1 = QGridLayout()
         layout1.addWidget(self.rbtn1, 0, 0)
         layout1.addWidget(self.rbtn2, 0, 1)
@@ -1530,23 +1534,26 @@ class MyApp(QWidget):
         layout1.addWidget(self.Addnew5.UserLabel, 7, 0)
         layout1.addWidget(self.Addnew5.User, 7, 1)
 
+        ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
         layout2.addWidget(self.btn2)
         layout2.addWidget(self.btnDialog)
-
         layout2.setContentsMargins(-1, 10, -1, -1)
 
+        ### 차대변 체크박스 Layout
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
 
+        ### 수자동 체크박스 Layout
         layout_am = QHBoxLayout()
         layout_am.addWidget(labelManual)
         layout_am.addWidget(self.Manual)
         layout_am.addWidget(self.Auto)
 
+        ### Main Layout
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel5)
@@ -1558,10 +1565,8 @@ class MyApp(QWidget):
         self.dialog5.setLayout(main_layout)
         self.dialog5.setGeometry(100, 100, 1000, 600)
 
-        # ? 제거
+        ### Main Layout 창 크기 조절, 상단 ? 삭제, 창 라벨 설정
         self.dialog5.setWindowFlags(Qt.WindowCloseButtonHint)
-
-        ### 공통 지정
         self.dialog5.setWindowTitle('Scenario2')
         self.dialog5.setWindowModality(Qt.NonModal)
         self.dialog5.show()
@@ -2490,18 +2495,22 @@ class MyApp(QWidget):
         self.dialog9.setWindowModality(Qt.NonModal)
         self.dialog9.show()
 
-    def Dialog10(self):  # 실제 시나리오 7번
+    ### 시나리오 7. 특정 전표입력자(W)에 의해 생성된 전표
+    def Dialog10(self):
         self.Addnew10 = AddForm()
         self.Addnew10.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew10.Acount))
 
+        ### 상단 라벨
         Titlelabel10 = QLabel('7. 특정 전표입력자(W)에 의해 생성된 전표\n')
         Titlelabel10.setStyleSheet("color: white; font-weight : bold")
 
+        ### 다이얼로그 추가 및 디자인 설정
         self.dialoglist.add(10)
         self.dialog10 = QDialog()
         self.dialog10.setStyleSheet('background-color: #2E2E38')
         self.dialog10.setWindowIcon(QIcon(self.resource_path("./EY_logo.png")))
 
+        ### 계정 트리
         cursor = self.cnxn.cursor()
 
         sql = '''
@@ -2552,18 +2561,18 @@ class MyApp(QWidget):
                         self.new_tree.grandgrandchild.setCheckState(0, Qt.Unchecked)
         self.new_tree.get_selected_leaves()  # 초기값 모두 선택 (추가)
 
+        ### 차변 / 대변 체크 박스
         labelDC = QLabel('차변/대변 : ', self.dialog10)
         labelDC.setStyleSheet("color: white;")
         font1 = labelDC.font()
         font1.setBold(True)
         labelDC.setFont(font1)
-
-        # 차변/대변 체크박스로 구현
         self.checkC = QCheckBox('Credit', self.dialog10)
         self.checkD = QCheckBox('Debit', self.dialog10)
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
+        ### 수동 / 자동 체크 박스
         labelManual = QLabel('수동/자동 : ', self.dialog10)
         labelManual.setStyleSheet("color: white; font-weight : bold")
         self.Manual = QCheckBox('수동', self.dialog10)
@@ -2571,24 +2580,23 @@ class MyApp(QWidget):
         self.Manual.setStyleSheet("color: white;")
         self.Auto.setStyleSheet("color: white;")
 
+        ### 데이터 추출 버튼
         self.btn2 = QPushButton('   Extract Data', self.dialog10)
         self.btn2.setStyleSheet('color:white;  background-image : url(./bar.png)')
         self.btn2.clicked.connect(self.Thread10)
-
         font9 = self.btn2.font()
         font9.setBold(True)
         self.btn2.setFont(font9)
+        self.btn2.resize(110, 30)
 
+        ### 창 닫기 버튼
         self.btnDialog = QPushButton("   Close", self.dialog10)
         self.btnDialog.setStyleSheet(
             'color:white;  background-image : url(./bar.png)')
         self.btnDialog.clicked.connect(self.dialog_close10)
-
         font10 = self.btnDialog.font()
         font10.setBold(True)
         self.btnDialog.setFont(font10)
-
-        self.btn2.resize(110, 30)
         self.btnDialog.resize(110, 30)
 
         ### JE Line / JE 라디오 버튼
@@ -2604,60 +2612,62 @@ class MyApp(QWidget):
         font12.setBold(True)
         self.rbtn2.setFont(font12)
 
+        ### 특정 전표입력자 입력
         labelKeyword = QLabel('전표입력자* : ', self.dialog10)
         labelKeyword.setStyleSheet("color: yellow;")
         font1 = labelKeyword.font()
         font1.setBold(True)
         labelKeyword.setFont(font1)
 
+        ### 계정 선택 라벨
         label_tree = QLabel('특정 계정명 : ', self.dialog10)
         label_tree.setStyleSheet("color: white;")
         font4 = label_tree.font()
         font4.setBold(True)
         label_tree.setFont(font4)
 
+        ### 중요성 금액
         labelTE = QLabel('중요성 금액 : ', self.dialog10)
         labelTE.setStyleSheet("color: white;")
-
         font4 = labelTE.font()
         font4.setBold(True)
         labelTE.setFont(font4)
-
         self.D10_TE = QLineEdit(self.dialog10)
         self.D10_TE.setStyleSheet("background-color: white;")
         self.D10_TE.setPlaceholderText('중요성 금액을 입력하세요')
 
+        ### 시나리오 번호
         labelSheet = QLabel('시나리오 번호* : ', self.dialog10)
         labelSheet.setStyleSheet("color: yellow;")
-
         font5 = labelSheet.font()
         font5.setBold(True)
         labelSheet.setFont(font5)
-
         self.D10_Sheet = QLineEdit(self.dialog10)
         self.D10_Sheet.setStyleSheet("background-color: white;")
         self.D10_Sheet.setPlaceholderText('※ 입력 예시 : F01')
 
-        self.D10_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
-        self.D10_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+        ### LineEdit만 창 크기에 따라 확대/축소
+        self.D10_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.D10_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
+        ### 차대변 체크박스 Layout
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
 
+        ### 수자동 체크박스 Layout
         layout_am = QHBoxLayout()
         layout_am.addWidget(labelManual)
         layout_am.addWidget(self.Manual)
         layout_am.addWidget(self.Auto)
 
+        ### 최상단 Layout
         layout1 = QGridLayout()
-
         layout1.addWidget(self.rbtn1, 0, 0)
         layout1.addWidget(self.rbtn2, 0, 1)
         layout1.addWidget(labelSheet, 1, 0)
         layout1.addWidget(self.D10_Sheet, 1, 1)
-
         layout1.addWidget(labelKeyword, 2, 0)
         layout1.addWidget(self.Addnew10.User, 2, 1)
         layout1.addWidget(labelTE, 3, 0)
@@ -2669,14 +2679,15 @@ class MyApp(QWidget):
         layout1.addWidget(self.Addnew10.sourceLabel, 7, 0)
         layout1.addWidget(self.Addnew10.source, 7, 1)
 
+        ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
         layout2.addStretch()
         layout2.addStretch()
         layout2.addWidget(self.btn2)
         layout2.addWidget(self.btnDialog)
-
         layout2.setContentsMargins(-1, 10, -1, -1)
 
+        ### Main Layout
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel10)
@@ -2688,9 +2699,8 @@ class MyApp(QWidget):
         self.dialog10.setLayout(main_layout)
         self.dialog10.setGeometry(100, 100, 1000, 600)
 
-        # ? 제거
+        ### Main Layout 창 크기 조절, 상단 ? 삭제, 창 라벨 설정
         self.dialog10.setWindowFlags(Qt.WindowCloseButtonHint)
-
         self.dialog10.setWindowTitle("Scenario7")
         self.dialog10.setWindowModality(Qt.NonModal)
         self.dialog10.show()
@@ -2973,16 +2983,17 @@ class MyApp(QWidget):
 
         self.AddnewC = AddForm()
 
+        ### 중요성 금액
         label_TE = QLabel('중요성 금액 : ', self.dialog12)
         label_TE.setStyleSheet("color: white;")
         font14 = label_TE.font()
         font14.setBold(True)
         label_TE.setFont(font14)
-
         self.D12C_TE = QLineEdit(self.dialog12)
         self.D12C_TE.setStyleSheet("background-color: white;")
         self.D12C_TE.setPlaceholderText('중요성 금액을 입력하세요')
 
+        ### 데이터 추출 버튼
         self.btn2 = QPushButton('   Extract Data', self.dialog12)
         self.btn2.setStyleSheet('color:white;  background-image : url(./bar.png)')
         self.btn2.clicked.connect(self.ThreadC)
@@ -2990,6 +3001,7 @@ class MyApp(QWidget):
         font9.setBold(True)
         self.btn2.setFont(font9)
 
+        ### 창 닫기 버튼
         self.btnDialog2 = QPushButton("   Close", self.dialog12)
         self.btnDialog2.setStyleSheet('color:white;  background-image : url(./bar.png)')
         self.btnDialog2.clicked.connect(self.dialog_close12)
@@ -2999,7 +3011,7 @@ class MyApp(QWidget):
         self.btn2.resize(110, 30)
         self.btnDialog2.resize(110, 30)
 
-        # JE Line / JE 라디오 버튼
+        ### JE Line / JE 선택 라디오 버튼
         self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog12)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
@@ -3012,18 +3024,18 @@ class MyApp(QWidget):
         font12.setBold(True)
         self.rbtn2.setFont(font12)
 
+        ### 기능영역
         self.checkF2 = QCheckBox('유', self.dialog12)
         self.checkF2.setStyleSheet("color: white;")
         labelBlank2 = QLabel('ㅤ', self.dialog12)
         labelBlank2.setStyleSheet("color: white;")
-
         labelFP2 = QLabel('기능영역 : ', self.dialog12)
         labelFP2.setStyleSheet("color: white;")
         font112 = labelFP2.font()
         font112.setBold(True)
         labelFP2.setFont(font12)
 
-        # 입력된 Cursor문
+        ### 입력된 Cursor문
         labelCursortext = QLabel('입력된 Cursor : ', self.dialog12)
         labelCursortext.setStyleSheet("color: white;")
         font17 = labelCursortext.font()
@@ -3034,12 +3046,23 @@ class MyApp(QWidget):
         self.Cursortext.setReadOnly(True)
         self.Cursortext.setStyleSheet("background-color: white;")
 
+        ### 커서 파일 위치
         labelCursor = QLabel('Cursor 파일 위치* : ', self.dialog12)
         labelCursor.setStyleSheet("color: yellow;")
         font3 = labelCursor.font()
         font3.setBold(True)
         labelCursor.setFont(font3)
+        self.cursorCondition = QLineEdit(self.dialog12)
+        self.cursorCondition.setStyleSheet("background-color: white;")
+        self.cursorCondition.setPlaceholderText('Cursor 파일을 넣어주세요')
+        self.cursorFile = QPushButton('File Open')
+        self.cursorFile.setStyleSheet('color:white;  background-image : url(./bar.png)')
+        self.cursorFile.clicked.connect(self.CursorFileOpen)
+        font10 = self.cursorFile.font()
+        font10.setBold(True)
+        self.cursorFile.setFont(font10)
 
+        ### 커서 시트 위치
         listCursor = QLabel('Cursor Sheet 위치* : ', self.dialog12)
         listCursor.setStyleSheet("color: yellow;")
         font13 = listCursor.font()
@@ -3048,17 +3071,7 @@ class MyApp(QWidget):
         self.listCursor = QComboBox(self)
         self.listCursor.setStyleSheet("background-color: white;")
 
-        self.cursorCondition = QLineEdit(self.dialog12)
-        self.cursorCondition.setStyleSheet("background-color: white;")
-        self.cursorCondition.setPlaceholderText('Cursor 파일을 넣어주세요')
-
-        self.cursorFile = QPushButton('File Open')
-        self.cursorFile.setStyleSheet('color:white;  background-image : url(./bar.png)')
-        self.cursorFile.clicked.connect(self.CursorFileOpen)
-        font10 = self.cursorFile.font()
-        font10.setBold(True)
-        self.cursorFile.setFont(font10)
-
+        ### 시나리오 번호
         labelSheetc = QLabel('시나리오 번호* : ', self.dialog12)
         labelSheetc.setStyleSheet("color: yellow;")
         font5 = labelSheetc.font()
@@ -3068,6 +3081,7 @@ class MyApp(QWidget):
         self.D12_Sheetc.setStyleSheet("background-color: white;")
         self.D12_Sheetc.setPlaceholderText('※ 입력 예시 : F01')
 
+        ### 수동 / 자동 체크 박스
         labelManualC = QLabel('수동/자동 : ', self.dialog12)
         labelManualC.setStyleSheet("color: white; font-weight : bold")
         self.ManualC = QCheckBox('수동', self.dialog12)
@@ -3075,16 +3089,19 @@ class MyApp(QWidget):
         self.ManualC.setStyleSheet("color: white;")
         self.AutoC.setStyleSheet("color: white;")
 
+        ### 수자동 체크박스 Layout
         sublayout_amC = QHBoxLayout()
         sublayout_amC.addWidget(labelManualC)
         sublayout_amC.addWidget(self.ManualC)
         sublayout_amC.addWidget(self.AutoC)
 
+        ### 기능영역 체크박스 Layout
         sublayout000 = QHBoxLayout()
         sublayout000.addWidget(labelFP2)
         sublayout000.addWidget(self.checkF2)
         sublayout000.addWidget(labelBlank2)
 
+        ### 최상단 Layout
         sublayout5 = QGridLayout()
         sublayout5.addWidget(self.rbtn1, 0, 0)
         sublayout5.addWidget(self.rbtn2, 0, 1)
@@ -3100,11 +3117,13 @@ class MyApp(QWidget):
         sublayout5.addWidget(labelCursortext, 5, 0)
         sublayout5.addWidget(self.Cursortext, 5, 1)
 
+        ### 데이터 추출 / 창 닫기 버튼 Layout
         sublayout6 = QHBoxLayout()
         sublayout6.addStretch(2)
         sublayout6.addWidget(self.btn2)
         sublayout6.addWidget(self.btnDialog2)
 
+        ### Main Layout
         main_layout2 = QVBoxLayout()
         main_layout2.addWidget(TitlelabelC)
         main_layout2.addLayout(sublayout5)
@@ -3149,7 +3168,8 @@ class MyApp(QWidget):
             except:
                 self.MessageBox_Open("선택된 파일이 Excel 파일이 아닙니다.")
 
-    def Dialog13(self):  # 실제 시나리오 9번
+    ### 시나리오 9. 연속된 숫자로 끝나는 금액 검토
+    def Dialog13(self):
         self.Addnew13 = AddForm()
         self.Addnew13.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew13.Acount))
 
@@ -3607,18 +3627,22 @@ class MyApp(QWidget):
         self.dialog14.setWindowModality(Qt.NonModal)
         self.dialog14.show()
 
-    def Dialog15(self):  # 실제 시나리오 11번
+    ### 시나리오 11. 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토
+    def Dialog15(self):
         self.Addnew15 = AddForm()
         self.Addnew15.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew15.Acount))
+
+        ### 상단 라벨
         Titlelabel15 = QLabel('11. 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토\n')
         Titlelabel15.setStyleSheet("color: white; font-weight : bold")
 
+        ### 다이얼로그 추가 및 디자인 설정
         self.dialoglist.add(15)
         self.dialog15 = QDialog()
         self.dialog15.setStyleSheet('background-color: #2E2E38')
         self.dialog15.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
 
-        # 트리 작업
+        ### 계정 트리
         cursor = self.cnxn.cursor()
         sql = '''
                          SELECT 											
@@ -3671,8 +3695,6 @@ class MyApp(QWidget):
         font9 = self.btn2.font()
         font9.setBold(True)
         self.btn2.setFont(font9)
-
-        # 추후 Thread15 함수 추가 예정 (기능 연결 시)
         self.btn2.clicked.connect(self.Thread15)
 
         ### 버튼 2 - Close
@@ -3684,7 +3706,7 @@ class MyApp(QWidget):
         font10.setBold(True)
         self.btnDialog.setFont(font10)
 
-        # JE Line / JE 라디오 버튼
+        ### JE Line / JE 선택 라디오 버튼
         self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog15)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
@@ -3711,7 +3733,6 @@ class MyApp(QWidget):
         ### 라벨 3 - 시트명
         labelSheet = QLabel('시나리오 번호* : ', self.dialog15)
         labelSheet.setStyleSheet("color: yellow;")
-
         font5 = labelSheet.font()
         font5.setBold(True)
         labelSheet.setFont(font5)
@@ -3720,14 +3741,13 @@ class MyApp(QWidget):
         self.D15_Sheet = QLineEdit(self.dialog15)
         self.D15_Sheet.setStyleSheet("background-color: white;")
         self.D15_Sheet.setPlaceholderText('※ 입력 예시 : F01')
-
         label_tree = QLabel('특정 계정명 :           ', self.dialog15)
         label_tree.setStyleSheet("color: white;")
         font4 = label_tree.font()
         font4.setBold(True)
         label_tree.setFont(font4)
 
-        # 차변/대변 체크박스로 구현
+        ### 차변 / 대변 체크 박스
         labelDC = QLabel('차변/대변 : ', self.dialog15)
         labelDC.setStyleSheet("color: white;")
         font1 = labelDC.font()
@@ -3738,6 +3758,7 @@ class MyApp(QWidget):
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
+        ### 수동 / 자동 체크 박스
         labelManual = QLabel('수동/자동 : ', self.dialog15)
         labelManual.setStyleSheet("color: white; font-weight : bold")
         self.Manual = QCheckBox('수동', self.dialog15)
@@ -3745,10 +3766,11 @@ class MyApp(QWidget):
         self.Manual.setStyleSheet("color: white;")
         self.Auto.setStyleSheet("color: white;")
 
-        self.D15_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
-        self.D15_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+        ### LineEdit만 창 크기에 따라 확대/축소
+        self.D15_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.D15_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        ### 요소 배치
+        ### 최상단 Layout
         layout1 = QGridLayout()
         layout1.addWidget(self.rbtn1, 0, 0)
         layout1.addWidget(self.rbtn2, 0, 1)
@@ -3765,23 +3787,26 @@ class MyApp(QWidget):
         layout1.addWidget(self.Addnew15.UserLabel, 7, 0)
         layout1.addWidget(self.Addnew15.User, 7, 1)
 
+        ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
         layout2.addWidget(self.btn2)
         layout2.addWidget(self.btnDialog)
-
         layout2.setContentsMargins(-1, 10, -1, -1)
 
+        ### 차대변 체크박스 Layout
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
 
+        ### 수자동 체크박스 Layout
         layout_am = QHBoxLayout()
         layout_am.addWidget(labelManual)
         layout_am.addWidget(self.Manual)
         layout_am.addWidget(self.Auto)
 
+        ### Main Layout
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel15)
@@ -3793,9 +3818,8 @@ class MyApp(QWidget):
         self.dialog15.setLayout(main_layout)
         self.dialog15.setGeometry(100, 100, 1000, 600)
 
-        # ? 제거
+        ### Main Layout 창 크기 조절, 상단 ? 삭제, 창 라벨 설정
         self.dialog15.setWindowFlags(Qt.WindowCloseButtonHint)
-
         self.dialog15.setWindowTitle('Scenario11')
         self.dialog15.setWindowModality(Qt.NonModal)
         self.dialog15.show()
@@ -3995,19 +4019,22 @@ class MyApp(QWidget):
         self.dialog16.setWindowModality(Qt.NonModal)
         self.dialog16.show()
 
-    def Dialog17(self):  # 실제 시나리오 13번
+    ### 시나리오 13. 전표 입력자와 승인자가 동일한 전표
+    def Dialog17(self):
         self.Addnew17 = AddForm()
         self.Addnew17.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew17.Acount))
 
+        ### 상단 라벨
         Titlelabel17 = QLabel('13. 전표 입력자와 승인자가 동일한 전표\n')
         Titlelabel17.setStyleSheet("color: white; font-weight : bold")
 
+        ### 다이얼로그 추가 및 디자인 설정
         self.dialoglist.add(17)
         self.dialog17 = QDialog()
         self.dialog17.setStyleSheet('background-color: #2E2E38')
         self.dialog17.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
 
-        # 트리 작업
+        ### 계정 트리
         cursor = self.cnxn.cursor()
         sql = '''
                                  SELECT 											
@@ -4060,15 +4087,12 @@ class MyApp(QWidget):
         font9 = self.btn2.font()
         font9.setBold(True)
         self.btn2.setFont(font9)
-
-        # 추후 Thread17 함수 추가 예정 (기능 연결 시)
         self.btn2.clicked.connect(self.Thread17)
 
         ### 버튼 2 - Close
         self.btnDialog = QPushButton('   Close', self.dialog17)
         self.btnDialog.setStyleSheet('color:white;  background-image : url(./bar.png)')
         self.btnDialog.clicked.connect(self.dialog_close17)
-
         font10 = self.btnDialog.font()
         font10.setBold(True)
         self.btnDialog.setFont(font10)
@@ -4093,7 +4117,6 @@ class MyApp(QWidget):
         font1 = label_TE.font()
         font1.setBold(True)
         label_TE.setFont(font1)
-
         self.D17_TE = QLineEdit(self.dialog17)
         self.D17_TE.setStyleSheet('background-color: white;')
         self.D17_TE.setPlaceholderText('중요성 금액을 입력하세요')
@@ -4101,7 +4124,6 @@ class MyApp(QWidget):
         ### 라벨 3 - 시트명
         labelSheet = QLabel('시나리오 번호* : ', self.dialog17)
         labelSheet.setStyleSheet("color: yellow;")
-
         font5 = labelSheet.font()
         font5.setBold(True)
         labelSheet.setFont(font5)
@@ -4110,14 +4132,13 @@ class MyApp(QWidget):
         self.D17_Sheet = QLineEdit(self.dialog17)
         self.D17_Sheet.setStyleSheet("background-color: white;")
         self.D17_Sheet.setPlaceholderText('※ 입력 예시 : F01')
-
         label_tree = QLabel('특정 계정명 : ', self.dialog17)
         label_tree.setStyleSheet("color: white;")
         font4 = label_tree.font()
         font4.setBold(True)
         label_tree.setFont(font4)
 
-        # 차변/대변 체크박스로 구현
+        ### 차변 / 대변 체크 박스
         labelDC = QLabel('차변/대변 : ', self.dialog17)
         labelDC.setStyleSheet("color: white;")
         font1 = labelDC.font()
@@ -4128,6 +4149,7 @@ class MyApp(QWidget):
         self.checkC.setStyleSheet("color: white;")
         self.checkD.setStyleSheet("color: white;")
 
+        ### 수동 / 자동 체크 박스
         labelManual = QLabel('수동/자동 : ', self.dialog17)
         labelManual.setStyleSheet("color: white; font-weight : bold")
         self.Manual = QCheckBox('수동', self.dialog17)
@@ -4135,10 +4157,11 @@ class MyApp(QWidget):
         self.Manual.setStyleSheet("color: white;")
         self.Auto.setStyleSheet("color: white;")
 
-        self.D17_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
-        self.D17_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # LineEdit만 창 크기에 따라 확대/축소
+        ### LineEdit만 창 크기에 따라 확대/축소
+        self.D17_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.D17_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        ### 요소 배치
+        ### 최상단 Layout
         layout1 = QGridLayout()
         layout1.addWidget(self.rbtn1, 0, 0)
         layout1.addWidget(self.rbtn2, 0, 1)
@@ -4155,23 +4178,26 @@ class MyApp(QWidget):
         layout1.addWidget(self.Addnew17.UserLabel, 7, 0)
         layout1.addWidget(self.Addnew17.User, 7, 1)
 
+        ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
         layout2.addWidget(self.btn2)
         layout2.addWidget(self.btnDialog)
-
         layout2.setContentsMargins(-1, 10, -1, -1)
 
+        ### 차대변 체크박스 Layout
         layout_dc = QHBoxLayout()
         layout_dc.addWidget(labelDC)
         layout_dc.addWidget(self.checkD)
         layout_dc.addWidget(self.checkC)
 
+        ### 수자동 체크박스 Layout
         layout_am = QHBoxLayout()
         layout_am.addWidget(labelManual)
         layout_am.addWidget(self.Manual)
         layout_am.addWidget(self.Auto)
 
+        ### Main Layout
         main_layout = QVBoxLayout()
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel17)
@@ -4181,12 +4207,10 @@ class MyApp(QWidget):
         main_layout.addLayout(layout_am)
         main_layout.addLayout(layout2)
         self.dialog17.setLayout(main_layout)
-
         self.dialog17.setGeometry(100, 100, 1000, 600)
 
-        # ? 제거
+        ### Main Layout 창 크기 조절, 상단 ? 삭제, 창 라벨 설정
         self.dialog17.setWindowFlags(Qt.WindowCloseButtonHint)
-
         self.dialog17.setWindowTitle('Scenario13')
         self.dialog17.setWindowModality(Qt.NonModal)
         self.dialog17.show()
@@ -4359,22 +4383,26 @@ class MyApp(QWidget):
         self.Action.setWindowModality(Qt.NonModal)
         self.Action.show()
 
-    ###Thread End시 로딩창 종료 및 조건 팝업
+    ### 결과값과 관련한 팝업 함수 (시나리오 1번)
     def doneAction4(self):
         self.Action.close()
         self.timerVar.stop()
 
+        ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
             self.alertbox_open3()
 
+        ### JE Line 기준 추출 시
         elif self.rbtn1.isChecked():
 
+            ### 추출 데이터가 존재하지 않을 경우
             if 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N) + '회 이하인 전표가 '
                                                       + str(len(self.dataframe) - 1) + '건 추출되었습니다. <br> - TE 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
 
+            ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N)
                                                       + '회 이하인 작성자에 의해 생성된 전표가 '
@@ -4391,7 +4419,10 @@ class MyApp(QWidget):
 
             if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
+        ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+
+            ### 추출 데이터가 존재하지 않을 경우
             if 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가' + str(self.temp_N)
                                                       + '회 이하인 작성자에 의해 생성된 전표가 '
@@ -4410,14 +4441,19 @@ class MyApp(QWidget):
 
         self.th4.join()
 
+    ### 결과값과 관련한 팝업 함수 (시나리오 2번)
     def doneAction5(self):
         self.Action.close()
         self.timerVar.stop()
 
+        ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
             self.alertbox_open3()
 
+        ### JE Line 기준 추출 시
         elif self.rbtn1.isChecked():
+
+            ### 추출 데이터가 존재하지 않을 경우
             if 'No Data' in self.dataframe.columns.tolist():
 
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
@@ -4429,6 +4465,7 @@ class MyApp(QWidget):
 
 
 
+            ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
 
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
@@ -4448,7 +4485,10 @@ class MyApp(QWidget):
                                                       , QMessageBox.Ok)
             if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
+        ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+
+            ### 추출 데이터가 존재하지 않을 경우
             if 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
                                                       + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
@@ -4739,13 +4779,16 @@ class MyApp(QWidget):
                     self.dialog9.activateWindow()
         self.th9.join()
 
+    ### 결과값과 관련한 팝업 함수 (시나리오 7번)
     def doneAction10(self):
         self.Action.close()
         self.timerVar.stop()
 
+        ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
             self.alertbox_open3()
 
+        ### 추출 데이터가 존재하지 않을 경우
         if len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame(
                 {'No Data': [" 중요성금액: " + str(
@@ -4754,11 +4797,14 @@ class MyApp(QWidget):
 
             model = DataFrameModel(self.dataframe)
             self.viewtable.setModel(model)
+
+            ### JE Line 기준 추출 시
             if self.rbtn1.isChecked():
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
+            ### JE 기준 추출 시
             elif self.rbtn2.isChecked():
                 self.scenario_dic[self.tempSheet + '_Journals'] = self.dataframe
                 self.combo_sheet.addItem(self.tempSheet + '_Journals')
@@ -4834,12 +4880,17 @@ class MyApp(QWidget):
         self.th12.join()
 
     @pyqtSlot(str)
+    ### 결과값과 관련한 팝업 함수 (시나리오 8-2번)
     def doneActionC(self, cursortext):
         self.Action.close()
         self.timerVar.stop()
         self.Cursortext.setText(cursortext)
+
+        ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
             self.alertbox_open3()
+
+        ### 추출 데이터가 존재하지 않을 경우
         if len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame({'No Data': ['No Cursor']})
             model = DataFrameModel(self.dataframe)
@@ -4864,6 +4915,7 @@ class MyApp(QWidget):
             if buttonReply == QMessageBox.Ok:
                 self.dialog12.activateWindow()
 
+        ### 추출 데이터가 300건 초과일 경우
         elif len(self.dataframe) > 300:
             if self.rbtn1.isChecked():
                 buttonReply = QMessageBox.information(self, "라인수 추출", "[중요성 금액: " + str(self.temp_TE) + "] 라인수 "
@@ -4893,6 +4945,7 @@ class MyApp(QWidget):
                 self.dialog12.activateWindow()
         self.thC.join()
 
+    ### 결과값과 관련한 팝업 함수 (시나리오 9번)
     def doneAction13(self):
         self.Action.close()
         self.timerVar.stop()
@@ -5028,13 +5081,16 @@ class MyApp(QWidget):
                     self.dialog14.activateWindow()
         self.th14.join()
 
+    ### 결과값과 관련한 팝업 함수 (시나리오 11번)
     def doneAction15(self):
         self.Action.close()
         self.timerVar.stop()
 
+        ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
             self.alertbox_open3()
 
+        ### 추출 데이터가 존재하지 않을 경우
         if len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame(
                 {'No Data': [" 중요성금액: " + str(
@@ -5158,14 +5214,19 @@ class MyApp(QWidget):
 
         self.th16.join()
 
+    ### 결과값과 관련한 팝업 함수 (시나리오 13번)
     def doneAction17(self):
         self.Action.close()
         self.timerVar.stop()
 
+        ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
             self.alertbox_open3()
 
+        ### JE Line 기준 추출 시
         elif self.rbtn1.isChecked():
+
+            ### 추출 데이터가 존재하지 않을 경우
             if 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 전표입력자와 승인자가 동일한 전표를 검토한 결과 '
@@ -5173,6 +5234,7 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
 
+            ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 전표입력자와 승인자가 동일한 전표를 검토한 결과 '
@@ -5190,7 +5252,10 @@ class MyApp(QWidget):
 
             if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
+        ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+
+            ### 추출 데이터가 존재하지 않을 경우
             if 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 전표입력자와 승인자가 동일한 전표를 검토한 결과 '
@@ -5209,6 +5274,7 @@ class MyApp(QWidget):
 
         self.th17.join()
 
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 1번)
     def Thread4(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew4.SegmentBox1,
                                                                            self.Addnew4.SegmentBox2,
@@ -5220,7 +5286,7 @@ class MyApp(QWidget):
                                                                            self.Addnew4.UserDefine3,
                                                                            self.Addnew4.User, self.Addnew4.source,
                                                                            self.Manual, self.Auto)
-        self.temp_N = self.D4_N.text()  # 필수값
+        self.temp_N = self.D4_N.text()
         self.temp_TE = self.D4_TE.text()
         self.tempSheet = self.D4_Sheet.text()
 
@@ -5776,7 +5842,10 @@ class MyApp(QWidget):
                         except:
                             self.alertbox_open4('작성빈도수와 중요성금액을 숫자로만 입력해주시기 바랍니다.')  # 중요성금액이 실수가 아니고 작성빈도수가 정수가 아닌 경우
 
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 7번)
     def Thread10(self):
+
+        ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew10.SegmentBox1,
                                                                            self.Addnew10.SegmentBox2,
                                                                            self.Addnew10.SegmentBox3,
@@ -5788,20 +5857,23 @@ class MyApp(QWidget):
                                                                            self.Addnew10.User, self.Addnew10.source,
                                                                            self.Manual, self.Auto)
         self.tempTE = self.D10_TE.text()
-        self.tempSheet = self.D10_Sheet.text()  # 필수값
+        self.tempSheet = self.D10_Sheet.text()
 
+        ### 계정 미선택시 계정 조건 제거
         if self.Addnew10.Acount.toPlainText() == '':
             self.checked_account10 = ''
 
         else:
             self.checked_account10 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew10.Acount.toPlainText() + ')'
 
+        ### 필수 입력값 누락 검토
         if self.tempSheet == '':
             self.alertbox_open()
+
         elif self.Addnew10.User.text() == '':
             self.alertbox_open()
 
-        # 시트명 중복 확인
+        ### 시트명 중복 확인
         elif self.rbtn1.isChecked() and (
                 self.combo_sheet.findText(self.tempSheet + '_Result') != -1 or self.combo_sheet.findText(
             self.tempSheet + '_Reference') != -1):
@@ -5811,8 +5883,10 @@ class MyApp(QWidget):
             self.alertbox_open5()
 
         else:
+            ### 중요성 금액 미입력시 0원
             if self.tempTE == '': self.tempTE = 0
 
+            ### 계정 입력값 검토
             if self.check_account(self.checked_account10) != False:
                 try:
                     float(self.tempTE)
@@ -6226,7 +6300,9 @@ class MyApp(QWidget):
                     except:
                         self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')  # 중요성금액이 실수가 아닌 경우
 
+    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 11번)
     def Thread15(self):
+        ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew15.SegmentBox1,
                                                                            self.Addnew15.SegmentBox2,
                                                                            self.Addnew15.SegmentBox3,
@@ -6237,27 +6313,30 @@ class MyApp(QWidget):
                                                                            self.Addnew15.UserDefine3,
                                                                            self.Addnew15.User, self.Addnew15.source,
                                                                            self.Manual, self.Auto)
-        self.tempTE = self.D15_TE.text()
-        self.tempSheet = self.D15_Sheet.text()  # 필수값
+        self.tempTE = self.D15_TE.text() # 중요성 금액
+        self.tempSheet = self.D15_Sheet.text() # 시나리오 번호
 
+        ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
-                not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
+                not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
             self.debitcredit = ''
         elif self.checkD.isChecked():
             self.debitcredit = 'AND JournalEntries.Credit = 0'
         elif self.checkC.isChecked():  # Debit 이 0
             self.debitcredit = 'AND JournalEntries.Debit = 0'
 
+        ### 계정 미선택시 계정 조건 제거
         if self.Addnew15.Acount.toPlainText() == '':
             self.checked_account15 = ''
 
         else:
             self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew15.Acount.toPlainText() + ')'
 
+        ### 필수 입력값 누락 검토
         if self.tempSheet == '':
             self.alertbox_open()
 
-        # 시트명 중복 확인
+        ### 시트명 중복 확인
         elif self.rbtn1.isChecked() and (
                 self.combo_sheet.findText(self.tempSheet + '_Result') != -1 or self.combo_sheet.findText(
             self.tempSheet + '_Reference') != -1):
@@ -6269,9 +6348,11 @@ class MyApp(QWidget):
         else:
             if self.tempTE == '': self.tempTE = 0
 
+            ### 계정 입력 값 검토
             if self.check_account(self.checked_account15) != False:
 
                 try:
+                    ### 중요성 금액 실수값인지 확인
                     float(self.tempTE)
                     self.doAction()
                     self.th15 = Thread(target=self.extButtonClicked15)
@@ -6360,7 +6441,7 @@ class MyApp(QWidget):
                                                                            self.Addnew17.User, self.Addnew17.source,
                                                                            self.Manual, self.Auto)
         self.temp_TE = self.D17_TE.text()
-        self.tempSheet = self.D17_Sheet.text()  # 필수
+        self.tempSheet = self.D17_Sheet.text()
 
         ##Unselect all의 경우
         if self.Addnew17.Acount.toPlainText() == '':
@@ -7594,10 +7675,11 @@ class MyApp(QWidget):
                 self.viewtable.setModel(model)
             self.communicate9.closeApp.emit()
 
+    ### 쿼리문 관련 함수 (시나리오 7번)
     def extButtonClicked10(self):
         cursor = self.cnxn.cursor()
 
-        # sql문 수정
+        ### JE Line 추출
         if self.rbtn1.isChecked():
 
             sql = '''
@@ -8070,10 +8152,12 @@ class MyApp(QWidget):
         else:
             return "'{}'".format(row)
 
+    ### 쿼리문 관련 함수 (시나리오 8-2번)
     def extButtonClickedC(self):
         dflist = []
         cursorindex = []
 
+        ### 기능영역 선택시 (커서문 형식)
         if self.checkF2.isChecked():
             index = self.wbC[self.wbC.iloc[:, 16].notnull()].iloc[:, [0, 1, 5, 7, 8, 12]]
             index.iloc[:, 0] = index.iloc[:, 0].fillna('NULL')
@@ -8090,6 +8174,7 @@ class MyApp(QWidget):
                                    + str(index.iloc[i, 5]) + ")")
             cursortext = ',\n'.join(cursorindex)
 
+        ### 기능영역 선택하지 않을 시 (커서문 형식)
         else:
             index = self.wbC[self.wbC.iloc[:, 14].notnull()].iloc[:, [0, 4, 6, 10]]
             for i in range(len(index.columns)):
@@ -8102,8 +8187,8 @@ class MyApp(QWidget):
                                    + str(index.iloc[i, 3]) + ')')
             cursortext = ',\n'.join(cursorindex)
 
-        if not self.checkF2.isChecked():  # 기본
-            if self.rbtn1.isChecked():  # JE Line
+        if not self.checkF2.isChecked():  ### 기능영영 무
+            if self.rbtn1.isChecked():  ### JE Line
                 sql = '''
                     SET NOCOUNT ON		
                     --****************************************************Filter Table***************************************************																
@@ -8277,7 +8362,7 @@ class MyApp(QWidget):
                 '''.format(field=self.selected_project_id, cursor=cursortext, TE=self.temp_TE,
                            AutoManual=self.ManualAuto)
 
-            elif self.rbtn2.isChecked():  # JE
+            elif self.rbtn2.isChecked():  ### JE
                 sql = '''
                             SET NOCOUNT ON													
                             --****************************************************Filter Table***************************************************																
@@ -8456,8 +8541,8 @@ class MyApp(QWidget):
                                     '''.format(field=self.selected_project_id, cursor=cursortext,
                                                TE=self.temp_TE, AutoManual=self.ManualAuto)
 
-        else:  # 기능영역
-            if self.rbtn1.isChecked():  # JE Line
+        else:  ### 기능영역 유
+            if self.rbtn1.isChecked():  ### JE Line
                 sql = '''
                         SET NOCOUNT ON									
                         	--****************************************************Filter Table***************************************************																
@@ -8658,7 +8743,7 @@ class MyApp(QWidget):
                                     '''.format(field=self.selected_project_id, cursor=cursortext,
                                                TE=self.temp_TE, AutoManual=self.ManualAuto)
 
-            elif self.rbtn2.isChecked():  # JE
+            elif self.rbtn2.isChecked():  ### JE
                 sql = '''
                 SET NOCOUNT ON	
                 	--****************************************************Filter Table***************************************************																
@@ -8907,6 +8992,7 @@ class MyApp(QWidget):
             self.viewtable.setModel(model)
             self.communicateC.closeApp2.emit(cursortext)
 
+    ### 쿼리문 관련 함수 (시나리오 9번)
     def extButtonClicked13(self):
 
         ### 쿼리 연동
@@ -9225,10 +9311,11 @@ class MyApp(QWidget):
                 self.viewtable.setModel(model)
             self.communicate14.closeApp.emit()
 
+    ### 쿼리문 관련 함수 (시나리오 11번)
     def extButtonClicked15(self):
         cursor = self.cnxn.cursor()
 
-        # sql문 수정
+        ### JE Line
         if self.rbtn1.isChecked():
 
             sql = '''
@@ -9274,6 +9361,7 @@ class MyApp(QWidget):
 
             self.dataframe = pd.read_sql(sql, self.cnxn)
 
+        ### JE
         elif self.rbtn2.isChecked():
 
             sql = '''
@@ -9543,6 +9631,7 @@ class MyApp(QWidget):
 
             self.communicate16.closeApp.emit()
 
+    ### 쿼리문 관련 함수 (시나리오 13번)
     def extButtonClicked17(self):
 
         ### 쿼리 연동
@@ -9592,6 +9681,7 @@ class MyApp(QWidget):
 
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
+        ### JE
         elif self.rbtn2.isChecked():
             sql_query = """
                             SET NOCOUNT ON				
