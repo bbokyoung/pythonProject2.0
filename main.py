@@ -21,6 +21,7 @@ from threading import Thread
 
 class AddForm(QGroupBox):
     """Dialog 창에서 공통 조건 입력 UI를 만드는 클래스"""
+
     def __init__(self):
         SegmentLabel = QLabel('Segment :            ')
         SegmentLabel.setStyleSheet("color: white; font-weight : bold")
@@ -89,6 +90,7 @@ class AddForm(QGroupBox):
 
 class Communicate(QObject):
     """ExtButtonClicked 함수에서 발생하는 시그널을 doneAction 함수로 보내는 함수"""
+
     def resource_path(self, relative_path):
         """PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수"""
         try:
@@ -103,6 +105,7 @@ class Communicate(QObject):
 
 class Form(QGroupBox):
     """CoA를 이용하여 계정 트리를 구축하는 클래스"""
+
     def resource_path(self, relative_path):
         """PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수"""
         try:
@@ -214,6 +217,7 @@ class Form(QGroupBox):
 
 class Form1(QGroupBox):
     """CoA를 이용하여 계정 트리를 구축하는 클래스"""
+
     def resource_path(self, relative_path):
         """PyInstaller에 의해 임시폴더에서 실행될 경우 임시폴더로 접근하는 함수"""
         try:
@@ -321,6 +325,7 @@ class Form1(QGroupBox):
             checked_name2 = checked_name2 + ',' + '\'' + i + '\''
 
         checked_name2 = checked_name2[1:]
+
 
 class DataFrameModel(QAbstractTableModel):
     """추출된 데이터를 Main UI에 출력하는 클래스"""
@@ -780,7 +785,7 @@ class MyApp(QWidget):
         if Segment5.text() != '':
             ConcatSQL3List.append('JournalEntries.Segment05')
         if UserDefine1.text() != '':
-            ConcatSQL3List.append('JournalEntries.UserDefined1')
+            ConcatSQL3List.append('CONVERT(CHAR(10), CONVERT(DATE, JournalEntries.UserDefined1), 23) AS UserDefined1')
         if UserDefine2.text() != '':
             ConcatSQL3List.append('JournalEntries.UserDefined2')
         if UserDefine3.text() != '':
@@ -1154,8 +1159,7 @@ class MyApp(QWidget):
             except:
                 self.MessageBox_Open("접근 권한이 없는 프로젝트 입니다.")
 
-
-    def Dialog4(self): # 실제 시나리오 1번
+    def Dialog4(self):  # 실제 시나리오 1번
         self.Addnew4 = AddForm()
         self.Addnew4.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew4.Acount))
 
@@ -1371,7 +1375,7 @@ class MyApp(QWidget):
         self.dialog4.setWindowModality(Qt.NonModal)
         self.dialog4.show()
 
-    def Dialog5(self): # 실제 시나리오 2번
+    def Dialog5(self):  # 실제 시나리오 2번
         self.Addnew5 = AddForm()
         self.Addnew5.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew5.Acount))
 
@@ -2255,10 +2259,10 @@ class MyApp(QWidget):
         self.dialog8.show()
 
     ### 시나리오 6. 전표 작성 빈도수가 N회 이하인 작성자에 의한 생성된 전표
-    def Dialog9(self): 
+    def Dialog9(self):
         self.Addnew9 = AddForm()
         self.Addnew9.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew9.Acount))
-        
+
         ### 상단 라벨
         Titlelabel9 = QLabel('6. 전표 작성 빈도수가 N회 이하인 작성자에 의한 생성된 전표\n')
         Titlelabel9.setStyleSheet("color: white; font-weight : bold")
@@ -2267,7 +2271,7 @@ class MyApp(QWidget):
         self.dialoglist.add(9)
         self.dialog9 = QDialog()
         groupbox = QGroupBox('접속 정보')
-        
+
         ### 계정 트리
         cursor = self.cnxn.cursor()
 
@@ -2486,7 +2490,7 @@ class MyApp(QWidget):
         self.dialog9.setWindowModality(Qt.NonModal)
         self.dialog9.show()
 
-    def Dialog10(self): # 실제 시나리오 7번
+    def Dialog10(self):  # 실제 시나리오 7번
         self.Addnew10 = AddForm()
         self.Addnew10.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew10.Acount))
 
@@ -3145,7 +3149,7 @@ class MyApp(QWidget):
             except:
                 self.MessageBox_Open("선택된 파일이 Excel 파일이 아닙니다.")
 
-    def Dialog13(self): # 실제 시나리오 9번
+    def Dialog13(self):  # 실제 시나리오 9번
         self.Addnew13 = AddForm()
         self.Addnew13.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew13.Acount))
 
@@ -3357,10 +3361,10 @@ class MyApp(QWidget):
         self.dialog13.show()
 
     ### 시나리오 10. 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트
-    def Dialog14(self): 
+    def Dialog14(self):
         self.Addnew14 = AddForm()
         self.Addnew14.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew14.Acount))
-        
+
         ### 상단 라벨
         Titlelabel14 = QLabel('10. 전표 description에 공란 또는 특정단어(key word)가 입력되어 있는 전표 리스트\n')
         Titlelabel14.setStyleSheet("color: white; font-weight : bold")
@@ -3603,7 +3607,7 @@ class MyApp(QWidget):
         self.dialog14.setWindowModality(Qt.NonModal)
         self.dialog14.show()
 
-    def Dialog15(self): # 실제 시나리오 11번
+    def Dialog15(self):  # 실제 시나리오 11번
         self.Addnew15 = AddForm()
         self.Addnew15.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew15.Acount))
         Titlelabel15 = QLabel('11. 증빙일과 전기일의 회계기간이 다른 전표 추출 및 검토\n')
@@ -3991,7 +3995,7 @@ class MyApp(QWidget):
         self.dialog16.setWindowModality(Qt.NonModal)
         self.dialog16.show()
 
-    def Dialog17(self): # 실제 시나리오 13번
+    def Dialog17(self):  # 실제 시나리오 13번
         self.Addnew17 = AddForm()
         self.Addnew17.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew17.Acount))
 
@@ -4431,7 +4435,8 @@ class MyApp(QWidget):
                                                       + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
                                                       + str(len(self.dataframe))
                                                       + ' 건 추출되었습니다. <br> - 중요성 금액('
-                                                      + str(self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
+                                                      + str(
+                    self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
 
             else:
@@ -4652,9 +4657,9 @@ class MyApp(QWidget):
             if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
         self.th8.join()
-        
+
     ### 결과값과 관련한 팝업 함수 (시나리오 6번)
-    def doneAction9(self):  
+    def doneAction9(self):
         self.Action.close()
         self.timerVar.stop()
 
@@ -4944,7 +4949,7 @@ class MyApp(QWidget):
     def doneAction14(self):
         self.Action.close()
         self.timerVar.stop()
-        
+
         ### 제외단어 Activate 체크 유무에 따른 tempword
         if self.D14_Key2C.isChecked():
             tempword = ", " + str(self.baseKey2) + "이/가 제외"
@@ -4973,7 +4978,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성금액(" + str(self.tempTE)
                                                       + ")을 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
-            ### JE 기준    
+            ### JE 기준
             else:
                 self.scenario_dic[self.tempSheet + '_Journals'] = self.dataframe
                 self.combo_sheet.addItem(self.tempSheet + '_Journals')
@@ -5204,7 +5209,6 @@ class MyApp(QWidget):
 
         self.th17.join()
 
-
     def Thread4(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew4.SegmentBox1,
                                                                            self.Addnew4.SegmentBox2,
@@ -5297,16 +5301,15 @@ class MyApp(QWidget):
 
         ### 인풋 값 변수로 받아오기
         self.tempSheet = self.D5_Sheet.text()  # 필수값 ###시트명
-        self.temp_TE = self.D5_TE.text() ### 중요성금액
+        self.temp_TE = self.D5_TE.text()  ### 중요성금액
 
         ##Unselect all의 경우
         if self.Addnew5.Acount.toPlainText() == '':
-            self.checked_account5 = "AND JournalEntries.GLAccountNumber IN ('')" ###당기 생성 계정이 없는 경우 고려
+            self.checked_account5 = "AND JournalEntries.GLAccountNumber IN ('')"  ###당기 생성 계정이 없는 경우 고려
 
         ##Select all이나 일부 체크박스가 선택된 경우
         else:
             self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew5.Acount.toPlainText() + ')'
-
 
         ### 예외처리 1 - 필수값 입력 누락
         if self.tempSheet == '' or self.checked_account5 == '':
@@ -5334,7 +5337,7 @@ class MyApp(QWidget):
                 if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                         not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
                     self.debitcredit = ''
-                elif self.checkD.isChecked(): # Credit 이 0
+                elif self.checkD.isChecked():  # Credit 이 0
                     self.debitcredit = 'AND JournalEntries.Credit = 0'
                 elif self.checkC.isChecked():  # Debit 이 0
                     self.debitcredit = 'AND JournalEntries.Debit = 0'
@@ -5433,23 +5436,23 @@ class MyApp(QWidget):
                 ### 추가 예외처리 (팝업)
                 except ValueError:
                     try:
-                        float(self.temp_TE) ### 중요성 금액이 실수가 아닌 경우
+                        float(self.temp_TE)  ### 중요성 금액이 실수가 아닌 경우
                     except:
                         try:
                             int(self.period1.text())
                             int(self.period2.text())
                             self.alertbox_open2('중요성 금액')
                         except:
-                            self.alertbox_open2('입력일과 중요성 금액') ### 중요성 금액과 입력일의 형식이 잘못되었을 경우
+                            self.alertbox_open2('입력일과 중요성 금액')  ### 중요성 금액과 입력일의 형식이 잘못되었을 경우
                     try:
                         int(self.period1.text())
                         int(self.period2.text())
                     except:
                         try:
                             float(self.temp_TE)
-                            self.alertbox_open2('입력일') ### 입력일의 형식이 잘못되었을 경우
+                            self.alertbox_open2('입력일')  ### 입력일의 형식이 잘못되었을 경우
                         except:
-                            self.alertbox_open2('입력일과 중요성 금액') ### 중요성 금액과 입력일의 형식이 잘못되었을 경우
+                            self.alertbox_open2('입력일과 중요성 금액')  ### 중요성 금액과 입력일의 형식이 잘못되었을 경우
 
     ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 4번)
     def Thread7(self):
@@ -5529,11 +5532,11 @@ class MyApp(QWidget):
                 a = a.strip()
                 try:
                     int(a)
-                    if len(a) == 8: ### 날짜 형식이 yyyyMMdd일 경우만 추가
+                    if len(a) == 8:  ### 날짜 형식이 yyyyMMdd일 경우만 추가
                         b = a
                         self.realDate_List.append(b)
                     else:
-                        self.alertbox_open19() ### 형식이 올바르지 않은 경우, 팝업
+                        self.alertbox_open19()  ### 형식이 올바르지 않은 경우, 팝업
                         return
                 except:
                     self.alertbox_open19()
@@ -5576,8 +5579,10 @@ class MyApp(QWidget):
             if self.temp_TE == '': self.temp_TE = 0
 
             ### 계정 미선택시 계정 조건 제거
-            if self.Addnew7.Acount.toPlainText() == '': self.checked_account7 = ''
-            else: self.checked_account7 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew7.Acount.toPlainText() + ')'
+            if self.Addnew7.Acount.toPlainText() == '':
+                self.checked_account7 = ''
+            else:
+                self.checked_account7 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew7.Acount.toPlainText() + ')'
 
             ### 계정 입력 값 검토
             if self.check_account(self.checked_account7) != False:
@@ -5678,19 +5683,19 @@ class MyApp(QWidget):
                     try:
                         int(self.tempN)
                         try:
-                            float(self.temp_TE) ### 중요성 금액이 실수가 아닌 경우
+                            float(self.temp_TE)  ### 중요성 금액이 실수가 아닌 경우
                         except:
                             self.alertbox_open2('중요성금액')
                     except:
                         try:
                             float(self.temp_TE)
-                            self.alertbox_open2('N') ### N이 정수가 아닌 경우
+                            self.alertbox_open2('N')  ### N이 정수가 아닌 경우
                         except:
-                            self.alertbox_open2('중요성금액과 N') ### 중요성 금액과 N의 형식이 잘못된 경우
-                            
+                            self.alertbox_open2('중요성금액과 N')  ### 중요성 금액과 N의 형식이 잘못된 경우
+
     ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 6번)
     def Thread9(self):
-        
+
         ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew9.SegmentBox1,
                                                                            self.Addnew9.SegmentBox2,
@@ -5703,34 +5708,34 @@ class MyApp(QWidget):
                                                                            self.Addnew9.User, self.Addnew9.source,
                                                                            self.Manual, self.Auto)
         self.tempN = self.D9_N.text()  # 전표 작성 빈도수 N회
-        self.tempTE = self.D9_TE.text() # 중요성 금액
-        self.tempSheet = self.D9_Sheet.text() # 시나리오 번호
-        
-         ### 계정 미선택시 계정 조건 제거
+        self.tempTE = self.D9_TE.text()  # 중요성 금액
+        self.tempSheet = self.D9_Sheet.text()  # 시나리오 번호
+
+        ### 계정 미선택시 계정 조건 제거
         if self.Addnew9.Acount.toPlainText() == '':
             self.checked_account9 = ''
 
         else:
             self.checked_account9 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew9.Acount.toPlainText() + ')'
 
-        ### 필수 입력값 누락 검토    
+        ### 필수 입력값 누락 검토
         if self.tempN == '' or self.tempSheet == '':
             self.alertbox_open()
-            
+
         ### Result & Reference 시나리오 번호(시트명) 중복 검토
         elif self.rbtn1.isChecked() and (
                 self.combo_sheet.findText(self.tempSheet + '_Result') != -1 or self.combo_sheet.findText(
             self.tempSheet + '_Reference') != -1):
             self.alertbox_open5()
-            
+
         ### Journals 시나리오 번호(시트명) 중복 검토
         elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
             self.alertbox_open5()
-            
+
         ### 중요성 금액 미입력시 0원
         else:
             if self.tempTE == '': self.tempTE = 0
-                
+
             ### 계정 입력 값 검토
             if self.check_account(self.checked_account9) != False:
                 try:
@@ -5738,24 +5743,24 @@ class MyApp(QWidget):
                     int(self.tempN)
                     ### 중요성 금액 실수값인지 확인
                     float(self.tempTE)
-                    
+
                     ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
                     if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                             not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
                         self.debitcredit = ''
-                        
-                    ### Debit을 선택했을 시, Credit이 0원    
-                    elif self.checkD.isChecked(): 
+
+                    ### Debit을 선택했을 시, Credit이 0원
+                    elif self.checkD.isChecked():
                         self.debitcredit = 'AND JournalEntries.Credit = 0'
-                    ### Credit을 선택했을 시, Debit이 0원    
-                    elif self.checkC.isChecked(): 
+                    ### Credit을 선택했을 시, Debit이 0원
+                    elif self.checkC.isChecked():
                         self.debitcredit = 'AND JournalEntries.Debit = 0'
 
                     self.doAction()
                     self.th9 = Thread(target=self.extButtonClicked9)
                     self.th9.daemon = True
                     self.th9.start()
-                    
+
                 ### 추가 예외처리 (팝업)
                 except ValueError:
                     try:
@@ -5763,13 +5768,13 @@ class MyApp(QWidget):
                         try:
                             float(self.tempTE)
                         except:
-                            self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.') # 중요성금액이 실수가 아닌 경우
+                            self.alertbox_open4('중요성금액을 숫자로만 입력해주시기 바랍니다.')  # 중요성금액이 실수가 아닌 경우
                     except:
                         try:
                             float(self.tempTE)
-                            self.alertbox_open4('작성빈도수를 숫자로만 입력해주시기 바랍니다.') # 작성빈도수가 정수가 아닌 경우
+                            self.alertbox_open4('작성빈도수를 숫자로만 입력해주시기 바랍니다.')  # 작성빈도수가 정수가 아닌 경우
                         except:
-                            self.alertbox_open4('작성빈도수와 중요성금액을 숫자로만 입력해주시기 바랍니다.') # 중요성금액이 실수가 아니고 작성빈도수가 정수가 아닌 경우
+                            self.alertbox_open4('작성빈도수와 중요성금액을 숫자로만 입력해주시기 바랍니다.')  # 중요성금액이 실수가 아니고 작성빈도수가 정수가 아닌 경우
 
     def Thread10(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew10.SegmentBox1,
@@ -5867,7 +5872,8 @@ class MyApp(QWidget):
                 ## 예외 처리 - 기능영역이 존재하지 않음에도 기능영역을 체크한 경우
                 if self.checkF.isChecked():
 
-                    check_CoAsegment_query = """SELECT Segment01 FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts]""".format(field=self.selected_project_id)
+                    check_CoAsegment_query = """SELECT Segment01 FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts]""".format(
+                        field=self.selected_project_id)
                     check_CoA = pd.read_sql(check_CoAsegment_query, self.cnxn)
 
                     if check_CoA.iloc[:, 0].isnull().sum() == len(check_CoA):
@@ -5876,13 +5882,13 @@ class MyApp(QWidget):
 
                 ### 계정 B 미입력 시, 계정 B 쿼리 조건문 삭제
                 if self.Addnew12_B.Acount.toPlainText() == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()' or self.Addnew12_B.Acount.toPlainText() == '':
-                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_A.Acount.toPlainText() +')'
+                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_A.Acount.toPlainText() + ')'
                     self.checked_accountB = ''
                     self.tempStateB = ''
 
                 ### 계정 B 입력시
                 else:
-                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_A.Acount.toPlainText() +')'
+                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_A.Acount.toPlainText() + ')'
                     self.checked_accountB = 'AND LVL4.Analysis_GL_Account_Number NOT IN (' + self.Addnew12_B.Acount.toPlainText() + ')'
 
                     ### 계정 B 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
@@ -5920,7 +5926,7 @@ class MyApp(QWidget):
 
             ### 추가 예외처리 (팝업)
             except ValueError:
-                self.alertbox_open2('중요성 금액') ### 중요성 금액이 실수가 아닌 경우
+                self.alertbox_open2('중요성 금액')  ### 중요성 금액이 실수가 아닌 경우
 
     ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 8-2번)
     def ThreadC(self):
@@ -6078,7 +6084,7 @@ class MyApp(QWidget):
                 return
 
             try:
-                self.temp_Continuous = re.sub(r"[\s]+",'', self.temp_Continuous)
+                self.temp_Continuous = re.sub(r"[\s]+", '', self.temp_Continuous)
             except:
                 self.MessageBox_Open("연속된 자릿수 입력이 잘못되었습니다.")
                 return
@@ -6110,7 +6116,7 @@ class MyApp(QWidget):
             self.th13 = Thread(target=self.extButtonClicked13)
             self.th13.daemon = True
             self.th13.start()
-            
+
     ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 10번)
     def Thread14(self):
         ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
@@ -6125,9 +6131,9 @@ class MyApp(QWidget):
                                                                            self.Addnew14.User, self.Addnew14.source,
                                                                            self.Manual, self.Auto)
 
-        self.tempTE = self.D14_TE.text() # 중요성 금액
-        self.tempSheet = self.D14_Sheet.text() # 시나리오 번호
-        
+        self.tempTE = self.D14_TE.text()  # 중요성 금액
+        self.tempSheet = self.D14_Sheet.text()  # 시나리오 번호
+
         ### 계정 미선택시 계정 조건 제거
         if self.Addnew14.Acount.toPlainText() == '':
             self.checked_account14 = ''
@@ -6138,7 +6144,7 @@ class MyApp(QWidget):
         ### 필수 입력값 누락 검토
         if self.tempSheet == '' or self.D14_Key.text().strip() == '':
             self.alertbox_open()
-            
+
         ### 제외 키워드를 activate한 상태에서 제외 키워드를 입력하지 않을 경우, 경고창 생성
         elif self.D14_Key2C.isChecked() and self.D14_Key2.text().strip() == '':
             self.alertbox_open6()
@@ -6146,11 +6152,11 @@ class MyApp(QWidget):
         ### Result 시나리오 번호(시트명) 중복 검토
         elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
             self.alertbox_open5()
-            
+
         ### Journals 시나리오 번호(시트명) 중복 검토
         elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
             self.alertbox_open5()
-            
+
         ### 콤마(,) 구분자를 이용하여 전표 적요 특정단어 입력 (포함 단어)
         else:
             self.baseKey = self.D14_Key.text().split(',')
@@ -6165,8 +6171,8 @@ class MyApp(QWidget):
                 else:
                     b = "(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%')"
                 self.baseKey_clean.append(b)
-                
-        ### 콤마(,) 구분자를 이용하여 전표 적요 특정단어 입력 (제외 단어)
+
+            ### 콤마(,) 구분자를 이용하여 전표 적요 특정단어 입력 (제외 단어)
             self.baseKey2 = self.D14_Key2.text().split(',')
             self.baseKey2_clean = []
             if self.D14_Key2C.isChecked():
@@ -6185,27 +6191,27 @@ class MyApp(QWidget):
 
             else:
                 self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ')'
-                
+
             ### 중요성 금액 미입력시 0원
             if self.tempTE == '': self.tempTE = 0
-                
+
             ### 계정 입력 값 검토
             if self.check_account(self.checked_account14) != False:
 
                 try:
                     ### 중요성 금액 실수값인지 확인
                     float(self.tempTE)
-                    
+
                     ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
                     if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                             not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
                         self.debitcredit = ''
-                        
+
                     ### Debit을 선택했을 시, Credit이 0원
-                    elif self.checkD.isChecked():  
+                    elif self.checkD.isChecked():
                         self.debitcredit = 'AND JournalEntries.Credit = 0'
                     ### Credit을 선택했을 시, Debit이 0원
-                    elif self.checkC.isChecked():  
+                    elif self.checkC.isChecked():
                         self.debitcredit = 'AND JournalEntries.Debit = 0'
 
                     self.doAction()
@@ -6218,8 +6224,7 @@ class MyApp(QWidget):
                     try:
                         float(self.tempTE)
                     except:
-                        self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.') # 중요성금액이 실수가 아닌 경우
-
+                        self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')  # 중요성금액이 실수가 아닌 경우
 
     def Thread15(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew15.SegmentBox1,
@@ -6340,7 +6345,7 @@ class MyApp(QWidget):
 
                 ### 추가 예외처리 (팝업)
                 except ValueError:
-                    self.alertbox_open2('중요성 금액') ### 중요성 금액이 실수가 아닌 경우
+                    self.alertbox_open2('중요성 금액')  ### 중요성 금액이 실수가 아닌 경우
 
     ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 13번)
     def Thread17(self):
@@ -6355,7 +6360,7 @@ class MyApp(QWidget):
                                                                            self.Addnew17.User, self.Addnew17.source,
                                                                            self.Manual, self.Auto)
         self.temp_TE = self.D17_TE.text()
-        self.tempSheet = self.D17_Sheet.text() # 필수
+        self.tempSheet = self.D17_Sheet.text()  # 필수
 
         ##Unselect all의 경우
         if self.Addnew17.Acount.toPlainText() == '':
@@ -6364,7 +6369,6 @@ class MyApp(QWidget):
         ##Select all이나 일부 체크박스가 선택된 경우
         else:
             self.checked_account17 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew17.Acount.toPlainText() + ')'
-
 
         ### 예외처리 1 - 필수값 누락
         if self.tempSheet == '':
@@ -6752,7 +6756,8 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				
                                 """.format(field=self.selected_project_id, TE=self.temp_TE,
-                                           Account=self.checked_account5, DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
+                                           Account=self.checked_account5, DebitCredit=self.debitcredit,
+                                           NewSQL=self.NewSQL,
                                            AutoManual=self.ManualAuto, NewSelect=self.NewSelect)
 
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
@@ -6803,7 +6808,8 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				                                                                       
                                 """.format(field=self.selected_project_id, TE=self.temp_TE,
-                                           Account=self.checked_account5, DebitCredit=self.debitcredit, NewSQL=self.NewSQL,
+                                           Account=self.checked_account5, DebitCredit=self.debitcredit,
+                                           NewSQL=self.NewSQL,
                                            AutoManual=self.ManualAuto, NewSelect=self.NewSelect)
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
@@ -7377,12 +7383,12 @@ class MyApp(QWidget):
                 self.viewtable.setModel(model)
 
             self.communicate8.closeApp.emit()
-            
+
     ### 쿼리문 관련 함수 (시나리오 6번)
     def extButtonClicked9(self):
-        
+
         ### 쿼리 연동
-        cursor = self.cnxn.cursor() 
+        cursor = self.cnxn.cursor()
 
         if self.rbtn1.isChecked():  # JE Line- Result
             sql = '''
@@ -7541,10 +7547,10 @@ class MyApp(QWidget):
         if self.rbtn1.isChecked():
             self.my_query.loc[self.tempSheet + "_Reference"] = [self.tempSheet + "_Reference", "Scenario06",
                                                                 "---Filtered Result_1  Scenario06---\n" + sql_refer]
-         ### JE Line- Result 추출 시, 쿼리 저장                                                        
+            ### JE Line- Result 추출 시, 쿼리 저장
             self.my_query.loc[self.tempSheet + "_Result"] = [self.tempSheet + "_Result", "Scenario06",
                                                              "---Filtered Result_2  Scenario06---\n" + sql]
-        ### JE- Journals 추출 시, 쿼리 저장                                                       
+        ### JE- Journals 추출 시, 쿼리 저장
         elif self.rbtn2.isChecked():
             self.my_query.loc[self.tempSheet + "_Journals"] = [self.tempSheet + "_Journals", "Scenario06",
                                                                "---Filtered JE  Scenario06---\n" + sql]
@@ -7564,11 +7570,11 @@ class MyApp(QWidget):
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
             self.communicate9.closeApp.emit()
-                                                             
+
         ### 0건 추출 시, 문구 반환
         elif len(self.dataframe) == 0:
             self.communicate9.closeApp.emit()
-                                                             
+
         ### 0건이 아닐 경우, 시트&데이터 추출
         else:
             if self.rbtn1.isChecked():
@@ -8073,27 +8079,27 @@ class MyApp(QWidget):
             index.iloc[:, 0] = index.iloc[:, 0].fillna('NULL')
             index.iloc[:, 3] = index.iloc[:, 3].fillna('NULL')
             for i in range(len(index.columns)):
-                index.iloc[:,i] = index.iloc[:,i].apply(lambda row : self.CursorChange(row))
+                index.iloc[:, i] = index.iloc[:, i].apply(lambda row: self.CursorChange(row))
 
             for i in range(len(index)):
                 cursorindex.append("(" + str(index.iloc[i, 0]) + ","
-                                       + str(index.iloc[i, 1]) + ","
-                                       + str(index.iloc[i, 2]) + ","
-                                       + str(index.iloc[i, 3]) + ","
-                                       + str(index.iloc[i, 4]) + ","
-                                       + str(index.iloc[i, 5]) + ")")
+                                   + str(index.iloc[i, 1]) + ","
+                                   + str(index.iloc[i, 2]) + ","
+                                   + str(index.iloc[i, 3]) + ","
+                                   + str(index.iloc[i, 4]) + ","
+                                   + str(index.iloc[i, 5]) + ")")
             cursortext = ',\n'.join(cursorindex)
 
         else:
             index = self.wbC[self.wbC.iloc[:, 14].notnull()].iloc[:, [0, 4, 6, 10]]
             for i in range(len(index.columns)):
-                index.iloc[:,i] = index.iloc[:,i].apply(lambda row : self.CursorChange(row))
+                index.iloc[:, i] = index.iloc[:, i].apply(lambda row: self.CursorChange(row))
 
             for i in range(len(index)):
-                cursorindex.append("(" + str(index.iloc[i, 0]) +  ','
-                                       + str(index.iloc[i, 1]) +  ','
-                                       + str(index.iloc[i, 2]) +  ','
-                                       + str(index.iloc[i, 3]) +  ')')
+                cursorindex.append("(" + str(index.iloc[i, 0]) + ','
+                                   + str(index.iloc[i, 1]) + ','
+                                   + str(index.iloc[i, 2]) + ','
+                                   + str(index.iloc[i, 3]) + ')')
             cursortext = ',\n'.join(cursorindex)
 
         if not self.checkF2.isChecked():  # 기본
@@ -9069,10 +9075,10 @@ class MyApp(QWidget):
                 self.viewtable.setModel(model)
 
             self.communicate13.closeApp.emit()
-                                                             
+
     ### 쿼리문 관련 함수 (시나리오 10번)
     def extButtonClicked14(self):
-        
+
         ### 쿼리 연동
         cursor = self.cnxn.cursor()
 
@@ -9177,7 +9183,7 @@ class MyApp(QWidget):
         if self.rbtn1.isChecked():
             self.my_query.loc[self.tempSheet + "_Result"] = [self.tempSheet + "_Result", "Scenario10",
                                                              "---Filtered Result  Scenario10---\n" + sql]
-        ### JE- Journals 추출 시, 쿼리 저장                                                     
+        ### JE- Journals 추출 시, 쿼리 저장
         elif self.rbtn2.isChecked():
             self.my_query.loc[self.tempSheet + "_Journals"] = [self.tempSheet + "_Journals", "Scenario10",
                                                                "---Filtered JE  Scenario10---\n" + sql]
@@ -9197,11 +9203,11 @@ class MyApp(QWidget):
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
             self.communicate14.closeApp.emit()
-            
+
         ### 0건 추출 시, 문구 반환
         elif len(self.dataframe) == 0:
             self.communicate14.closeApp.emit()
-            
+
         ### 0건이 아닐 경우, 시트&데이터 추출
         else:
             if self.rbtn1.isChecked():
@@ -9237,7 +9243,7 @@ class MyApp(QWidget):
                         , JournalEntries.Year AS 회계연도			
                         , JournalEntries.Period AS 회계기간			
                         , JournalEntries.EffectiveDate AS 전기일			
-                        , JournalEntries.UserDefined1 AS 증빙일 			
+                        , CONVERT(CHAR(10), CONVERT(DATE, JournalEntries.UserDefined1), 23)  AS 증빙일		
                         , JournalEntries.EntryDate AS 입력일			
                         , JournalEntries.Amount AS 금액			
                         , JournalEntries.FunctionalCurrencyCode AS 통화			
@@ -9282,7 +9288,7 @@ class MyApp(QWidget):
                         , JournalEntries.Year AS 회계연도			
                         , JournalEntries.Period AS 회계기간			
                         , JournalEntries.EffectiveDate AS 전기일			
-                        , JournalEntries.UserDefined1 AS 증빙일 			
+                        , CONVERT(CHAR(10), CONVERT(DATE, JournalEntries.UserDefined1), 23)  AS 증빙일		
                         , JournalEntries.EntryDate AS 입력일			
                         , JournalEntries.Amount AS 금액			
                         , JournalEntries.FunctionalCurrencyCode AS 통화			
