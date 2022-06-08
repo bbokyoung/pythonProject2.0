@@ -1921,7 +1921,7 @@ class MyApp(QWidget):
         labelDate.setFont(font3)
         self.D7_Date = QTextEdit(self.dialog7)
         self.D7_Date.setStyleSheet("background-color: white;")
-        self.D7_Date.setPlaceholderText('날짜를 추가해주세요 (법정 공휴일 및 주말은 포함되어 있습니다) \nex) 창립기념일, 근로자의 날')
+        self.D7_Date.setPlaceholderText('날짜를 추가해주세요 (법정 공휴일 및 주말은 포함되어 있습니다) \nex) 대체공휴일, 창립기념일, 근로자의 날')
 
         ### 특정 계정명
         label_tree = QLabel('특정 계정명 : ', self.dialog7)
