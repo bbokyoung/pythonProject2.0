@@ -4078,6 +4078,15 @@ class MyApp(QWidget):
         self.D16_TE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.D16_Sheet.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
+        ################################# Line Count 버튼 ##################################
+        self.btnCount = QPushButton("  Line Count", self.dialog16)
+        self.btnCount.setStyleSheet('color:white;  background-image : url(./bar.png)')
+        self.btnCount.clicked.connect(self.lineCount16)
+        fontlc = self.btnCount.font()
+        fontlc.setBold(True)
+        self.btnCount.setFont(fontlc)
+        self.btnCount.resize(110, 30)
+
         ### 입력일 Layout
         layout_date = QHBoxLayout()
         layout_date.addWidget(self.period1)
@@ -4105,6 +4114,7 @@ class MyApp(QWidget):
         ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
         layout2.addStretch(2)
+        layout2.addWidget(self.btnCount)
         layout2.addWidget(self.btn2)
         layout2.addWidget(self.btnDialog)
         layout2.setContentsMargins(-1, 10, -1, -1)
@@ -4466,7 +4476,6 @@ class MyApp(QWidget):
                                                         {AutoManual}
                                                         {DebitCredit}
                                                         ) 	
-                                                    ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber
                                                     DROP TABLE #TMPCOA
                                             '''.format(field=self.selected_project_id, TE=self.temp_TE, N=self.temp_N,
                                                        Account=self.checked_account4, NewSQL=self.NewSQL,
@@ -4605,8 +4614,7 @@ class MyApp(QWidget):
                                              {DebitCredit}
                                              {NewSQL}
                                              {AutoManual}	
-                                            )		
-                                    ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
+                                            )					
                                     DROP TABLE #TMPCOA				                                                                       
                                             """.format(field=self.selected_project_id, TE=self.temp_TE,
                                                        Account=self.checked_account5, DebitCredit=self.debitcredit,
@@ -5929,7 +5937,396 @@ class MyApp(QWidget):
                     self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
 
 
-    #def lineCount16(self):
+    def lineCount16(self):
+        ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
+        self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew16.SegmentBox1,
+                                                                           self.Addnew16.SegmentBox2,
+                                                                           self.Addnew16.SegmentBox3,
+                                                                           self.Addnew16.SegmentBox4,
+                                                                           self.Addnew16.SegmentBox5,
+                                                                           self.Addnew16.UserDefine1,
+                                                                           self.Addnew16.UserDefine2,
+                                                                           self.Addnew16.UserDefine3,
+                                                                           self.Addnew16.User, self.Addnew16.source,
+                                                                           self.Manual, self.Auto)
+
+        ### 중요성 금액
+        self.temp_TE = self.D16_TE.text()
+
+        ### 시나리오 번호
+        self.tempSheet = self.D16_Sheet.text()
+
+        ### 필수 입력값 누락 검토
+        if self.temp_TE.strip() == '' or self.tempSheet == '':
+            self.alertbox_open()
+
+        ### Result 시나리오 번호(시트명) 중복 검토
+        elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
+            self.alertbox_open5()
+
+        elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
+            self.alertbox_open5()
+
+        else:
+
+            ### 시작일이 yyyyMMdd 형식이 아닌 경우 - 숫자가 아닌 경우
+            if not self.period1.text().strip().isdigit() and self.period1.text().strip() != '':
+                print(1)
+                self.alertbox_open19();
+                return
+
+            ### 종료일이 yyyyMMdd 형식이 아닌 경우 - 숫자가 아닌 경우
+            if not self.period2.text().strip().isdigit() and self.period2.text().strip() != '':
+                print(2)
+                self.alertbox_open19();
+                return
+
+            ### 시작일이 yyyyMMdd 형식이 아닌 경우 - 8자리가 아닌 경우
+            if len(self.period1.text().strip()) != 8 and len(self.period1.text().strip()) != 0:
+                print(3)
+                self.alertbox_open19();
+                return
+
+            ### 종료일이 yyyyMMdd 형식이 아닌 경우 - 8자리가 아닌 경우
+            if len(self.period2.text().strip()) != 8 and len(self.period2.text().strip()) != 0:
+                print(4)
+                self.alertbox_open19();
+                return
+
+            self.EntryDate = ''
+            self.subEntryDate = ''
+            ### 시작일이 입력된 경우
+            if self.period1.text().strip() != '':
+                self.EntryDate += 'AND JournalEntries.EntryDate >= ' + "'" + self.period1.text().strip() + "'"
+                self.subEntryDate += 'AND JournalEntries1.EntryDate >= ' + "'" + self.period1.text().strip() + "'"
+            ### 종료일이 입력된 경우
+            if self.period2.text().strip() != '':
+                self.EntryDate += 'AND JournalEntries.EntryDate <= ' + "'" + self.period2.text().strip() + "'"
+                self.subEntryDate += 'AND JournalEntries1.EntryDate <= ' + "'" + self.period2.text().strip() + "'"
+
+            ### 계정 미선택시 계정 조건 제거
+            if self.Addnew16.Acount.toPlainText() == '':
+                self.checked_account16 = ''
+
+            else:
+                self.checked_account16 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew16.Acount.toPlainText() + ')'
+
+            ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
+            if (self.checkD.isChecked() and self.checkC.isChecked()) or (
+                    not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
+                self.debitcredit = ''
+
+            ### Debit을 선택했을 시, Credit이 0원
+            elif self.checkD.isChecked():
+                self.debitcredit = 'AND JournalEntries.Credit = 0'
+
+            ### Credit을 선택했을 시, Debit이 0원
+            elif self.checkC.isChecked():
+                self.debitcredit = 'AND JournalEntries.Debit = 0'
+
+            self.sub_checked_account16 = re.sub('JournalEntries.', 'JournalEntries1.', self.checked_account16)
+            self.sub_NewSQL = re.sub('JournalEntries.', 'JournalEntries1.', self.NewSQL)
+            self.sub_debitcredit = re.sub('JournalEntries.', 'JournalEntries1.', self.debitcredit)
+            self.sub_ManualAuto = re.sub('Details.', 'Details1.', self.ManualAuto)
+
+            ### 계정 입력 값 검토
+            if self.check_account(self.checked_account16) != False:
+                try:
+                    ### 중요성 금액 실수값인지 확인
+                    if float(self.temp_TE) == 0.:
+                        self.alertbox_open7();
+                        return
+                    cursor = self.cnxn.cursor()
+
+                    ### JE Line 추출
+                    if self.rbtn1.isChecked():
+                        if self.debitcredit != '':
+
+                            sql = '''
+                                            SET NOCOUNT ON				
+                                            SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                            GROUP BY CoA.GLAccountNumber;			
+                                            SELECT COUNT(*) AS cnt
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                #TMPCOA,			
+                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+
+                                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                            AND JournalEntries.JELINEID = Details.JENumberID 				
+
+                                            {Account}			
+                                            {Date}
+                                            {NewSQL}					
+                                            {DebitCredit}								
+                                            {AutoManual}	
+                                            AND (				
+                                                 SELECT SUM(ABS(JournalEntries1.Amount))			
+                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries1,			
+                                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details1		
+                                                 WHERE JournalEntries1.JELINEID = Details1.JENumberID 			
+                                                 AND Details1.JEIdentifierID = Details.JEIdentifierID	
+                                                 {SubAccount}
+                                                 {SubDate}
+                                                 {SubNewSQL}
+                                                 {SubDebitCredit}
+                                                 {SubAutoManual}			 
+                                                 GROUP BY Details1.JEIdentifierID			
+                                                ) >= {TE}	-- 중요성 금액(이상으로)							
+                                            DROP TABLE #TMPCOA										
+                                            '''.format(field=self.selected_project_id, Account=self.checked_account16,
+                                                       TE=self.temp_TE, Date=self.EntryDate,
+                                                       NewSQL=self.NewSQL, DebitCredit=self.debitcredit,
+                                                       AutoManual=self.ManualAuto,
+                                                       SubAccount=self.sub_checked_account16, SubDate=self.subEntryDate,
+                                                       SubNewSQL=self.sub_NewSQL,
+                                                       SubDebitCredit=self.sub_debitcredit,
+                                                       SubAutoManual=self.sub_ManualAuto)
+                            self.dataframe = pd.read_sql(sql, self.cnxn)
+                            buttonReply = QMessageBox.information(self, "라인수 추출",
+                                                                  "차/대변 합계가 중요성 금액(" + str(
+                                                                      self.temp_TE) + ")원 이상인 전표가 " + str(self.dataframe['cnt'].loc[0])
+                                                                  + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
+                                                                  + ")를 적용하였습니다. <br> [전표라인번호 기준]"
+                                                                  , QMessageBox.Ok)
+
+                            if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
+
+                        else:
+
+                            sql = """
+                                    		SET NOCOUNT ON				
+                                            SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                            GROUP BY CoA.GLAccountNumber;
+
+                                            (
+                                            SELECT COUNT(*) AS cnt
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                #TMPCOA,			
+                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+
+                                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                            AND JournalEntries.JELINEID = Details.JENumberID 				
+
+                                            {Account}			
+                                            {Date}
+                                            {NewSQL}												
+                                            {AutoManual}
+                                            AND JournalEntries.Credit = 0
+                                            AND (				
+                                                 SELECT SUM(ABS(JournalEntries1.Amount))			
+                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries1,			
+                                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details1		
+                                                 WHERE JournalEntries1.JELINEID = Details1.JENumberID 			
+                                                 AND Details1.JEIdentifierID = Details.JEIdentifierID	
+                                                 {SubAccount}
+                                                 {SubDate}
+                                                 {SubNewSQL}
+                                                 {SubAutoManual}
+                                                 AND JournalEntries1.Credit = 0					 
+                                                 GROUP BY Details1.JEIdentifierID			
+                                                ) >= {TE}	-- 중요성 금액(이상으로)			
+
+                                            )			
+                                            Union
+                                            (
+                                            SELECT COUNT(*) AS cnt
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                #TMPCOA,			
+                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+
+                                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                            AND JournalEntries.JELINEID = Details.JENumberID 				
+
+                                            {Account}			
+                                            {Date}
+                                            {NewSQL}												
+                                            {AutoManual}
+                                            AND JournalEntries.Debit = 0				
+
+                                            AND (				
+                                                 SELECT SUM(ABS(JournalEntries1.Amount))			
+                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries1,			
+                                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details1		
+                                                 WHERE JournalEntries1.JELINEID = Details1.JENumberID 			
+                                                 AND Details1.JEIdentifierID = Details.JEIdentifierID	
+                                                 {SubAccount}
+                                                 {SubDate}
+                                                 {SubNewSQL}
+                                                 {SubAutoManual}
+                                                 AND JournalEntries1.Debit = 0						 
+                                                 GROUP BY Details1.JEIdentifierID			
+                                                ) >= {TE}	-- 중요성 금액(이상으로)			
+
+                                            )
+                                            DROP TABLE #TMPCOA		
+                                            """.format(field=self.selected_project_id, Account=self.checked_account16,
+                                                       TE=self.temp_TE, Date=self.EntryDate,
+                                                       NewSQL=self.NewSQL,
+                                                       AutoManual=self.ManualAuto,
+                                                       SubAccount=self.sub_checked_account16, SubDate=self.subEntryDate,
+                                                       SubNewSQL=self.sub_NewSQL,
+                                                       SubAutoManual=self.sub_ManualAuto)
+
+                            self.dataframe = pd.read_sql(sql, self.cnxn)
+                            buttonReply = QMessageBox.information(self, "라인수 추출",
+                                                                  "차/대변 합계가 중요성 금액(" + str(
+                                                                      self.temp_TE) + ")원 이상인 전표가 " + str(
+                                                                      self.dataframe['cnt'].loc[0] + self.dataframe['cnt'].loc[1])
+                                                                  + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
+                                                                  + ")를 적용하였습니다. <br> [전표라인번호 기준]"
+                                                                  , QMessageBox.Ok)
+
+                            if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
+
+                    ### JE 추출
+                    elif self.rbtn2.isChecked():
+
+                        if self.debitcredit != '':
+                            sql = '''
+                                            SET NOCOUNT ON				
+                                            SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                            GROUP BY CoA.GLAccountNumber;			
+                                            SELECT	COUNT(*) as cnt		
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                #TMPCOA,			
+                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+
+                                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                            AND JournalEntries.JELINEID = Details.JENumberID 	
+                                            AND Details.JEIdentifierID IN
+                                                (			
+                                                 SELECT DISTINCT Details.JEIdentifierID		
+                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
+                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
+                                                 WHERE JournalEntries.JELINEID = Details.JENumberID 	
+                                                 {Account}			
+                                                 {Date}
+                                                 {NewSQL}					
+                                                 {DebitCredit}								
+                                                 {AutoManual}	
+                                                 AND (				
+                                                     SELECT SUM(ABS(JournalEntries1.Amount))			
+                                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries1,			
+                                                          [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details1		
+                                                     WHERE JournalEntries1.JELINEID = Details1.JENumberID 			
+                                                     AND Details1.JEIdentifierID = Details.JEIdentifierID	
+                                                     {SubAccount}
+                                                     {SubDate}
+                                                     {SubNewSQL}
+                                                     {SubDebitCredit}
+                                                     {SubAutoManual}			 
+                                                     GROUP BY Details1.JEIdentifierID			
+                                                     ) >= {TE}	-- 중요성 금액(이상으로)			
+                                                )			
+                                            DROP TABLE #TMPCOA										
+                                            '''.format(field=self.selected_project_id, Account=self.checked_account16,
+                                                       TE=self.temp_TE, Date=self.EntryDate,
+                                                       NewSQL=self.NewSQL, DebitCredit=self.debitcredit,
+                                                       AutoManual=self.ManualAuto,
+                                                       SubAccount=self.sub_checked_account16, SubDate=self.subEntryDate,
+                                                       SubNewSQL=self.sub_NewSQL,
+                                                       SubDebitCredit=self.sub_debitcredit,
+                                                       SubAutoManual=self.sub_ManualAuto)
+                        else:
+                            sql = """
+                                    		SET NOCOUNT ON				
+                                            SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                            GROUP BY CoA.GLAccountNumber;			
+
+                                            SELECT COUNT(*) AS cnt
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                #TMPCOA,			
+                                                [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+
+                                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                            AND JournalEntries.JELINEID = Details.JENumberID 				
+
+                                            AND Details.JEIdentifierID IN
+                                                (
+                                                    (
+                                                    SELECT DISTINCT Details.JEIdentifierID				
+
+                                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+
+                                                    WHERE JournalEntries.JELINEID = Details.JENumberID 				
+
+                                                    {Account}			
+                                                    {Date}
+                                                    {NewSQL}												
+                                                    {AutoManual}
+                                                    AND JournalEntries.Credit = 0
+                                                    AND (				
+                                                         SELECT SUM(ABS(JournalEntries1.Amount))			
+                                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries1,			
+                                                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details1		
+                                                         WHERE JournalEntries1.JELINEID = Details1.JENumberID 			
+                                                         AND Details1.JEIdentifierID = Details.JEIdentifierID	
+                                                         {SubAccount}
+                                                         {SubDate}
+                                                         {SubNewSQL}
+                                                         {SubAutoManual}
+                                                         AND JournalEntries1.Credit = 0					 
+                                                         GROUP BY Details1.JEIdentifierID			
+                                                        ) >= {TE}	-- 중요성 금액(이상으로)			 
+                                                    )			
+                                                Union
+                                                    (
+                                                    SELECT DISTINCT Details.JEIdentifierID		
+
+                                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,			
+                                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+
+                                                    WHERE JournalEntries.JELINEID = Details.JENumberID 				
+
+                                                    {Account}			
+                                                    {Date}
+                                                    {NewSQL}												
+                                                    {AutoManual}
+                                                    AND JournalEntries.Debit = 0				
+
+                                                    AND (				
+                                                         SELECT SUM(ABS(JournalEntries1.Amount))			
+                                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries1,			
+                                                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details1		
+                                                         WHERE JournalEntries1.JELINEID = Details1.JENumberID 			
+                                                         AND Details1.JEIdentifierID = Details.JEIdentifierID	
+                                                         {SubAccount}
+                                                         {SubDate}
+                                                         {SubNewSQL}
+                                                         {SubAutoManual}
+                                                         AND JournalEntries1.Debit = 0						 
+                                                         GROUP BY Details1.JEIdentifierID			
+                                                        ) >= {TE}	-- 중요성 금액(이상으로)			        
+                                                    )
+                                                )				
+                    		                DROP TABLE #TMPCOA			
+                                            """.format(field=self.selected_project_id, Account=self.checked_account16,
+                                                       TE=self.temp_TE, Date=self.EntryDate,
+                                                       NewSQL=self.NewSQL,
+                                                       AutoManual=self.ManualAuto,
+                                                       SubAccount=self.sub_checked_account16, SubDate=self.subEntryDate,
+                                                       SubNewSQL=self.sub_NewSQL,
+                                                       SubAutoManual=self.sub_ManualAuto)
+
+                        self.dataframe = pd.read_sql(sql, self.cnxn)
+                        buttonReply = QMessageBox.information(self, "라인수 추출",
+                                                              "차/대변 합계가 중요성 금액(" + str(
+                                                                  self.temp_TE) + ")원 이상인 전표가 " + str(self.dataframe['cnt'].loc[0])
+                                                              + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
+                                                              + ")를 적용하였습니다. <br> [전표라인번호 기준]"
+                                                              , QMessageBox.Ok)
+
+                        if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
+
+                ### 추가 예외처리 (팝업)
+                except ValueError:
+                    self.alertbox_open2('중요성 금액')  ### 중요성 금액이 실수가 아닌 경우
+
 
     def lineCount17(self):
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew17.SegmentBox1,
