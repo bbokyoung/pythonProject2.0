@@ -18,7 +18,6 @@ import numpy as np
 import openpyxl
 from threading import Thread
 
-
 class AddForm(QGroupBox):
     """Dialog 창에서 공통 조건 입력 UI를 만드는 클래스"""
 
@@ -889,7 +888,7 @@ class MyApp(QWidget):
             self.MessageBox_Open("서버가 선택되어 있지 않습니다.")
             return
 
-        server_path = f"DRIVER={{SQL Server}};SERVER={server};uid={user};pwd={password};DATABASE={db};trusted_connection=yes"
+        server_path = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};uid={user};pwd={password};DATABASE={db};trusted_connection=yes"
 
         # 예외처리 - 접속 정보 오류
         try:
@@ -4484,12 +4483,7 @@ class MyApp(QWidget):
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                    buttonReply = QMessageBox.information(self, '라인수 추출',
-                                                          '- 계정사용 빈도수가 ' + str(self.temp_N) + '회 이하인 전표가 '
-                                                          + str(self.dataframe['cnt'].loc[0]) + '건 추출되었습니다. <br> - TE 금액('
-                                                          + str(self.temp_TE) + ')을 적용하였습니다. <br>'
-                                                          , QMessageBox.Ok)
-
+                    buttonReply = QMessageBox.information(self, '라인 수 확인','라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>', QMessageBox.Ok)
                     if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
                 ### 예외처리 5 - 필수 입력값 타입 오류
@@ -4622,13 +4616,9 @@ class MyApp(QWidget):
                                                        AutoManual=self.ManualAuto)
                     self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
-                buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
-                                                      + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
-                                                      + str(self.dataframe['cnt'].loc[0])
-                                                      + ' 건 추출되었습니다. <br> - 중요성 금액('
-                                                      + str(self.temp_TE) + ')을 적용하였습니다. <br>'
-                                                      , QMessageBox.Ok)
-
+                buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                      '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                      QMessageBox.Ok)
                 if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
             ### 예외처리 5 - 필수 입력값 타입 오류
@@ -4777,14 +4767,9 @@ class MyApp(QWidget):
 
                             self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                        buttonReply = QMessageBox.information(self, "라인수 추출",
-                                                              "- 시작 시점 : " + str(
-                                                                  self.period1.text()) + " 종료 시점 : " + str(
-                                                                  self.period2.text())
-                                                              + "에 입력된 전표가 " + str(self.dataframe['cnt'].loc[0])
-                                                              + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                              + ")를 적용하였습니다. <br> [전표라인번호 기준]"
-                                                              , QMessageBox.Ok)
+                        buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                              '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                              QMessageBox.Ok)
 
                         if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
 
@@ -5010,11 +4995,9 @@ class MyApp(QWidget):
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                    buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
-                                                          + str(self.dataframe['cnt'].loc[0])
-                                                          + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                          + ")를 적용하였습니다. <br>"
-                                                          , QMessageBox.Ok)
+                    buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                          '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                          QMessageBox.Ok)
 
                     if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
 
@@ -5161,12 +5144,9 @@ class MyApp(QWidget):
 
                             self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                        buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
-                                                              + str(int(self.realNDate)) + "인 전표가 "
-                                                              + str(self.dataframe['cnt'].loc[0])
-                                                              + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                              + ")를 적용하였습니다. <br>"
-                                                              , QMessageBox.Ok)
+                        buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                              '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                              QMessageBox.Ok)
 
                         if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
@@ -5323,11 +5303,10 @@ class MyApp(QWidget):
                                                    AutoManual=self.ManualAuto)
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
-                    buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표작성 빈도수가 " + str(self.tempN)
-                                                          + "회 이하인 작성자에 의해 생성된 전표가 "
-                                                          + str(self.dataframe['cnt'].loc[0]) + "건 추출되었습니다. <br> - 중요성금액("
-                                                          + str(self.tempTE) + ")을 적용하였습니다. <br>"
-                                                          , QMessageBox.Ok)
+
+                    buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                          '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                          QMessageBox.Ok)
                     if buttonReply == QMessageBox.Ok: self.dialog9.activateWindow()
 
                 ### 추가 예외처리 (팝업)
@@ -5460,10 +5439,9 @@ class MyApp(QWidget):
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                    buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표가 "
-                                                          + str(self.dataframe['cnt'].loc[0]) + "건 추출되었습니다. <br> - 중요성금액: "
-                                                          + str(self.tempTE) + "을 적용하였습니다. <br>"
-                                                          , QMessageBox.Ok)
+                    buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                          '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                          QMessageBox.Ok)
                     if buttonReply == QMessageBox.Ok:self.dialog10.activateWindow()
 
                 except ValueError:
@@ -5624,11 +5602,9 @@ class MyApp(QWidget):
 
                 self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
-            buttonReply = QMessageBox.information(self, '라인수 추출',
-                                                  '- 연속된 숫자' + str(self.temp_Continuous) + '로 끝나는 금액을 검토한 결과 '
-                                                  + str(self.dataframe['cnt'].loc[0]) + ' 건 추출되었습니다. <br> - 중요성 금액('
-                                                  + str(self.temp_TE) + ')을 적용하였습니다. <br>'
-                                                  , QMessageBox.Ok)
+            buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                  '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                  QMessageBox.Ok)
 
             if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
@@ -5796,13 +5772,9 @@ class MyApp(QWidget):
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                    buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표 적요에 "
-                                                          + str(self.baseKey) + "이/가 포함"
-                                                          + tempword + "된 전표가 "
-                                                          + str(self.dataframe['cnt'].loc[0])
-                                                          + "건 추출되었습니다. <br> - 중요성금액(" + str(self.tempTE)
-                                                          + ")을 적용하였습니다. <br> [전표번호 기준]"
-                                                          , QMessageBox.Ok)
+                    buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                          '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                          QMessageBox.Ok)
                     if buttonReply == QMessageBox.Ok:self.dialog14.activateWindow()
 
                 ### 추가 예외처리 (팝업)
@@ -5927,10 +5899,9 @@ class MyApp(QWidget):
                                                DebitCredit=self.debitcredit)
                         self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                    buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표가 "
-                                                          + str(self.dataframe['cnt'].loc[0]) + "건 추출되었습니다. <br> - 중요성금액: "
-                                                          + str(self.tempTE) + "을 적용하였습니다. <br> [전표번호 기준]"
-                                                          , QMessageBox.Ok)
+                    buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                          '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                          QMessageBox.Ok)
                     if buttonReply == QMessageBox.Ok:self.dialog15.activateWindow()
 
                 except ValueError:
@@ -6083,12 +6054,10 @@ class MyApp(QWidget):
                                                        SubDebitCredit=self.sub_debitcredit,
                                                        SubAutoManual=self.sub_ManualAuto)
                             self.dataframe = pd.read_sql(sql, self.cnxn)
-                            buttonReply = QMessageBox.information(self, "라인수 추출",
-                                                                  "차/대변 합계가 중요성 금액(" + str(
-                                                                      self.temp_TE) + ")원 이상인 전표가 " + str(self.dataframe['cnt'].loc[0])
-                                                                  + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                                  + ")를 적용하였습니다. <br> [전표라인번호 기준]"
-                                                                  , QMessageBox.Ok)
+                            buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                                  '라인 수 : ' + str(
+                                                                      self.dataframe['cnt'].loc[0]) + '<br>',
+                                                                  QMessageBox.Ok)
 
                             if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
@@ -6170,13 +6139,10 @@ class MyApp(QWidget):
                                                        SubAutoManual=self.sub_ManualAuto)
 
                             self.dataframe = pd.read_sql(sql, self.cnxn)
-                            buttonReply = QMessageBox.information(self, "라인수 추출",
-                                                                  "차/대변 합계가 중요성 금액(" + str(
-                                                                      self.temp_TE) + ")원 이상인 전표가 " + str(
-                                                                      self.dataframe['cnt'].loc[0] + self.dataframe['cnt'].loc[1])
-                                                                  + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                                  + ")를 적용하였습니다. <br> [전표라인번호 기준]"
-                                                                  , QMessageBox.Ok)
+                            buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                                  '라인 수 : ' + str(
+                                                                      self.dataframe['cnt'].loc[0]) + '<br>',
+                                                                  QMessageBox.Ok)
 
                             if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
@@ -6314,12 +6280,9 @@ class MyApp(QWidget):
                                                        SubAutoManual=self.sub_ManualAuto)
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
-                        buttonReply = QMessageBox.information(self, "라인수 추출",
-                                                              "차/대변 합계가 중요성 금액(" + str(
-                                                                  self.temp_TE) + ")원 이상인 전표가 " + str(self.dataframe['cnt'].loc[0])
-                                                              + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
-                                                              + ")를 적용하였습니다. <br> [전표라인번호 기준]"
-                                                              , QMessageBox.Ok)
+                        buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                              '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                              QMessageBox.Ok)
 
                         if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
@@ -6447,11 +6410,9 @@ class MyApp(QWidget):
 
                 self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
-            buttonReply = QMessageBox.information(self, '라인수 추출',
-                                                  '- 전표입력자와 승인자가 동일한 전표를 검토한 결과 '
-                                                  + str(self.dataframe['cnt'].loc[0]) + ' 건 추출되었습니다. <br> - 중요성 금액('
-                                                  + str(self.temp_TE) + ')을 적용하였습니다. <br>'
-                                                  , QMessageBox.Ok)
+            buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                  '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                  QMessageBox.Ok)
 
             if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
