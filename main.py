@@ -5824,25 +5824,21 @@ class MyApp(QWidget):
 
             ### 시작일이 yyyyMMdd 형식이 아닌 경우 - 숫자가 아닌 경우
             if not self.period1.text().strip().isdigit() and self.period1.text().strip() != '':
-                print(1)
                 self.alertbox_open19();
                 return
 
             ### 종료일이 yyyyMMdd 형식이 아닌 경우 - 숫자가 아닌 경우
             if not self.period2.text().strip().isdigit() and self.period2.text().strip() != '':
-                print(2)
                 self.alertbox_open19();
                 return
 
             ### 시작일이 yyyyMMdd 형식이 아닌 경우 - 8자리가 아닌 경우
             if len(self.period1.text().strip()) != 8 and len(self.period1.text().strip()) != 0:
-                print(3)
                 self.alertbox_open19();
                 return
 
             ### 종료일이 yyyyMMdd 형식이 아닌 경우 - 8자리가 아닌 경우
             if len(self.period2.text().strip()) != 8 and len(self.period2.text().strip()) != 0:
-                print(4)
                 self.alertbox_open19();
                 return
 
@@ -8467,22 +8463,18 @@ class MyApp(QWidget):
 
             ### 시작일이 yyyyMMdd 형식이 아닌 경우 - 숫자가 아닌 경우
             if not self.period1.text().strip().isdigit() and self.period1.text().strip() != '':
-                print(1)
                 self.alertbox_open19(); return
 
             ### 종료일이 yyyyMMdd 형식이 아닌 경우 - 숫자가 아닌 경우
             if not self.period2.text().strip().isdigit() and self.period2.text().strip() != '':
-                print(2)
                 self.alertbox_open19(); return
 
             ### 시작일이 yyyyMMdd 형식이 아닌 경우 - 8자리가 아닌 경우
             if len(self.period1.text().strip()) != 8 and len(self.period1.text().strip()) != 0:
-                print(3)
                 self.alertbox_open19(); return
 
             ### 종료일이 yyyyMMdd 형식이 아닌 경우 - 8자리가 아닌 경우
             if len(self.period2.text().strip()) != 8 and len(self.period2.text().strip()) != 0:
-                print(4)
                 self.alertbox_open19(); return
 
             self.EntryDate = ''
