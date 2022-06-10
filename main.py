@@ -6019,7 +6019,7 @@ class MyApp(QWidget):
                             self.dataframe = pd.read_sql(sql, self.cnxn)
                             buttonReply = QMessageBox.information(self, '라인 수 확인',
                                                                   '라인 수 : ' + str(
-                                                                      self.dataframe['cnt'].loc[0]) + '<br>',
+                                                                      self.dataframe['cnt'].loc[0] + self.dataframe['cnt'].loc[1]) + '<br>',
                                                                   QMessageBox.Ok)
 
                             if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
