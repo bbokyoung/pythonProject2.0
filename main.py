@@ -4622,7 +4622,7 @@ class MyApp(QWidget):
         self.temp_TE = self.D6_TE.text()
 
         ### 필수 입력값 누락 검토
-        if self.period1.text() == '' or self.tempSheet == '' or self.period2.text() == '':
+        if self.period1.text() == ''  or self.period2.text() == '':
             self.alertbox_open()
 
         else:
@@ -4778,12 +4778,7 @@ class MyApp(QWidget):
         ### 중요성 금액
         self.temp_TE = self.D7_TE.text()
 
-        ### 필수 입력값 누락 검토
-        if self.tempSheet == '':
-            self.alertbox_open()
-
-        ### 입력일 / 전기일 모두 선택/미선택 여부 검토
-        elif (self.Entry.isChecked() and self.Effective.isChecked()) or (
+        if (self.Entry.isChecked() and self.Effective.isChecked()) or (
                 not (self.Entry.isChecked()) and not (self.Effective.isChecked())):
             self.alertbox_open21()
 
