@@ -8115,7 +8115,7 @@ class MyApp(QWidget):
 
             try:
                 float(self.temp_TE)
-                self.wbC = self.wb2.parse(self.listCursor.currentText())
+                self.wbC = self.wb2.parse(self.listCursor.currentText(), header=1)
 
                 ## 예외 처리 - 선택된 sheet가 커서 reference 시트가 아닌 경우
                 if len(self.wbC.columns) != 17:
@@ -8140,7 +8140,7 @@ class MyApp(QWidget):
         else:
             try:
                 float(self.temp_TE)
-                self.wbC = self.wb2.parse(self.listCursor.currentText())
+                self.wbC = self.wb2.parse(self.listCursor.currentText(), header=1)
 
                 ## 예외 처리 - 선택된 sheet가 커서 reference 시트가 아닌 경우
                 if len(self.wbC.columns) != 15:
