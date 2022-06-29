@@ -1391,7 +1391,7 @@ class MyApp(QWidget):
     ### 시나리오 2. 당기 생성된 계정리스트 추출
     def Dialog5(self):
         self.Addnew5 = AddForm()
-        self.Addnew5.btnMid.clicked.connect(lambda: self.AccountUpdate(self.Addnew5.Acount))
+        self.Addnew5.Acount.setPlaceholderText('※ 당기에 새로 생성된 계정들을 입력하세요')
 
         ### 상단 라벨
         Titlelabel5 = QLabel('2. 당기 생성된 계정리스트 추출\n')
@@ -1435,52 +1435,6 @@ class MyApp(QWidget):
         self.btnDialog.setFont(font11)
         self.btnDialog.resize(110, 30)
 
-        ### 계정 트리
-        cursor2 = self.cnxn.cursor()
-        sql2 = '''
-                         SELECT
-                                *
-                         FROM  [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] COA
-                    '''.format(field=self.selected_project_id)
-        accountsname2 = pd.read_sql(sql2, self.cnxn)
-
-        self.new_tree2 = Form(self)
-        self.new_tree2.tree.clear()
-        accountType2 = accountsname2.AccountType.unique()
-        accountType2.sort()
-        for n, i in enumerate(accountType2):
-            self.new_tree2.parent = QTreeWidgetItem(self.new_tree2.tree)
-
-            self.new_tree2.parent.setText(0, "{}".format(i))
-            self.new_tree2.parent.setFlags(self.new_tree2.parent.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-            child_items = accountsname2.AccountSubType[
-                accountsname2.AccountType == accountType2[n]].unique()
-            child_items.sort()
-            for m, x in enumerate(child_items):
-                self.new_tree2.child = QTreeWidgetItem(self.new_tree2.parent)
-
-                self.new_tree2.child.setText(0, "{}".format(x))
-                self.new_tree2.child.setFlags(self.new_tree2.child.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-                grandchild_items = accountsname2.AccountClass[accountsname2.AccountSubType == child_items[m]].unique()
-                grandchild_items.sort()
-                for o, y in enumerate(grandchild_items):
-                    self.new_tree2.grandchild = QTreeWidgetItem(self.new_tree2.child)
-
-                    self.new_tree2.grandchild.setText(0, "{}".format(y))
-                    self.new_tree2.grandchild.setFlags(
-                        self.new_tree2.grandchild.flags() | Qt.ItemIsTristate | Qt.ItemIsUserCheckable)
-                    num_name = accountsname2[accountsname2.AccountClass == grandchild_items[o]].iloc[:, 2:4]
-                    full_name = num_name["GLAccountNumber"].map(str) + ' ' + num_name["GLAccountName"]
-                    full_name.sort_values(inplace=True)
-                    for z in full_name:
-                        self.new_tree2.grandgrandchild = QTreeWidgetItem(self.new_tree2.grandchild)
-
-                        self.new_tree2.grandgrandchild.setText(0, "{}".format(z))
-                        self.new_tree2.grandgrandchild.setFlags(
-                            self.new_tree2.grandgrandchild.flags() | Qt.ItemIsUserCheckable)
-                        self.new_tree2.grandgrandchild.setCheckState(0, Qt.Unchecked)
-        self.new_tree2.get_selected_leaves()  # 초기값 모두 선택 (추가)
-
         ### 차변 / 대변 체크 박스
         labelDC = QLabel('차변/대변 : ', self.dialog5)
         labelDC.setStyleSheet("color: white;")
@@ -1511,7 +1465,7 @@ class MyApp(QWidget):
         self.D5_Sheet.setPlaceholderText('※ 입력 예시 : F01')
 
         ### 라벨 3 - 계정 트리
-        label_tree = QLabel('특정 계정명* : ', self.dialog5)
+        label_tree = QLabel('당기 생성 계정* : ', self.dialog5)
         label_tree.setStyleSheet("color: yellow;")
         font40 = label_tree.font()
         font40.setBold(True)
@@ -1543,15 +1497,13 @@ class MyApp(QWidget):
         layout1.addWidget(labelSheet, 1, 0)
         layout1.addWidget(self.D5_Sheet, 1, 1)
         layout1.addWidget(label_tree, 2, 0)
-        layout1.addWidget(self.new_tree2, 2, 1)
-        layout1.addWidget(self.Addnew5.btnMid, 3, 1)
-        layout1.addWidget(self.Addnew5.Acount, 4, 1)
-        layout1.addWidget(label_TE, 5, 0)
-        layout1.addWidget(self.D5_TE, 5, 1)
-        layout1.addWidget(self.Addnew5.sourceLabel, 6, 0)
-        layout1.addWidget(self.Addnew5.source, 6, 1)
-        layout1.addWidget(self.Addnew5.UserLabel, 7, 0)
-        layout1.addWidget(self.Addnew5.User, 7, 1)
+        layout1.addWidget(self.Addnew5.Acount, 2, 1)
+        layout1.addWidget(label_TE, 3, 0)
+        layout1.addWidget(self.D5_TE, 3, 1)
+        layout1.addWidget(self.Addnew5.sourceLabel, 4, 0)
+        layout1.addWidget(self.Addnew5.source, 4, 1)
+        layout1.addWidget(self.Addnew5.UserLabel, 5, 0)
+        layout1.addWidget(self.Addnew5.User, 5, 1)
 
         ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
@@ -4510,7 +4462,7 @@ class MyApp(QWidget):
 
         ##Unselect all의 경우
         if self.Addnew5.Acount.toPlainText() == '':
-            self.checked_account5 = "AND JournalEntries.GLAccountNumber IN ('')"  ###당기 생성 계정이 없는 경우 고려
+            self.checked_account5 = ''
 
         ##Select all이나 일부 체크박스가 선택된 경우
         else:
@@ -6776,15 +6728,14 @@ class MyApp(QWidget):
             self.dataframe = pd.DataFrame({'No Data': ["[전표작성 빈도수: " + str(self.tempN) + "," + " 중요성금액: " + str(
                 self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
             model = DataFrameModel(self.dataframe)
-            model_refer = DataFrameModel(self.dataframe_refer)
             self.viewtable.setModel(model)
+
             ### JE Line 기준
             if self.rbtn1.isChecked():
-                self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
-                self.combo_sheet.addItem(self.tempSheet + '_Reference')
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
+
             ### JE 기준
             elif self.rbtn2.isChecked():
                 self.scenario_dic[self.tempSheet + '_Journals'] = self.dataframe
@@ -7433,11 +7384,11 @@ class MyApp(QWidget):
         self.tempSheet = self.D5_Sheet.text()  # 필수값 ###시트명
         self.temp_TE = self.D5_TE.text()  ### 중요성금액
 
-        ##Unselect all의 경우
+        ## 당기 생성 계정이 누락된 경우
         if self.Addnew5.Acount.toPlainText() == '':
-            self.checked_account5 = "AND JournalEntries.GLAccountNumber IN ('')"  ###당기 생성 계정이 없는 경우 고려
+            self.checked_account5 = ''
 
-        ##Select all이나 일부 체크박스가 선택된 경우
+        ## 당기 생성 계정이 존재하는 경우
         else:
             self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew5.Acount.toPlainText() + ')'
 
@@ -8858,7 +8809,9 @@ class MyApp(QWidget):
             self.viewtable.setModel(model)
 
             if self.rbtn1.isChecked():
+                self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe.head(1000)
+                self.combo_sheet.addItem(self.tempSheet + 'Reference')
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
@@ -8876,9 +8829,7 @@ class MyApp(QWidget):
             self.viewtable.setModel(model)
             ### JE Line
             if self.rbtn1.isChecked():
-                self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
-                self.combo_sheet.addItem(self.tempSheet + '_Reference')
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
@@ -8916,9 +8867,41 @@ class MyApp(QWidget):
 
         ### 쿼리 연동
         cursor = self.cnxn.cursor()
+
         ### JE Line
         if self.rbtn1.isChecked():
 
+
+            sql_refer = """
+                    SET NOCOUNT ON		
+                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                    GROUP BY CoA.GLAccountNumber		
+                    SELECT										
+                          #TMPCOA.GLAccountNumber AS 당기생성계정코드						
+                        , MAX(#TMPCOA.GLAccountName) AS 계정명
+                        , (SELECT COUNT(A.GLAccountNumber)
+                           FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] A,
+                                [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] B
+                           WHERE A.JELINEID = B.JENumberID AND A.GLAccountNumber = #TMPCOA.GLAccountNumber
+                           AND ABS(A.Amount) >= {TE}
+                           {DebitCredit}
+                           {NewSQL}	
+                           {AutoManual}) AS CNT
+                                                
+                    FROM #TMPCOA							
+                    WHERE 1=1
+                    {Account}
+                    GROUP BY #TMPCOA.GLAccountNumber
+                    ORDER BY #TMPCOA.GLAccountNumber
+                    DROP TABLE #TMPCOA
+                        """.format(
+                                   field=self.selected_project_id, TE=self.temp_TE,
+                                   Account=re.sub('JournalEntries.', '#TMPCOA.', self.checked_account5),
+                                   DebitCredit=re.sub('JournalEntries.', 'A.', self.debitcredit),
+                                   NewSQL=re.sub('JournalEntries.', 'A.', self.NewSQL),
+                                   AutoManual=re.sub('Details.', 'B.',self.ManualAuto)
+                                  )
             sql_query = """
                         SET NOCOUNT ON				
                         SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
@@ -8959,6 +8942,7 @@ class MyApp(QWidget):
                                            NewSQL=self.NewSQL,
                                            AutoManual=self.ManualAuto, NewSelect=self.NewSelect)
 
+            self.dataframe_refer = pd.read_sql(sql_refer, self.cnxn)
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
         ### JE
@@ -9014,6 +8998,9 @@ class MyApp(QWidget):
 
         ### 마지막 시트 쿼리 내역 추가
         if self.rbtn1.isChecked():
+            self.my_query.loc[self.tempSheet + "_Reference"] = [self.tempSheet + "_Reference", "Scenario02",
+                                                                "---Filtered Result_1  Scenario02---\n" + sql_refer]
+
             self.my_query.loc[self.tempSheet + "_Result"] = [self.tempSheet + "_Result", "Scenario02",
                                                              "---Filtered Result  Scenario02---\n" + sql_query]
 
@@ -9022,6 +9009,7 @@ class MyApp(QWidget):
                                                                "Scenario02",
                                                                "---Filtered JE  Scenario02---\n" + sql_query]
 
+        ### 당기 신설 계정리스트 정리
         self.AccCode = re.sub("['|\s]", '', self.checked_account5)
         self.AccCode = self.AccCode[36:-1].split(',')
 
@@ -9031,7 +9019,9 @@ class MyApp(QWidget):
             self.viewtable.setModel(model)
 
             if self.rbtn1.isChecked():
+                self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe.head(1000)
+                self.combo_sheet.addItem(self.tempSheet + '_Reference')
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
@@ -9041,17 +9031,12 @@ class MyApp(QWidget):
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
             self.communicate5.closeApp.emit()
 
-        ### 예외처리 6 - 데이터 미추출
-        elif len(self.dataframe) == 0:
+        ### 예외처리 6 - 당기 생성 계정이 사용되지 않은 경우
+        elif len(self.dataframe) == 0 and len(self.dataframe_refer) == 0:
 
-            if len(self.AccCode) == 1 and self.AccCode[0] == '':
-                self.dataframe = pd.DataFrame({'No Data': ['[연도: ' + str(self.pname_year) + ','
-                                                           + ' 계정코드: [당기생성계정 없음],'
-                                                           + ' 라인수 ' + str(len(self.dataframe)) + '개 입니다.']})
-            else:
-                self.dataframe = pd.DataFrame({'No Data': ['[연도: ' + str(self.pname_year) + ','
-                                                           + ' 계정코드: ' + str(self.AccCode) + ','
-                                                           + ' 라인수 ' + str(len(self.dataframe)) + '개 입니다.']})
+            self.dataframe = pd.DataFrame({'No Data':  [' 당기 생성 계정코드: ' + str(self.AccCode) + ','
+                                                      + "중요성금액: " + str(self.temp_TE) + ','
+                                                      + ' 해당 계정이 당기에 사용되지 않아 0 건이 추출되었습니다']})
 
             model = DataFrameModel(self.dataframe)
             self.viewtable.setModel(model)
@@ -9070,10 +9055,37 @@ class MyApp(QWidget):
 
             self.communicate5.closeApp.emit()
 
+        ### 예외처리 7 - 당기 생성 계정이 사용되었으나 다른 조건들에 의해 0건이 되는 경우우
+        elif len(self.dataframe) == 0 and len(self.dataframe_refer) > 0:
+
+            self.dataframe = pd.DataFrame({'No Data':  [' 당기 생성 계정코드: ' + str(self.AccCode) + ','
+                                                      + "중요성금액: " + str(self.temp_TE) + ','
+                                                      + ' 조건을 만족하는 라인수가 ' + str(len(self.dataframe)) + ' 개입니다']})
+
+            model = DataFrameModel(self.dataframe)
+            self.viewtable.setModel(model)
+
+            ### JE Line
+            if self.rbtn1.isChecked():
+                self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
+                self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
+                self.combo_sheet.addItem(self.tempSheet + '_Reference')
+                self.combo_sheet.addItem(self.tempSheet + '_Result')
+                self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
+
+            ### JE
+            elif self.rbtn2.isChecked():
+                self.scenario_dic[self.tempSheet + '_Journals'] = self.dataframe
+                self.combo_sheet.addItem(self.tempSheet + '_Journals')
+                self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
+
+            self.communicate5.closeApp.emit()
         else:
             ### JE Line
             if self.rbtn1.isChecked():
+                self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe
+                self.combo_sheet.addItem(self.tempSheet + '_Reference')
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
                 model = DataFrameModel(self.dataframe)
@@ -9759,7 +9771,9 @@ class MyApp(QWidget):
             self.viewtable.setModel(model)
 
             if self.rbtn1.isChecked():
+                self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe.head(1000)
+                self.combo_sheet.addItem(self.tempSheet + '_Reference')
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
