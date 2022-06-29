@@ -5940,6 +5940,12 @@ class MyApp(QWidget):
                                                                            self.Manual, self.Auto)
         self.tempTE = self.D15_TE.text()  # 중요성 금액
 
+        sql = '''
+                                    Select count(*) as UserdefinedCNT from
+                                    [{field}_Reporting_Details_Dim].[dbo].[DimUserDefined1]
+                                 '''.format(field=self.selected_project_id)
+        dataframe_check = pd.read_sql(sql, self.cnxn)
+
         ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                 not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
@@ -5956,83 +5962,88 @@ class MyApp(QWidget):
         else:
             self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew15.Acount.toPlainText() + ')'
 
-        if self.tempTE == '': self.tempTE = 0
 
-        ### 계정 입력 값 검토
-        if self.check_account(self.checked_account15) != False:
+        if dataframe_check['UserdefinedCNT'][0] == 1:
+            self.alertbox_open4("증빙일이 매핑되어 있지 않습니다.")
 
-            try:
-                ### 중요성 금액 실수값인지 확인
-                float(self.tempTE)
-                cursor = self.cnxn.cursor()
-                ### JE Line
-                if self.rbtn1.isChecked():
-                    sql = '''
-                                SET NOCOUNT ON				
-                                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                    GROUP BY CoA.GLAccountNumber				
-                                    SELECT COUNT(*) as cnt	       
-                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                        #TMPCOA,			
-                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                    AND JournalEntries.JELINEID = Details.JENumberID 						
-                                    AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
-                                    AND ABS(JournalEntries.Amount) >= {TE} 				
-                                    {Account}					
-                                    {NewSQL} 			
-                                    {AutoManual}
-                                    {DebitCredit}	  									
-                                    DROP TABLE #TMPCOA						
-                                '''.format(field=self.selected_project_id, TE=self.tempTE,
-                                           Account=self.checked_account15, NewSQL=self.NewSQL,
-                                           AutoManual=self.ManualAuto,
-                                           DebitCredit=self.debitcredit)
+        else:
+            if self.tempTE == '': self.tempTE = 0
 
-                    self.dataframe = pd.read_sql(sql, self.cnxn)
+            ### 계정 입력 값 검토
+            if self.check_account(self.checked_account15) != False:
 
-                ### JE
-                elif self.rbtn2.isChecked():
+                try:
+                    ### 중요성 금액 실수값인지 확인
+                    float(self.tempTE)
+                    cursor = self.cnxn.cursor()
+                    ### JE Line
+                    if self.rbtn1.isChecked():
+                        sql = '''
+                                    SET NOCOUNT ON				
+                                        SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                        FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                        GROUP BY CoA.GLAccountNumber				
+                                        SELECT COUNT(*) as cnt	       
+                                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                            #TMPCOA,			
+                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                        AND JournalEntries.JELINEID = Details.JENumberID 						
+                                        AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
+                                        AND ABS(JournalEntries.Amount) >= {TE} 				
+                                        {Account}					
+                                        {NewSQL} 			
+                                        {AutoManual}
+                                        {DebitCredit}	  									
+                                        DROP TABLE #TMPCOA						
+                                    '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                               Account=self.checked_account15, NewSQL=self.NewSQL,
+                                               AutoManual=self.ManualAuto,
+                                               DebitCredit=self.debitcredit)
 
-                    sql = '''
-                                SET NOCOUNT ON				
-                                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                    GROUP BY CoA.GLAccountNumber				
-                                    SELECT COUNT(*) as cnt		 
-                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                        #TMPCOA,			
-                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                    AND JournalEntries.JELINEID = Details.JENumberID 					
-                                    AND Details.JEIdentifierID IN				
-                                            (		
-                                             SELECT DISTINCT Details.JEIdentifierID		
-                                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
-                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
-                                             WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                             AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
-                                             AND ABS(JournalEntries.Amount) >= {TE} 	
-                                             {Account} 	
-                                             {NewSQL}
-                                             {AutoManual}
-                                             {DebitCredit}	
-                                            )		
-                                    DROP TABLE #TMPCOA						
-                                '''.format(field=self.selected_project_id, TE=self.tempTE,
-                                           Account=self.checked_account15, NewSQL=self.NewSQL,
-                                           AutoManual=self.ManualAuto,
-                                           DebitCredit=self.debitcredit)
-                    self.dataframe = pd.read_sql(sql, self.cnxn)
+                        self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                buttonReply = QMessageBox.information(self, '라인 수 확인',
-                                                      '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
-                                                      QMessageBox.Ok)
-                if buttonReply == QMessageBox.Ok: self.dialog15.activateWindow()
+                    ### JE
+                    elif self.rbtn2.isChecked():
 
-            except ValueError:
-                self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
+                        sql = '''
+                                    SET NOCOUNT ON				
+                                        SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                        FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                        GROUP BY CoA.GLAccountNumber				
+                                        SELECT COUNT(*) as cnt		 
+                                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                            #TMPCOA,			
+                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                        AND JournalEntries.JELINEID = Details.JENumberID 					
+                                        AND Details.JEIdentifierID IN				
+                                                (		
+                                                 SELECT DISTINCT Details.JEIdentifierID		
+                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
+                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
+                                                 WHERE JournalEntries.JELINEID = Details.JENumberID 		
+                                                 AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
+                                                 AND ABS(JournalEntries.Amount) >= {TE} 	
+                                                 {Account} 	
+                                                 {NewSQL}
+                                                 {AutoManual}
+                                                 {DebitCredit}	
+                                                )		
+                                        DROP TABLE #TMPCOA						
+                                    '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                               Account=self.checked_account15, NewSQL=self.NewSQL,
+                                               AutoManual=self.ManualAuto,
+                                               DebitCredit=self.debitcredit)
+                        self.dataframe = pd.read_sql(sql, self.cnxn)
+
+                    buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                          '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                          QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog15.activateWindow()
+
+                except ValueError:
+                    self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
 
     def lineCount16(self):
         ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
