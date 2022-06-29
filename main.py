@@ -57,7 +57,7 @@ class AddForm(QGroupBox):
         self.UserLabel.setStyleSheet("color: white; font-weight : bold")
         self.User = QLineEdit()
         self.User.setStyleSheet("background-color: white;")
-        self.User.setPlaceholderText('※ 전표입력자를 입력하세요')
+        self.User.setPlaceholderText('※ 전표입력자를 입력하세요, 공란은 [NULL]을 입력하여 검색하세요')
         self.Acount = QTextEdit()
         self.Acount.setStyleSheet("background-color: white;")
         self.Acount.setPlaceholderText('※ 특정 계정코드를 입력하거나 위 트리에서 선택하세요')
@@ -3531,12 +3531,12 @@ class MyApp(QWidget):
         ### 특정단어 (포함) QLineEdit
         self.D14_Key = QLineEdit(self.dialog14)
         self.D14_Key.setStyleSheet("background-color: white;")
-        self.D14_Key.setPlaceholderText('검색할 단어를 입력하세요(구분자:",")')
+        self.D14_Key.setPlaceholderText('검색할 단어를 입력하세요(구분자:","), 공란은 [NULL]을 입력하여 검색하세요')
 
         ### 특정단어 (제외) QLineEdit & Activate 체크박스
         self.D14_Key2 = QLineEdit(self.dialog14)
         self.D14_Key2.setStyleSheet("background-color: white;")
-        self.D14_Key2.setPlaceholderText('제외할 단어를 입력하세요(구분자:",")')
+        self.D14_Key2.setPlaceholderText('제외할 단어를 입력하세요(구분자:","), 공란은 [NULL]을 입력하여 검색하세요')
         self.D14_Key2C = QCheckBox('Activate')
         self.D14_Key2C.setStyleSheet("color: white; font-weight: bold")
 
@@ -3553,7 +3553,7 @@ class MyApp(QWidget):
         self.D14_TE.setPlaceholderText('중요성 금액을 입력하세요')
 
         ### 특정 계정명 라벨
-        label_tree = QLabel('특정 계정 : ', self.dialog14)
+        label_tree = QLabel('특정 계정명 : ', self.dialog14)
         label_tree.setStyleSheet("color: white;")
         font4 = label_tree.font()
         font4.setBold(True)
@@ -7028,9 +7028,20 @@ class MyApp(QWidget):
         if len(self.dataframe) > 500000:
             self.alertbox_open3()
 
+        ### 추출 팝업 내 특정 단어 목록 불러오기(단어 앞뒤 공백 제거)
+        self.splitKey= str(self.baseKey).replace("'","")
+        self.splitKey= str(self.splitKey).replace("[","")
+        self.splitKey= str(self.splitKey).replace("]","")
+        self.splitKey= self.splitKey.split(',')
+        self.splitKey_clean=[]
+        for a in self.splitKey:
+            a= a.strip()
+            if a != '': # 공백일 경우에는 단어 목록에 추가 X
+                self.splitKey_clean.append(a) 
+            
         ### 추출 데이터가 존재하지 않을 경우
         if len(self.dataframe) == 0:
-            self.dataframe = pd.DataFrame({'No Data': ["[전표 적요 특정단어: " + str(self.baseKey) + "," + " 중요성금액: " + str(
+            self.dataframe = pd.DataFrame({'No Data': ["[전표 적요 특정단어: " + str(self.splitKey_clean).replace('"','') + "," + " 중요성금액: " + str(
                 self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
             model = DataFrameModel(self.dataframe)
             self.viewtable.setModel(model)
@@ -7040,7 +7051,7 @@ class MyApp(QWidget):
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표 적요에 "
-                                                      + str(self.baseKey) + "이/가 포함"
+                                                      + str(self.splitKey_clean).replace('"','') + "이/가 포함"
                                                       + tempword + "된 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성금액(" + str(self.tempTE)
@@ -7052,7 +7063,7 @@ class MyApp(QWidget):
                 self.combo_sheet.addItem(self.tempSheet + '_Journals')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표 적요에 "
-                                                      + str(self.baseKey) + "이/가 포함"
+                                                      + str(self.splitKey_clean).replace('"','') + "이/가 포함"
                                                       + tempword + "된 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성금액(" + str(self.tempTE)
@@ -7067,7 +7078,7 @@ class MyApp(QWidget):
             if self.rbtn1.isChecked():
                 if len(self.dataframe) > 300:
                     buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표 적요에 "
-                                                          + str(self.baseKey) + "이/가 포함"
+                                                          + str(self.splitKey_clean).replace('"','') + "이/가 포함"
                                                           + tempword + "된 전표가 "
                                                           + str(len(self.dataframe))
                                                           + "건 추출되었습니다. <br> - 중요성금액(" + str(self.tempTE)
@@ -7075,7 +7086,7 @@ class MyApp(QWidget):
                                                           , QMessageBox.Ok)
                 else:
                     buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표 적요에 "
-                                                          + str(self.baseKey) + "이/가 포함"
+                                                          + str(self.splitKey_clean).replace('"','') + "이/가 포함"
                                                           + tempword + "된 전표가 "
                                                           + str(len(self.dataframe))
                                                           + "건 추출되었습니다. <br> - 중요성금액(" + str(self.tempTE)
@@ -7086,7 +7097,7 @@ class MyApp(QWidget):
             ### JE 기준
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 전표 적요에 "
-                                                      + str(self.baseKey) + "이/가 포함"
+                                                      + str(self.splitKey_clean).replace('"','') + "이/가 포함"
                                                       + tempword + "된 전표가 "
                                                       + str(len(self.dataframe))
                                                       + "건 추출되었습니다. <br> - 중요성금액(" + str(self.tempTE)
@@ -8262,7 +8273,7 @@ class MyApp(QWidget):
                     b = "((JournalEntries.JEDescription LIKE '' OR JournalEntries.JEDescription LIKE ' ' OR JournalEntries.JEDescription IS NULL)" \
                         "AND (JournalEntries.JELineDescription LIKE '' OR JournalEntries.JELineDescription LIKE ' ' OR JournalEntries.JELineDescription IS NULL))"
                 elif a == '':
-                    continue
+                        continue
                 else:
                     b = "(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%')"
                 self.baseKey_clean.append(b)
@@ -8281,45 +8292,56 @@ class MyApp(QWidget):
                     else:
                         b = "(NOT(JournalEntries.JEDescription LIKE N'%" + a + "%' OR JournalEntries.JELineDescription LIKE N'%" + a + "%'))"
                     self.baseKey2_clean.append(b)
-                self.tempKey = 'AND (' + str('OR '.join(self.baseKey_clean)) + ') AND (' + str(
-                    ' AND '.join(self.baseKey2_clean)) + ')'
+                    
+                if len(self.baseKey_clean) == 0:
+                    self.tempKey = ""
+                elif len(self.baseKey_clean) != 0 and len(self.baseKey2_clean) == 0:
+                    self.tempKey = ""
+                else:
+                    self.tempKey = 'AND (' + str('OR '.join(self.baseKey_clean)) + ') AND (' + str(
+                        ' AND '.join(self.baseKey2_clean)) + ')'
 
             else:
-                self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ')'
+                if len(self.baseKey_clean) == 0:
+                    self.tempKey = ""
+                else: 
+                    self.tempKey = 'AND (' + str(' OR '.join(self.baseKey_clean)) + ')'
+            if self. tempKey == '':
+                self.alertbox_open()
+            else:
+                ### 중요성 금액 미입력시 0원
+                if self.tempTE == '': self.tempTE = 0
 
-            ### 중요성 금액 미입력시 0원
-            if self.tempTE == '': self.tempTE = 0
+                ### 계정 입력 값 검토
+                if self.check_account(self.checked_account14) != False:
 
-            ### 계정 입력 값 검토
-            if self.check_account(self.checked_account14) != False:
-
-                try:
-                    ### 중요성 금액 실수값인지 확인
-                    float(self.tempTE)
-
-                    ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
-                    if (self.checkD.isChecked() and self.checkC.isChecked()) or (
-                            not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
-                        self.debitcredit = ''
-
-                    ### Debit을 선택했을 시, Credit이 0원
-                    elif self.checkD.isChecked():
-                        self.debitcredit = 'AND JournalEntries.Credit = 0'
-                    ### Credit을 선택했을 시, Debit이 0원
-                    elif self.checkC.isChecked():
-                        self.debitcredit = 'AND JournalEntries.Debit = 0'
-
-                    self.doAction()
-                    self.th14 = Thread(target=self.extButtonClicked14)
-                    self.th14.daemon = True
-                    self.th14.start()
-
-                ### 추가 예외처리 (팝업)
-                except ValueError:
                     try:
+                        ### 중요성 금액 실수값인지 확인
                         float(self.tempTE)
-                    except:
-                        self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')  # 중요성금액이 실수가 아닌 경우
+
+                        ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
+                        if (self.checkD.isChecked() and self.checkC.isChecked()) or (
+                                not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
+                            self.debitcredit = ''
+
+                        ### Debit을 선택했을 시, Credit이 0원
+                        elif self.checkD.isChecked():
+                            self.debitcredit = 'AND JournalEntries.Credit = 0'
+                        ### Credit을 선택했을 시, Debit이 0원
+                        elif self.checkC.isChecked():
+                            self.debitcredit = 'AND JournalEntries.Debit = 0'
+
+                        self.doAction()
+                        self.th14 = Thread(target=self.extButtonClicked14)
+                        self.th14.daemon = True
+                        self.th14.start()
+
+                    ### 추가 예외처리 (팝업)
+                    except ValueError:
+                        try:
+                            float(self.tempTE)
+                        except:
+                            self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')  # 중요성금액이 실수가 아닌 경우
 
     ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 11번)
     def Thread15(self):
