@@ -491,6 +491,15 @@ class MyApp(QWidget):
         self.alt.setText('필수 입력값이 누락되었습니다.')
         self.alt.exec_()
 
+    def alertbox_open1(self):
+        """최대 추출 라인수 50만 건을 초과한 데이터가 추출되었음을 알리는 경고창 생성 함수"""
+        self.alt = QMessageBox()
+        self.alt.setIcon(QMessageBox.Information)
+        self.alt.setWindowTitle('최대 라인 수 초과 오류')
+        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
+        self.alt.setText('결과가 50만 건 초과로 추출되어 상위 1000건 만을 선출하여 보여드립니다.\n(파일 저장 시, 전체 결과가 모두 저장됩니다.)')
+        self.alt.exec_()
+
     def alertbox_open2(self, state):
         """필수 입력값의 데이터타입이 숫자가 아닌 경우 발생하는 경고창 생성 함수"""
         self.alt = QMessageBox()
@@ -6680,19 +6689,19 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000:
+                self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N) + '회 이하인 전표가 '
                                                       + str(len(self.dataframe) - 1) + '건 추출되었습니다. <br> - TE 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6702,6 +6711,7 @@ class MyApp(QWidget):
                                                       + str(
                     self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N) + '회 이하인 전표가 '
@@ -6709,18 +6719,21 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N)
                                                       + '회 이하인 전표가 '
                                                       + str(len(self.dataframe) - 1) + '건 추출되었습니다. <br> - TE 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N)
@@ -6729,7 +6742,7 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
         self.th4.join()
 
@@ -6738,24 +6751,20 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
-
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
                                                       + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
                                                       + str(len(self.dataframe) - 1)
                                                       + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
-
-
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6767,6 +6776,7 @@ class MyApp(QWidget):
                                                       + str(
                     self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
@@ -6775,11 +6785,11 @@ class MyApp(QWidget):
                                                       + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
-            if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
-
+            if len(self.dataframe) > 500000: self.alertbox_open1()
             ### 추출 데이터가 존재하지 않을 경우
             if 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
@@ -6788,6 +6798,7 @@ class MyApp(QWidget):
                                                       + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
@@ -6797,7 +6808,7 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
         self.th5.join()
 
@@ -6806,15 +6817,13 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "- 시작 시점 : " + str(self.period1.text()) + " 종료 시점 : " + str(
                                                           self.period2.text())
@@ -6822,6 +6831,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6832,6 +6842,8 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
+
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "- 시작 시점 : " + str(self.period1.text()) + " 종료 시점 : " + str(
@@ -6841,13 +6853,15 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "- 시작 시점 : " + str(self.period1.text()) + " 종료 시점 : " + str(
                                                           self.period2.text())
@@ -6855,6 +6869,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
@@ -6865,7 +6880,7 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
 
         self.th6.join()
 
@@ -6874,20 +6889,19 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6896,6 +6910,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
                                                       + str(len(self.dataframe))
@@ -6903,18 +6918,21 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
@@ -6922,8 +6940,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
-
-            if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
 
         self.th7.join()
 
@@ -6932,21 +6949,20 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
                                                       + str(int(self.realNDate)) + "일 이상인 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6956,6 +6972,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
                                                       + str(int(self.realNDate)) + "일 이상인 전표가 "
@@ -6964,19 +6981,22 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
                                                       + str(int(self.realNDate)) + "일 이상인 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
@@ -6986,7 +7006,7 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
         self.th8.join()
 
@@ -6997,10 +7017,11 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame({'No Data': ["[전표작성 빈도수: " + str(self.tempN) + "," + " 중요성금액: " + str(
                 self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
             model = DataFrameModel(self.dataframe)
@@ -7077,10 +7098,11 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame(
                 {'No Data': [" 중요성금액: " + str(
                     self.tempTE) + "] 라인수 " + str(
@@ -7203,10 +7225,11 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame({'No Data': ['No Cursor']})
             model = DataFrameModel(self.dataframe)
             self.viewtable.setModel(model)
@@ -7265,17 +7288,17 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 예외처리 3 - 최대 추출 라인수
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+        if self.rbtn1.isChecked():
+            ### 예외처리 3 - 최대 추출 라인수
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
-        elif self.rbtn1.isChecked():
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 연속된 숫자' + str(self.temp_Continuous) + '로 끝나는 금액을 검토한 결과 '
                                                       + str(len(self.dataframe) - 1) + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
             elif len(self.dataframe) > 300:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7284,6 +7307,7 @@ class MyApp(QWidget):
                                                       + str(
                                                           self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7292,15 +7316,18 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
         elif self.rbtn2.isChecked():
-            if 'No Data' in self.dataframe.columns.tolist():
+            if len(self.dataframe) > 500000: self.alertbox_open1()
+
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 연속된 숫자' + str(self.temp_Continuous) + '로 끝나는 금액을 검토한 결과 '
                                                       + str(len(self.dataframe) - 1) + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7309,7 +7336,7 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')를 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
         self.th13.join()
 
@@ -7324,10 +7351,6 @@ class MyApp(QWidget):
         else:
             tempword = ''
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### 추출 팝업 내 특정 단어 목록 불러오기(단어 앞뒤 공백 제거)
         self.splitKey = str(self.baseKey).replace("'", "")
         self.splitKey = str(self.splitKey).replace("[", "")
@@ -7339,8 +7362,13 @@ class MyApp(QWidget):
             if a != '':  # 공백일 경우에는 단어 목록에 추가 X
                 self.splitKey_clean.append(a)
 
-                ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        ### 결과값이 50만건 초과일 경우
+        if len(self.dataframe) > 500000:
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
+
+        ### 추출 데이터가 존재하지 않을 경우
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame(
                 {'No Data': ["[전표 적요 특정단어: " + str(self.splitKey_clean).replace('"', '') + "," + " 중요성금액: " + str(
                     self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
@@ -7415,10 +7443,11 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame(
                 {'No Data': [" 중요성금액: " + str(
                     self.tempTE) + "] 라인수 " + str(
@@ -7482,21 +7511,20 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "차/대변 합계가 중요성 금액(" + str(self.temp_TE) + ")원 이상인 전표가 " + str(
                                                           len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -7506,6 +7534,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
@@ -7515,19 +7544,22 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "차/대변 합계가 중요성 금액(" + str(self.temp_TE) + ")원 이상인 전표가 " + str(
                                                           len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
@@ -7537,7 +7569,7 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
         self.th16.join()
 
@@ -7546,20 +7578,19 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 전표입력자와 승인자가 동일한 전표를 검토한 결과 '
                                                       + str(len(self.dataframe) - 1) + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -7569,6 +7600,7 @@ class MyApp(QWidget):
                                                       + str(
                                                           self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7577,18 +7609,21 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 전표입력자와 승인자가 동일한 전표를 검토한 결과 '
                                                       + str(len(self.dataframe) - 1) + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7597,7 +7632,7 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')를 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
         self.th17.join()
 
@@ -9327,7 +9362,7 @@ class MyApp(QWidget):
             if self.rbtn1.isChecked():
                 self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe.head(1000)
-                self.combo_sheet.addItem(self.tempSheet + 'Reference')
+                self.combo_sheet.addItem(self.tempSheet + '_Reference')
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
