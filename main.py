@@ -4611,7 +4611,8 @@ class MyApp(QWidget):
             self.checked_account4 = ''
 
         else:
-            self.checked_account4 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew4.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew4.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account4 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                 not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
@@ -4622,7 +4623,7 @@ class MyApp(QWidget):
             self.debitcredit = 'AND JournalEntries.Debit = 0'
 
         ### 예외처리 1 - 필수값 입력 누락
-        if self.temp_N == '':
+        if self.temp_N == '' :
             self.alertbox_open()
 
         ### 쿼리 연동
@@ -4745,13 +4746,14 @@ class MyApp(QWidget):
         ### 인풋 값 변수로 받아오기
         self.temp_TE = self.D5_TE.text()  ### 중요성금액
 
-        ##Unselect all의 경우
+        ## 당기 생성 계정이 누락된 경우
         if self.Addnew5.Acount.toPlainText() == '':
             self.checked_account5 = ''
 
-        ##Select all이나 일부 체크박스가 선택된 경우
+        ## 당기 생성 계정이 존재하는 경우
         else:
-            self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew5.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew5.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 예외처리 1 - 필수값 입력 누락
         if self.checked_account5 == '':
@@ -4862,7 +4864,7 @@ class MyApp(QWidget):
         self.temp_TE = self.D6_TE.text()
 
         ### 필수 입력값 누락 검토
-        if self.period1.text() == '' or self.period2.text() == '':
+        if self.period1.text() == '' or  self.period2.text() == '':
             self.alertbox_open()
 
         else:
@@ -4874,7 +4876,8 @@ class MyApp(QWidget):
             if self.Addnew6.Acount.toPlainText() == '':
                 self.checked_account6 = ''
             else:
-                self.checked_account6 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew6.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew6.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account6 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
             if (self.checkD.isChecked() and self.checkC.isChecked()) or (
@@ -5114,7 +5117,8 @@ class MyApp(QWidget):
             if self.Addnew7.Acount.toPlainText() == '':
                 self.checked_account7 = ''
             else:
-                self.checked_account7 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew7.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew7.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account7 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 계정 입력 값 검토
             if self.check_account(self.checked_account7) != False:
@@ -5243,7 +5247,8 @@ class MyApp(QWidget):
             if self.Addnew8.Acount.toPlainText() == '':
                 self.checked_account8 = ''
             else:
-                self.checked_account8 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew8.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew8.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account8 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 계정 입력 값 검토
             if self.check_account(self.checked_account8) != False:
@@ -5369,7 +5374,8 @@ class MyApp(QWidget):
             self.checked_account9 = ''
 
         else:
-            self.checked_account9 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew9.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew9.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account9 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.tempN == '':
@@ -5515,7 +5521,8 @@ class MyApp(QWidget):
             self.checked_account10 = ''
 
         else:
-            self.checked_account10 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew10.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew10.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account10 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.Addnew10.User.text() == '':
@@ -5628,7 +5635,8 @@ class MyApp(QWidget):
 
         ##Select all이나 일부 체크박스가 선택된 경우
         else:
-            self.checked_account13 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew13.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew13.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account13 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                 not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
@@ -5779,7 +5787,8 @@ class MyApp(QWidget):
             self.checked_account14 = ''
 
         else:
-            self.checked_account14 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew14.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew14.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account14 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.D14_Key.text().strip() == '':
@@ -5960,7 +5969,8 @@ class MyApp(QWidget):
             self.checked_account15 = ''
 
         else:
-            self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew15.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew15.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
 
         if dataframe_check['UserdefinedCNT'][0] == 1:
@@ -6103,7 +6113,8 @@ class MyApp(QWidget):
                 self.checked_account16 = ''
 
             else:
-                self.checked_account16 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew16.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew16.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account16 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
             if (self.checkD.isChecked() and self.checkC.isChecked()) or (
@@ -6435,7 +6446,8 @@ class MyApp(QWidget):
 
         ##Select all이나 일부 체크박스가 선택된 경우
         else:
-            self.checked_account17 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew17.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew17.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account17 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         if self.temp_TE == '':
             self.temp_TE = 0
