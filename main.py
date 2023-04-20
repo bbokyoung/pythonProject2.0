@@ -210,7 +210,7 @@ class Form(QGroupBox):
         global checked_name
         checked_name = ''
         for i in checked_items:
-            checked_name = checked_name + ',' + '\'' + i + '\''
+            checked_name = checked_name + ',' + i
 
         checked_name = checked_name[1:]
 
@@ -322,7 +322,7 @@ class Form1(QGroupBox):
         global checked_name2
         checked_name2 = ''
         for i in checked_items:
-            checked_name2 = checked_name2 + ',' + '\'' + i + '\''
+            checked_name2 = checked_name2 + ',' + i
 
         checked_name2 = checked_name2[1:]
 
@@ -489,6 +489,15 @@ class MyApp(QWidget):
         self.alt.setWindowTitle('필수 입력값 누락')
         self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
         self.alt.setText('필수 입력값이 누락되었습니다.')
+        self.alt.exec_()
+
+    def alertbox_open1(self):
+        """최대 추출 라인수 50만 건을 초과한 데이터가 추출되었음을 알리는 경고창 생성 함수"""
+        self.alt = QMessageBox()
+        self.alt.setIcon(QMessageBox.Information)
+        self.alt.setWindowTitle('최대 라인 수 초과 오류')
+        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
+        self.alt.setText('결과가 50만 건 초과로 추출되어 상위 1000건 만을 선출하여 보여드립니다.\n(파일 저장 시, 전체 결과가 모두 저장됩니다.)')
         self.alt.exec_()
 
     def alertbox_open2(self, state):
@@ -1027,8 +1036,11 @@ class MyApp(QWidget):
         ##서버 선택 콤보박스
         self.cb_server = QComboBox(self)
         self.cb_server.addItem('--서버 목록--')
-        for i in [1, 2, 3, 4, 6, 7, 8]:
+        for i in [1, 2, 3, 4, 6, 7, 8,9]:
             self.cb_server.addItem(f'KRSEOVMPPACSQ0{i}\INST1')
+
+        for i in [10,11,12,13,14,15]:
+            self.cb_server.addItem(f'KRSEOVMPPACSQ{i}\INST1')
 
         ### Scenario 유형 콤보박스 - 소분류
         self.comboScenario = QComboBox(self)
@@ -4602,7 +4614,8 @@ class MyApp(QWidget):
             self.checked_account4 = ''
 
         else:
-            self.checked_account4 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew4.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew4.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account4 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                 not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
@@ -4613,7 +4626,7 @@ class MyApp(QWidget):
             self.debitcredit = 'AND JournalEntries.Debit = 0'
 
         ### 예외처리 1 - 필수값 입력 누락
-        if self.temp_N == '':
+        if self.temp_N == '' :
             self.alertbox_open()
 
         ### 쿼리 연동
@@ -4736,13 +4749,14 @@ class MyApp(QWidget):
         ### 인풋 값 변수로 받아오기
         self.temp_TE = self.D5_TE.text()  ### 중요성금액
 
-        ##Unselect all의 경우
+        ## 당기 생성 계정이 누락된 경우
         if self.Addnew5.Acount.toPlainText() == '':
             self.checked_account5 = ''
 
-        ##Select all이나 일부 체크박스가 선택된 경우
+        ## 당기 생성 계정이 존재하는 경우
         else:
-            self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew5.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew5.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 예외처리 1 - 필수값 입력 누락
         if self.checked_account5 == '':
@@ -4853,7 +4867,7 @@ class MyApp(QWidget):
         self.temp_TE = self.D6_TE.text()
 
         ### 필수 입력값 누락 검토
-        if self.period1.text() == '' or self.period2.text() == '':
+        if self.period1.text() == '' or  self.period2.text() == '':
             self.alertbox_open()
 
         else:
@@ -4865,7 +4879,8 @@ class MyApp(QWidget):
             if self.Addnew6.Acount.toPlainText() == '':
                 self.checked_account6 = ''
             else:
-                self.checked_account6 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew6.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew6.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account6 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
             if (self.checkD.isChecked() and self.checkC.isChecked()) or (
@@ -5105,7 +5120,8 @@ class MyApp(QWidget):
             if self.Addnew7.Acount.toPlainText() == '':
                 self.checked_account7 = ''
             else:
-                self.checked_account7 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew7.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew7.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account7 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 계정 입력 값 검토
             if self.check_account(self.checked_account7) != False:
@@ -5234,7 +5250,8 @@ class MyApp(QWidget):
             if self.Addnew8.Acount.toPlainText() == '':
                 self.checked_account8 = ''
             else:
-                self.checked_account8 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew8.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew8.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account8 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 계정 입력 값 검토
             if self.check_account(self.checked_account8) != False:
@@ -5360,7 +5377,8 @@ class MyApp(QWidget):
             self.checked_account9 = ''
 
         else:
-            self.checked_account9 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew9.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew9.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account9 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.tempN == '':
@@ -5506,7 +5524,8 @@ class MyApp(QWidget):
             self.checked_account10 = ''
 
         else:
-            self.checked_account10 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew10.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew10.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account10 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.Addnew10.User.text() == '':
@@ -5619,7 +5638,8 @@ class MyApp(QWidget):
 
         ##Select all이나 일부 체크박스가 선택된 경우
         else:
-            self.checked_account13 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew13.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew13.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account13 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                 not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
@@ -5770,7 +5790,8 @@ class MyApp(QWidget):
             self.checked_account14 = ''
 
         else:
-            self.checked_account14 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew14.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew14.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account14 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.D14_Key.text().strip() == '':
@@ -5931,6 +5952,12 @@ class MyApp(QWidget):
                                                                            self.Manual, self.Auto)
         self.tempTE = self.D15_TE.text()  # 중요성 금액
 
+        sql = '''
+                                    Select count(*) as UserdefinedCNT from
+                                    [{field}_Reporting_Details_Dim].[dbo].[DimUserDefined1]
+                                 '''.format(field=self.selected_project_id)
+        dataframe_check = pd.read_sql(sql, self.cnxn)
+
         ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                 not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
@@ -5945,85 +5972,91 @@ class MyApp(QWidget):
             self.checked_account15 = ''
 
         else:
-            self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew15.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew15.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
-        if self.tempTE == '': self.tempTE = 0
 
-        ### 계정 입력 값 검토
-        if self.check_account(self.checked_account15) != False:
+        if dataframe_check['UserdefinedCNT'][0] == 1:
+            self.alertbox_open4("증빙일이 매핑되어 있지 않습니다.")
 
-            try:
-                ### 중요성 금액 실수값인지 확인
-                float(self.tempTE)
-                cursor = self.cnxn.cursor()
-                ### JE Line
-                if self.rbtn1.isChecked():
-                    sql = '''
-                                SET NOCOUNT ON				
-                                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                    GROUP BY CoA.GLAccountNumber				
-                                    SELECT COUNT(*) as cnt	       
-                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                        #TMPCOA,			
-                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                    AND JournalEntries.JELINEID = Details.JENumberID 						
-                                    AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
-                                    AND ABS(JournalEntries.Amount) >= {TE} 				
-                                    {Account}					
-                                    {NewSQL} 			
-                                    {AutoManual}
-                                    {DebitCredit}	  									
-                                    DROP TABLE #TMPCOA						
-                                '''.format(field=self.selected_project_id, TE=self.tempTE,
-                                           Account=self.checked_account15, NewSQL=self.NewSQL,
-                                           AutoManual=self.ManualAuto,
-                                           DebitCredit=self.debitcredit)
+        else:
+            if self.tempTE == '': self.tempTE = 0
 
-                    self.dataframe = pd.read_sql(sql, self.cnxn)
+            ### 계정 입력 값 검토
+            if self.check_account(self.checked_account15) != False:
 
-                ### JE
-                elif self.rbtn2.isChecked():
+                try:
+                    ### 중요성 금액 실수값인지 확인
+                    float(self.tempTE)
+                    cursor = self.cnxn.cursor()
+                    ### JE Line
+                    if self.rbtn1.isChecked():
+                        sql = '''
+                                    SET NOCOUNT ON				
+                                        SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                        FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                        GROUP BY CoA.GLAccountNumber				
+                                        SELECT COUNT(*) as cnt	       
+                                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                            #TMPCOA,			
+                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                        AND JournalEntries.JELINEID = Details.JENumberID 						
+                                        AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
+                                        AND ABS(JournalEntries.Amount) >= {TE} 				
+                                        {Account}					
+                                        {NewSQL} 			
+                                        {AutoManual}
+                                        {DebitCredit}	  									
+                                        DROP TABLE #TMPCOA						
+                                    '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                               Account=self.checked_account15, NewSQL=self.NewSQL,
+                                               AutoManual=self.ManualAuto,
+                                               DebitCredit=self.debitcredit)
 
-                    sql = '''
-                                SET NOCOUNT ON				
-                                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                    GROUP BY CoA.GLAccountNumber				
-                                    SELECT COUNT(*) as cnt		 
-                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                        #TMPCOA,			
-                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                    AND JournalEntries.JELINEID = Details.JENumberID 					
-                                    AND Details.JEIdentifierID IN				
-                                            (		
-                                             SELECT DISTINCT Details.JEIdentifierID		
-                                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
-                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
-                                             WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                             AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
-                                             AND ABS(JournalEntries.Amount) >= {TE} 	
-                                             {Account} 	
-                                             {NewSQL}
-                                             {AutoManual}
-                                             {DebitCredit}	
-                                            )		
-                                    DROP TABLE #TMPCOA						
-                                '''.format(field=self.selected_project_id, TE=self.tempTE,
-                                           Account=self.checked_account15, NewSQL=self.NewSQL,
-                                           AutoManual=self.ManualAuto,
-                                           DebitCredit=self.debitcredit)
-                    self.dataframe = pd.read_sql(sql, self.cnxn)
+                        self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                buttonReply = QMessageBox.information(self, '라인 수 확인',
-                                                      '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
-                                                      QMessageBox.Ok)
-                if buttonReply == QMessageBox.Ok: self.dialog15.activateWindow()
+                    ### JE
+                    elif self.rbtn2.isChecked():
 
-            except ValueError:
-                self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
+                        sql = '''
+                                    SET NOCOUNT ON				
+                                        SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                        FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                        GROUP BY CoA.GLAccountNumber				
+                                        SELECT COUNT(*) as cnt		 
+                                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                            #TMPCOA,			
+                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                        AND JournalEntries.JELINEID = Details.JENumberID 					
+                                        AND Details.JEIdentifierID IN				
+                                                (		
+                                                 SELECT DISTINCT Details.JEIdentifierID		
+                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
+                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
+                                                 WHERE JournalEntries.JELINEID = Details.JENumberID 		
+                                                 AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
+                                                 AND ABS(JournalEntries.Amount) >= {TE} 	
+                                                 {Account} 	
+                                                 {NewSQL}
+                                                 {AutoManual}
+                                                 {DebitCredit}	
+                                                )		
+                                        DROP TABLE #TMPCOA						
+                                    '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                               Account=self.checked_account15, NewSQL=self.NewSQL,
+                                               AutoManual=self.ManualAuto,
+                                               DebitCredit=self.debitcredit)
+                        self.dataframe = pd.read_sql(sql, self.cnxn)
+
+                    buttonReply = QMessageBox.information(self, '라인 수 확인',
+                                                          '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
+                                                          QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog15.activateWindow()
+
+                except ValueError:
+                    self.alertbox_open4("중요성금액 값을 숫자로만 입력해주시기 바랍니다.")
 
     def lineCount16(self):
         ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
@@ -6083,7 +6116,8 @@ class MyApp(QWidget):
                 self.checked_account16 = ''
 
             else:
-                self.checked_account16 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew16.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew16.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account16 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
             if (self.checkD.isChecked() and self.checkC.isChecked()) or (
@@ -6415,7 +6449,8 @@ class MyApp(QWidget):
 
         ##Select all이나 일부 체크박스가 선택된 경우
         else:
-            self.checked_account17 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew17.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew17.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account17 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         if self.temp_TE == '':
             self.temp_TE = 0
@@ -6680,19 +6715,19 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000:
+                self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N) + '회 이하인 전표가 '
                                                       + str(len(self.dataframe) - 1) + '건 추출되었습니다. <br> - TE 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6702,6 +6737,7 @@ class MyApp(QWidget):
                                                       + str(
                     self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N) + '회 이하인 전표가 '
@@ -6709,18 +6745,21 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N)
                                                       + '회 이하인 전표가 '
                                                       + str(len(self.dataframe) - 1) + '건 추출되었습니다. <br> - TE 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 계정사용 빈도수가 ' + str(self.temp_N)
@@ -6729,7 +6768,7 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog4.activateWindow()
 
         self.th4.join()
 
@@ -6738,24 +6777,20 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
-
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
                                                       + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
                                                       + str(len(self.dataframe) - 1)
                                                       + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
-
-
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6767,6 +6802,7 @@ class MyApp(QWidget):
                                                       + str(
                     self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
@@ -6775,11 +6811,11 @@ class MyApp(QWidget):
                                                       + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
-            if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
-
+            if len(self.dataframe) > 500000: self.alertbox_open1()
             ### 추출 데이터가 존재하지 않을 경우
             if 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
@@ -6788,6 +6824,7 @@ class MyApp(QWidget):
                                                       + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
@@ -6797,7 +6834,7 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
         self.th5.join()
 
@@ -6806,15 +6843,13 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "- 시작 시점 : " + str(self.period1.text()) + " 종료 시점 : " + str(
                                                           self.period2.text())
@@ -6822,6 +6857,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6832,6 +6868,8 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
+
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "- 시작 시점 : " + str(self.period1.text()) + " 종료 시점 : " + str(
@@ -6841,13 +6879,15 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "- 시작 시점 : " + str(self.period1.text()) + " 종료 시점 : " + str(
                                                           self.period2.text())
@@ -6855,6 +6895,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
@@ -6865,7 +6906,7 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog6.activateWindow()
 
         self.th6.join()
 
@@ -6874,20 +6915,19 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6896,6 +6936,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
                                                       + str(len(self.dataframe))
@@ -6903,18 +6944,21 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- 비영업일에 전기된 or 입력된 전표가 "
@@ -6922,8 +6966,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
-
-            if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog7.activateWindow()
 
         self.th7.join()
 
@@ -6932,21 +6975,20 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
                                                       + str(int(self.realNDate)) + "일 이상인 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -6956,6 +6998,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
                                                       + str(int(self.realNDate)) + "일 이상인 전표가 "
@@ -6964,19 +7007,22 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
                                                       + str(int(self.realNDate)) + "일 이상인 전표가 "
                                                       + str(len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출", "- Effective Date와 Entry Date 간 차이가 "
@@ -6986,7 +7032,7 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog8.activateWindow()
 
         self.th8.join()
 
@@ -6997,10 +7043,11 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame({'No Data': ["[전표작성 빈도수: " + str(self.tempN) + "," + " 중요성금액: " + str(
                 self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
             model = DataFrameModel(self.dataframe)
@@ -7077,10 +7124,11 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame(
                 {'No Data': [" 중요성금액: " + str(
                     self.tempTE) + "] 라인수 " + str(
@@ -7203,10 +7251,11 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame({'No Data': ['No Cursor']})
             model = DataFrameModel(self.dataframe)
             self.viewtable.setModel(model)
@@ -7265,17 +7314,17 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 예외처리 3 - 최대 추출 라인수
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+        if self.rbtn1.isChecked():
+            ### 예외처리 3 - 최대 추출 라인수
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
-        elif self.rbtn1.isChecked():
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 연속된 숫자' + str(self.temp_Continuous) + '로 끝나는 금액을 검토한 결과 '
                                                       + str(len(self.dataframe) - 1) + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
             elif len(self.dataframe) > 300:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7284,6 +7333,7 @@ class MyApp(QWidget):
                                                       + str(
                                                           self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7292,15 +7342,18 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
         elif self.rbtn2.isChecked():
-            if 'No Data' in self.dataframe.columns.tolist():
+            if len(self.dataframe) > 500000: self.alertbox_open1()
+
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 연속된 숫자' + str(self.temp_Continuous) + '로 끝나는 금액을 검토한 결과 '
                                                       + str(len(self.dataframe) - 1) + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7309,7 +7362,7 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')를 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
         self.th13.join()
 
@@ -7324,10 +7377,6 @@ class MyApp(QWidget):
         else:
             tempword = ''
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### 추출 팝업 내 특정 단어 목록 불러오기(단어 앞뒤 공백 제거)
         self.splitKey = str(self.baseKey).replace("'", "")
         self.splitKey = str(self.splitKey).replace("[", "")
@@ -7339,8 +7388,13 @@ class MyApp(QWidget):
             if a != '':  # 공백일 경우에는 단어 목록에 추가 X
                 self.splitKey_clean.append(a)
 
-                ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        ### 결과값이 50만건 초과일 경우
+        if len(self.dataframe) > 500000:
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
+
+        ### 추출 데이터가 존재하지 않을 경우
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame(
                 {'No Data': ["[전표 적요 특정단어: " + str(self.splitKey_clean).replace('"', '') + "," + " 중요성금액: " + str(
                     self.tempTE) + "] 라인수 " + str(len(self.dataframe)) + "개입니다"]})
@@ -7415,10 +7469,11 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            self.alertbox_open3()
+            if self.rbtn1.isChecked(): self.alertbox_open3()
+            elif self.rbtn2.isChecked() : self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
-        if len(self.dataframe) == 0:
+        elif len(self.dataframe) == 0:
             self.dataframe = pd.DataFrame(
                 {'No Data': [" 중요성금액: " + str(
                     self.tempTE) + "] 라인수 " + str(
@@ -7482,21 +7537,20 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "차/대변 합계가 중요성 금액(" + str(self.temp_TE) + ")원 이상인 전표가 " + str(
                                                           len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -7506,6 +7560,7 @@ class MyApp(QWidget):
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
@@ -7515,19 +7570,22 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표라인번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, "라인수 추출",
                                                       "차/대변 합계가 중요성 금액(" + str(self.temp_TE) + ")원 이상인 전표가 " + str(
                                                           len(self.dataframe) - 1)
                                                       + "건 추출되었습니다. <br> - 중요성 금액(" + str(self.temp_TE)
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, "라인수 추출",
@@ -7537,7 +7595,7 @@ class MyApp(QWidget):
                                                       + ")를 적용하였습니다. <br> [전표번호 기준]"
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog16.activateWindow()
 
         self.th16.join()
 
@@ -7546,20 +7604,19 @@ class MyApp(QWidget):
         self.Action.close()
         self.timerVar.stop()
 
-        ### 결과값이 50만건 초과일 경우
-        if len(self.dataframe) > 500000:
-            self.alertbox_open3()
-
         ### JE Line 기준 추출 시
-        elif self.rbtn1.isChecked():
+        if self.rbtn1.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 전표입력자와 승인자가 동일한 전표를 검토한 결과 '
                                                       + str(len(self.dataframe) - 1) + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
             ### 추출 데이터가 300건 초과일 경우
             elif len(self.dataframe) > 300:
@@ -7569,6 +7626,7 @@ class MyApp(QWidget):
                                                       + str(
                                                           self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7577,18 +7635,21 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
+            ### 결과값이 50만건 초과일 경우
+            if len(self.dataframe) > 500000: self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
+            elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
                                                       '- 전표입력자와 승인자가 동일한 전표를 검토한 결과 '
                                                       + str(len(self.dataframe) - 1) + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                       + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
             else:
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7597,7 +7658,7 @@ class MyApp(QWidget):
                                                       + str(self.temp_TE) + ')를 적용하였습니다. <br> [전표번호 기준]'
                                                       , QMessageBox.Ok)
 
-            if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
+                if buttonReply == QMessageBox.Ok: self.dialog17.activateWindow()
 
         self.th17.join()
 
@@ -7621,7 +7682,8 @@ class MyApp(QWidget):
             self.checked_account4 = ''
 
         else:
-            self.checked_account4 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew4.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew4.Acount.toPlainText().replace(",", "','").replace(" ","") + "'"
+            self.checked_account4 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                 not (self.checkD.isChecked()) and not (self.checkC.isChecked())):
@@ -7702,7 +7764,8 @@ class MyApp(QWidget):
 
         ## 당기 생성 계정이 존재하는 경우
         else:
-            self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew5.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew5.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 예외처리 1 - 필수값 입력 누락
         if self.tempSheet == '' or self.checked_account5 == '':
@@ -7786,7 +7849,8 @@ class MyApp(QWidget):
             if self.Addnew6.Acount.toPlainText() == '':
                 self.checked_account6 = ''
             else:
-                self.checked_account6 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew6.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew6.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account6 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
             if (self.checkD.isChecked() and self.checkC.isChecked()) or (
@@ -7976,7 +8040,8 @@ class MyApp(QWidget):
             if self.Addnew7.Acount.toPlainText() == '':
                 self.checked_account7 = ''
             else:
-                self.checked_account7 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew7.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew7.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account7 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 계정 입력 값 검토
             if self.check_account(self.checked_account7) != False:
@@ -8049,7 +8114,8 @@ class MyApp(QWidget):
             if self.Addnew8.Acount.toPlainText() == '':
                 self.checked_account8 = ''
             else:
-                self.checked_account8 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew8.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew8.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account8 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 계정 입력 값 검토
             if self.check_account(self.checked_account8) != False:
@@ -8110,7 +8176,8 @@ class MyApp(QWidget):
             self.checked_account9 = ''
 
         else:
-            self.checked_account9 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew9.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew9.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account9 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.tempN == '' or self.tempSheet == '':
@@ -8197,7 +8264,8 @@ class MyApp(QWidget):
             self.checked_account10 = ''
 
         else:
-            self.checked_account10 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew10.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew10.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account10 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.tempSheet == '':
@@ -8288,14 +8356,17 @@ class MyApp(QWidget):
 
                 ### 계정 B 미입력 시, 계정 B 쿼리 조건문 삭제
                 if self.Addnew12_D.Acount.toPlainText() == 'AND LVL4.Analysis_GL_Account_Number IN ()' or self.Addnew12_D.Acount.toPlainText() == '':
-                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_C.Acount.toPlainText() + ')'
+                    Temp = "'" + self.Addnew12_C.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + Temp + ')'
                     self.checked_accountB = ''
                     self.tempStateB = ''
 
                 ### 계정 B 입력시
                 else:
-                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_C.Acount.toPlainText() + ')'
-                    self.checked_accountB = 'AND LVL4.Analysis_GL_Account_Number IN (' + self.Addnew12_D.Acount.toPlainText() + ')'
+                    Temp = "'" + self.Addnew12_C.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + Temp + ')'
+                    Temp2 = "'" + self.Addnew12_D.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                    self.checked_accountB = 'AND LVL4.Analysis_GL_Account_Number IN (' + Temp2 + ')'
 
                     ### 계정 B 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
                     if ((self.checkC6.isChecked()) and (self.checkD6.isChecked())) or (
@@ -8334,102 +8405,6 @@ class MyApp(QWidget):
             except ValueError:
                 self.alertbox_open2('중요성 금액')  ### 중요성 금액이 실수가 아닌 경우
 
-    ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 8-1번(Step1-2))
-    def Thread12(self):
-        ## 수자동 선택 버튼을 모두 클릭하거나 모두 클릭하지 않은 경우
-        if (self.Manual.isChecked() and self.Auto.isChecked()) or (
-                not (self.Manual.isChecked()) and not (self.Auto.isChecked())):
-            self.ManualAuto = ''
-
-        ## 수동 버튼을 클릭한 경우
-        elif self.Manual.isChecked():
-            self.ManualAuto = "AND Details.SystemManualIndicator = 'Manual' "
-
-        ## 자동 버튼을 클릭한 경우
-        elif self.Auto.isChecked():
-            self.ManualAuto = "AND Details.SystemManualIndicator = 'System' "
-
-        ### 중요성 금액
-        self.temp_TE = self.D12_TE.text()
-
-        ### 시나리오 번호
-        self.temp_Sheet = self.D12_Sheet.text()
-
-        ## 예외 처리 - 필수 입력값 누락
-        if self.temp_Sheet == '' or self.Addnew12_A.Acount.toPlainText() == 'AND LVL4.GL_Account_Number IN ()' or self.Addnew12_A.Acount.toPlainText() == '':
-            self.alertbox_open()
-
-        ## 예외 처리 - 중복된 시트명
-        elif self.combo_sheet.findText(self.temp_Sheet + '_Reference') != -1:
-            self.alertbox_open5()
-
-        else:
-            ### 중요성 금액 미입력시 0원
-            if self.temp_TE == '':
-                self.temp_TE = 0
-
-            try:
-                ### 중요성 금액 실수값인지 확인
-                float(self.temp_TE)
-
-                ## 예외 처리 - 기능영역이 존재하지 않음에도 기능영역을 체크한 경우
-                if self.checkF.isChecked():
-
-                    check_CoAsegment_query = """SELECT Segment01 FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts]""".format(
-                        field=self.selected_project_id)
-                    check_CoA = pd.read_sql(check_CoAsegment_query, self.cnxn)
-
-                    if check_CoA.iloc[:, 0].isnull().sum() == len(check_CoA):
-                        self.alertbox_open20()
-                        return
-
-                ### 계정 B 미입력 시, 계정 B 쿼리 조건문 삭제
-                if self.Addnew12_B.Acount.toPlainText() == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()' or self.Addnew12_B.Acount.toPlainText() == '':
-                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_A.Acount.toPlainText() + ')'
-                    self.checked_accountB = ''
-                    self.tempStateB = ''
-
-                ### 계정 B 입력시
-                else:
-                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_A.Acount.toPlainText() + ')'
-                    self.checked_accountB = 'AND LVL4.Analysis_GL_Account_Number NOT IN (' + self.Addnew12_B.Acount.toPlainText() + ')'
-
-                    ### 계정 B 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
-                    if ((self.checkC2.isChecked()) and (self.checkD2.isChecked())) or (
-                            not (self.checkC2.isChecked()) and not (self.checkD2.isChecked())):
-                        self.tempStateB = 'AND LVL4.Analysis_Position IN (' + "'" + 'Credit' + "'" + "," + "'" + 'Debit' + "')"
-
-                    ### 계정 B Credit 선택 시
-                    elif self.checkC2.isChecked():
-                        self.tempStateB = 'AND LVL4.Analysis_Position IN (' + "'" + 'Credit' + "')"
-
-                    ### 계정 B Debit 선택 시
-                    elif self.checkD2.isChecked():
-                        self.tempStateB = 'AND LVL4.Analysis_Position IN (' + "'" + 'Debit' + "')"
-
-                ### 계정 A 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
-                if ((self.checkC1.isChecked()) and (self.checkD1.isChecked())) or (
-                        not (self.checkC1.isChecked()) and not (self.checkD1.isChecked())):
-                    self.tempStateA = 'AND LVL4.GL_Account_Position IN (' + "'" + 'Credit' + "'" + "," + "'" + 'Debit' + "'" + ')'
-
-                ### 계정 A Credit 선택 시
-                elif self.checkC1.isChecked():
-                    self.tempStateA = 'AND LVL4.GL_Account_Position =' + "'" + 'Credit' + "'"
-
-                ### 계정 A Debit 선택 시
-                elif self.checkD1.isChecked():
-                    self.tempStateA = 'AND LVL4.GL_Account_Position =' + "'" + 'Debit' + "'"
-
-                ### 계정 A,B 입력 값 검토
-                if self.check_account2(self.checked_accountA, self.checked_accountB) != False:
-                    self.doAction()
-                    self.th12 = Thread(target=self.extButtonClicked12)
-                    self.th12.daemon = True
-                    self.th12.start()
-
-            ### 추가 예외처리 (팝업)
-            except ValueError:
-                self.alertbox_open2('중요성 금액')  ### 중요성 금액이 실수가 아닌 경우
 
     ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 8-1번)
     def Thread12(self):
@@ -8482,14 +8457,17 @@ class MyApp(QWidget):
 
                 ### 계정 B 미입력 시, 계정 B 쿼리 조건문 삭제
                 if self.Addnew12_B.Acount.toPlainText() == 'AND LVL4.Analysis_GL_Account_Number NOT IN ()' or self.Addnew12_B.Acount.toPlainText() == '':
-                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_A.Acount.toPlainText() + ')'
+                    Temp = "'" + self.Addnew12_A.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + Temp + ')'
                     self.checked_accountB = ''
                     self.tempStateB = ''
 
                 ### 계정 B 입력시
                 else:
-                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + self.Addnew12_A.Acount.toPlainText() + ')'
-                    self.checked_accountB = 'AND LVL4.Analysis_GL_Account_Number NOT IN (' + self.Addnew12_B.Acount.toPlainText() + ')'
+                    Temp = "'" + self.Addnew12_A.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                    self.checked_accountA = 'AND LVL4.GL_Account_Number IN (' + Temp + ')'
+                    Temp2 = "'" + self.Addnew12_B.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                    self.checked_accountB = 'AND LVL4.Analysis_GL_Account_Number NOT IN (' + Temp2 + ')'
 
                     ### 계정 B 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
                     if ((self.checkC2.isChecked()) and (self.checkD2.isChecked())) or (
@@ -8648,7 +8626,8 @@ class MyApp(QWidget):
 
         ##Select all이나 일부 체크박스가 선택된 경우
         else:
-            self.checked_account13 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew13.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew13.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account13 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
                 not (self.checkD.isChecked()) and not (self.checkC.isChecked())):  # Credit 이 0
@@ -8739,7 +8718,8 @@ class MyApp(QWidget):
             self.checked_account14 = ''
 
         else:
-            self.checked_account14 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew14.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew14.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account14 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.tempSheet == '' or self.D14_Key.text().strip() == '':
@@ -8873,7 +8853,8 @@ class MyApp(QWidget):
             self.checked_account15 = ''
 
         else:
-            self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew15.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew15.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 필수 입력값 누락 검토
         if self.tempSheet == '':
@@ -8977,7 +8958,8 @@ class MyApp(QWidget):
                 self.checked_account16 = ''
 
             else:
-                self.checked_account16 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew16.Acount.toPlainText() + ')'
+                Temp = "'" + self.Addnew16.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+                self.checked_account16 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
             ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
             if (self.checkD.isChecked() and self.checkC.isChecked()) or (
@@ -9034,7 +9016,8 @@ class MyApp(QWidget):
 
         ##Select all이나 일부 체크박스가 선택된 경우
         else:
-            self.checked_account17 = 'AND JournalEntries.GLAccountNumber IN (' + self.Addnew17.Acount.toPlainText() + ')'
+            Temp = "'" + self.Addnew17.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
+            self.checked_account17 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         ### 예외처리 1 - 필수값 누락
         if self.tempSheet == '':
@@ -9327,7 +9310,7 @@ class MyApp(QWidget):
             if self.rbtn1.isChecked():
                 self.scenario_dic[self.tempSheet + '_Reference'] = self.dataframe_refer
                 self.scenario_dic[self.tempSheet + '_Result'] = self.dataframe.head(1000)
-                self.combo_sheet.addItem(self.tempSheet + 'Reference')
+                self.combo_sheet.addItem(self.tempSheet + '_Reference')
                 self.combo_sheet.addItem(self.tempSheet + '_Result')
                 self.combo_sheet.setCurrentIndex(self.combo_sheet.count() - 1)
 
