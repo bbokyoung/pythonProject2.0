@@ -1980,7 +1980,7 @@ class MyApp(QWidget):
         self.Auto.setStyleSheet("color: white;")
 
         ### 전기일 / 입력일 선택 박스
-        labelEntef = QLabel('전기일/입력일* : ', self.dialog7)
+        labelEntef = QLabel('전기일/입력일* :      ', self.dialog7)
         labelEntef.setStyleSheet("color: yellow; font-weight : bold")
         self.Entry = QCheckBox('입력일', self.dialog7)
         self.Entry.setStyleSheet("color: white;")
@@ -2008,6 +2008,7 @@ class MyApp(QWidget):
         layout2.addWidget(labelEntef)
         layout2.addWidget(self.Effective)
         layout2.addWidget(self.Entry)
+        layout2.addStretch()
 
         ### 비영업일 포함 여부 Layout
         layoutDate = QHBoxLayout()
@@ -2015,6 +2016,7 @@ class MyApp(QWidget):
         layoutDate.addWidget(self.checkSat)
         layoutDate.addWidget(self.checkSun)
         layoutDate.addWidget(self.checkHoli)
+        layoutDate.addStretch()
 
         ### 중간 Layout
         layout3 = QGridLayout()
