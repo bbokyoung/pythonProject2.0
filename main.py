@@ -982,8 +982,6 @@ class MyApp(QWidget):
         ecode = "'" + ecode + "'"
         pname = text
         self.pname_year = "20" + str(pname)[2:4]
-        #pname = 'N' + "'" + text + "'"
-        #print(pname)
         cursor = self.cnxn.cursor()
 
         sql_query = f"""
