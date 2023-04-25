@@ -592,10 +592,12 @@ class MyApp(QWidget):
         self.alt.setText('계정 코드 쿼리문을 확인하시길 바랍니다.')
         self.alt.exec_()
 
-    def check_account(self, acc):
+    def check_account(self, acc, nonecheck = ''):
         """특정 계정코드 조건값에 이상이 있는지 확인하는 함수"""
         ## 예외 처리 - 콤마(,)가 정상적으로 입력되지 않은 경우
-        if acc.strip() != '' and (acc.count(',') + 1) * 2 != acc.count("'"):
+        if nonecheck == '[NONE]' :
+           return True
+        elif acc.strip() != '' and (acc.count(',') + 1) * 2 != acc.count("'"):
             self.alertbox_open22()
             return False
 
@@ -1412,7 +1414,8 @@ class MyApp(QWidget):
     ### 시나리오 2. 당기 생성된 계정리스트 추출
     def Dialog5(self):
         self.Addnew5 = AddForm()
-        self.Addnew5.Acount.setPlaceholderText('※ 당기에 새로 생성된 계정들을 입력하세요')
+        self.Addnew5.Acount.setPlaceholderText('※ 당기에 새로 생성된 계정들을 입력하세요\n [NONE] 입력 시'
+                                               '전기 대비 당기에만 사용딘 계정이 추출 됩니다.')
 
         ### 상단 라벨
         Titlelabel5 = QLabel('2. 당기 생성된 계정리스트 추출\n')
@@ -4811,8 +4814,14 @@ class MyApp(QWidget):
         if self.Addnew5.Acount.toPlainText() == '':
             self.checked_account5 = ''
 
+        elif self.Addnew5.Acount.toPlainText() == '[NONE]':
+            nonecheck = '[NONE]'
+            self.checked_account5 = 'AND JournalEntries.GLAccountNumber NOT IN (' \
+                                    'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)'
+
         ## 당기 생성 계정이 존재하는 경우
         else:
+            nonecheck = ''
             Temp = "'" + self.Addnew5.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
             self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
@@ -4825,7 +4834,7 @@ class MyApp(QWidget):
                 self.temp_TE = 0
 
             ##Checked_account의 유효성 체크
-            if self.check_account(self.checked_account5) == False:
+            if self.check_account(self.checked_account5, nonecheck) == False:
                 return
 
             try:
@@ -4860,8 +4869,15 @@ class MyApp(QWidget):
                                     {NewSQL}	
                                     {AutoManual}					
                                     DROP TABLE #TMPCOA				
-                                            """.format(field=self.selected_project_id, TE=self.temp_TE,
-                                                       Account=self.checked_account5, DebitCredit=self.debitcredit,
+                                            """.format(Account=self.checked_account5,
+                                                       field='{field}',
+                                                       TE='{TE}',
+                                                       DebitCredit='{DebitCredit}',
+                                                       NewSQL='{DebitCredit}',
+                                                       AutoManual='{AutoManual}',
+                                                       ).format(field = self.selected_project_id,
+                                                       TE = self.temp_TE,
+                                                       DebitCredit=self.debitcredit,
                                                        NewSQL=self.NewSQL,
                                                        AutoManual=self.ManualAuto)
 
@@ -4893,8 +4909,15 @@ class MyApp(QWidget):
                                              {AutoManual}	
                                             )					
                                     DROP TABLE #TMPCOA				                                                                       
-                                            """.format(field=self.selected_project_id, TE=self.temp_TE,
-                                                       Account=self.checked_account5, DebitCredit=self.debitcredit,
+                                            """.format(Account=self.checked_account5,
+                                                       field='{field}',
+                                                       TE='{TE}',
+                                                       DebitCredit='{DebitCredit}',
+                                                       NewSQL='{DebitCredit}',
+                                                       AutoManual='{AutoManual}',
+                                                       ).format(field = self.selected_project_id,
+                                                       TE = self.temp_TE,
+                                                       DebitCredit=self.debitcredit,
                                                        NewSQL=self.NewSQL,
                                                        AutoManual=self.ManualAuto)
                     self.dataframe = pd.read_sql(sql_query, self.cnxn)
@@ -6961,63 +6984,119 @@ class MyApp(QWidget):
 
         ### JE Line 기준 추출 시
         if self.rbtn1.isChecked():
-            ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open3()
+            ### 전기대비 당기에만 사용된 전표 추출 시
+            if self.checked_account5 == 'AND JournalEntries.GLAccountNumber NOT IN (' \
+                                    'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)':
+                ### 결과값이 50만건 초과일 경우
+                if len(self.dataframe) > 500000: self.alertbox_open3()
 
-            ### 추출 데이터가 존재하지 않을 경우
-            elif 'No Data' in self.dataframe.columns.tolist():
-                buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
-                                                      + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
-                                                      + str(len(self.dataframe) - 1)
-                                                      + ' 건 추출되었습니다. <br> - 중요성 금액('
-                                                      + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
-                                                      , QMessageBox.Ok)
-                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+                ### 추출 데이터가 존재하지 않을 경우
+                elif 'No Data' in self.dataframe.columns.tolist():
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 전기 대비 당기에만 계정을 사용한 전표가 '
+                                                          + str(len(self.dataframe) - 1)
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
+                                                          , QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
-            ### 추출 데이터가 300건 초과일 경우
-            elif len(self.dataframe) > 300:
+                ### 추출 데이터가 300건 초과일 경우
+                elif len(self.dataframe) > 300:
 
-                buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
-                                                      + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
-                                                      + str(len(self.dataframe))
-                                                      + ' 건 추출되었습니다. <br> - 중요성 금액('
-                                                      + str(
-                    self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
-                                                      , QMessageBox.Ok)
-                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 전기 대비 당기에만 계정을 사용한 전표가 '
+                                                          + str(len(self.dataframe))
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(
+                        self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
+                                                          , QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
-            else:
-                buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
-                                                      + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
-                                                      + str(len(self.dataframe))
-                                                      + ' 건 추출되었습니다. <br> - 중요성 금액('
-                                                      + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
-                                                      , QMessageBox.Ok)
-                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+                else:
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 전기 대비 당기에만 계정을 전표가 '
+                                                          + str(len(self.dataframe))
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
+                                                          , QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+            else :
+                ### 결과값이 50만건 초과일 경우
+                if len(self.dataframe) > 500000:
+                    self.alertbox_open3()
+
+                ### 추출 데이터가 존재하지 않을 경우
+                elif 'No Data' in self.dataframe.columns.tolist():
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
+                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                                                          + str(len(self.dataframe) - 1)
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
+                                                          , QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+
+                ### 추출 데이터가 300건 초과일 경우
+                elif len(self.dataframe) > 300:
+
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
+                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                                                          + str(len(self.dataframe))
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(
+                        self.temp_TE) + ')을 적용하였습니다. <br> 추가 필터링이 필요해보입니다. <br> [전표라인번호 기준]'
+                                                          , QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+
+                else:
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
+                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                                                          + str(len(self.dataframe))
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
+                                                          , QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
-            if len(self.dataframe) > 500000: self.alertbox_open1()
-            ### 추출 데이터가 존재하지 않을 경우
-            if 'No Data' in self.dataframe.columns.tolist():
-                buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
-                                                      + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
-                                                      + str(len(self.dataframe) - 1)
-                                                      + ' 건 추출되었습니다. <br> - 중요성 금액('
-                                                      + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
-                                                      , QMessageBox.Ok)
-                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+            ### 전기대비 당기에만 사용된 전표 추출 시
+            if self.checked_account5 == 'AND JournalEntries.GLAccountNumber NOT IN (' \
+                                    'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)':
+                if len(self.dataframe) > 500000: self.alertbox_open1()
+                ### 추출 데이터가 존재하지 않을 경우
+                if 'No Data' in self.dataframe.columns.tolist():
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 전기 대비 당기에만 계정을 사용한 전표가 '
+                                                          + str(len(self.dataframe) - 1)
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
+                                                          , QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
-            else:
-                buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
-                                                      + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
-                                                      + str(len(self.dataframe))
-                                                      + ' 건 추출되었습니다. <br> - 중요성 금액('
-                                                      + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
-                                                      , QMessageBox.Ok)
+                else:
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '-전기 대비 당기에만 계정을 사용한 전표가 '
+                                                          + str(len(self.dataframe))
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
+                                                          , QMessageBox.Ok)
 
-                if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
+            else :
+                if len(self.dataframe) > 500000: self.alertbox_open1()
+                ### 추출 데이터가 존재하지 않을 경우
+                if 'No Data' in self.dataframe.columns.tolist():
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
+                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                                                          + str(len(self.dataframe) - 1)
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
+                                                          , QMessageBox.Ok)
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
+                else:
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
+                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                                                          + str(len(self.dataframe))
+                                                          + ' 건 추출되었습니다. <br> - 중요성 금액('
+                                                          + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
+                                                          , QMessageBox.Ok)
+
+                    if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
         self.th5.join()
 
     ### 결과값과 관련한 팝업 함수 (시나리오 3번)
@@ -7944,8 +8023,14 @@ class MyApp(QWidget):
         if self.Addnew5.Acount.toPlainText() == '':
             self.checked_account5 = ''
 
+        elif self.Addnew5.Acount.toPlainText() == '[NONE]':
+            nonecheck = '[NONE]'
+            self.checked_account5 = 'AND JournalEntries.GLAccountNumber NOT IN (' \
+                                    'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)'
+
         ## 당기 생성 계정이 존재하는 경우
         else:
+            nonecheck = ''
             Temp = "'" + self.Addnew5.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
             self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
@@ -7966,7 +8051,7 @@ class MyApp(QWidget):
                 self.temp_TE = 0
 
             ##Checked_account의 유효성 체크
-            if self.check_account(self.checked_account5) == False:
+            if self.check_account(self.checked_account5, nonecheck) == False:
                 return
 
             try:
@@ -9615,35 +9700,37 @@ class MyApp(QWidget):
         if self.rbtn1.isChecked():
 
             sql_refer = """
-                    SET NOCOUNT ON		
-                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                    GROUP BY CoA.GLAccountNumber		
-                    SELECT										
-                          #TMPCOA.GLAccountNumber AS 당기생성계정코드						
-                        , MAX(#TMPCOA.GLAccountName) AS 계정명
-                        , (SELECT COUNT(A.GLAccountNumber)
-                           FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] A,
-                                [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] B
-                           WHERE A.JELINEID = B.JENumberID AND A.GLAccountNumber = #TMPCOA.GLAccountNumber
-                           AND ABS(A.Amount) >= {TE}
-                           {DebitCredit}
-                           {NewSQL}	
-                           {AutoManual}) AS CNT
-
-                    FROM #TMPCOA							
+                    SET NOCOUNT ON        
+                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA                
+                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA                
+                    GROUP BY CoA.GLAccountNumber        
+                    
+                    SELECT                                        
+                    #TMPCOA.GLAccountNumber AS 당기생성계정코드                        
+                    , MAX(#TMPCOA.GLAccountName) AS 계정명
+                    , COUNT(JournalEntries.GLAccountNumber) AS CNT                         
+                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries
+                    join [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] Details on JournalEntries.JELINEID = Details.JENumberID    
+                    right outer join #TMPCOA on JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber
                     WHERE 1=1
+                    AND ABS(JournalEntries.Amount) >= {TE}
+                    {DebitCredit}
+                    {NewSQL}	
+                    {AutoManual}
                     {Account}
                     GROUP BY #TMPCOA.GLAccountNumber
                     ORDER BY #TMPCOA.GLAccountNumber
                     DROP TABLE #TMPCOA
-                        """.format(
-                field=self.selected_project_id, TE=self.temp_TE,
-                Account=re.sub('JournalEntries.', '#TMPCOA.', self.checked_account5),
-                DebitCredit=re.sub('JournalEntries.', 'A.', self.debitcredit),
-                NewSQL=re.sub('JournalEntries.', 'A.', self.NewSQL),
-                AutoManual=re.sub('Details.', 'B.', self.ManualAuto)
-            )
+                        """.format(Account=self.checked_account5,
+                                   field='{field}',
+                                 TE='{TE}',
+                                 DebitCredit='{DebitCredit}',
+                                 NewSQL='{NewSQL}',
+                                 AutoManual='{AutoManual}').format(field=self.selected_project_id,
+                                 TE=self.temp_TE,
+                                 DebitCredit=self.debitcredit,
+                                 NewSQL=self.NewSQL,
+                                 AutoManual=self.ManualAuto)
             sql_query = """
                         SET NOCOUNT ON				
                         SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
@@ -9679,10 +9766,18 @@ class MyApp(QWidget):
                         {AutoManual}		
                         ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				
-                                """.format(field=self.selected_project_id, TE=self.temp_TE,
-                                           Account=self.checked_account5, DebitCredit=self.debitcredit,
-                                           NewSQL=self.NewSQL,
-                                           AutoManual=self.ManualAuto, NewSelect=self.NewSelect)
+                                """.format(Account=self.checked_account5,
+                                   NewSelect='{NewSelect}',
+                                   field='{field}',
+                                 TE='{TE}',
+                                 DebitCredit='{DebitCredit}',
+                                 NewSQL='{NewSQL}',
+                                 AutoManual='{AutoManual}').format(field=self.selected_project_id,
+                                 TE=self.temp_TE,
+                                 DebitCredit=self.debitcredit,
+                                 NewSQL=self.NewSQL,
+                                 AutoManual=self.ManualAuto,
+                                 NewSelect=self.NewSelect)
 
             self.dataframe_refer = pd.read_sql(sql_refer, self.cnxn)
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
@@ -9732,10 +9827,18 @@ class MyApp(QWidget):
                                 )		
                         ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				                                                                       
-                                """.format(field=self.selected_project_id, TE=self.temp_TE,
-                                           Account=self.checked_account5, DebitCredit=self.debitcredit,
-                                           NewSQL=self.NewSQL,
-                                           AutoManual=self.ManualAuto, NewSelect=self.NewSelect)
+                                """.format(Account=self.checked_account5,
+                                   NewSelect='{NewSelect}',
+                                   field='{field}',
+                                 TE='{TE}',
+                                 DebitCredit='{DebitCredit}',
+                                 NewSQL='{NewSQL}',
+                                 AutoManual='{AutoManual}').format(field=self.selected_project_id,
+                                 TE=self.temp_TE,
+                                 DebitCredit=self.debitcredit,
+                                 NewSQL=self.NewSQL,
+                                 AutoManual=self.ManualAuto,
+                                 NewSelect=self.NewSelect)
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
         ### 마지막 시트 쿼리 내역 추가
