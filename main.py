@@ -980,15 +980,16 @@ class MyApp(QWidget):
 
         ecode = self.line_ecode.text().strip()  # leading/trailing space 제거
         ecode = "'" + ecode + "'"
-
         pname = text
         self.pname_year = "20" + str(pname)[2:4]
+        #pname = 'N' + "'" + text + "'"
+        #print(pname)
         cursor = self.cnxn.cursor()
 
         sql_query = f"""
                                 SELECT Project_ID
                                 FROM [DataAnalyticsRepository].[dbo].[Projects]
-                                WHERE ProjectName IN (\'{pname}\')
+                                WHERE ProjectName IN (N'{pname}')
                                 AND EngagementCode IN ({ecode})
                                 AND DeletedBy is Null
                              """
@@ -1829,10 +1830,10 @@ class MyApp(QWidget):
         ### 계정 트리
         cursor = self.cnxn.cursor()
         sql = '''
-                 SELECT 											
-                        *
-                 FROM  [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] COA											
-            '''.format(field=self.selected_project_id)
+                         SELECT 											
+                                *
+                         FROM  [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] COA											
+                    '''.format(field=self.selected_project_id)
 
         accountsname = pd.read_sql(sql, self.cnxn)
 
@@ -1886,6 +1887,19 @@ class MyApp(QWidget):
         font1.setBold(True)
         labelDC.setFont(font1)
 
+        ### 비영업일 포함 여부 체크 박스
+        self.checkSat = QCheckBox('토요일', self.dialog7)
+        self.checkSun = QCheckBox('일요일', self.dialog7)
+        self.checkHoli = QCheckBox('공휴일', self.dialog7)
+        self.checkSat.setStyleSheet("color: white;")
+        self.checkSun.setStyleSheet("color: white;")
+        self.checkHoli.setStyleSheet("color: white;")
+        labelSelect = QLabel('비영업일 포함 여부 : ', self.dialog7)
+        labelSelect.setStyleSheet("color: white;")
+        font1 = labelSelect.font()
+        font1.setBold(True)
+        labelSelect.setFont(font1)
+
         ### 데이터 추출 버튼
         self.btn2 = QPushButton('   Extract Data', self.dialog7)
         self.btn2.setStyleSheet('color:white;  background-image : url(./bar.png)')
@@ -1925,7 +1939,7 @@ class MyApp(QWidget):
         labelDate.setFont(font3)
         self.D7_Date = QTextEdit(self.dialog7)
         self.D7_Date.setStyleSheet("background-color: white;")
-        self.D7_Date.setPlaceholderText('날짜를 추가해주세요 yyyyMMdd \n(법정 공휴일 및 주말은 포함되어 있습니다) \nex) 대체공휴일, 창립기념일, 근로자의 날')
+        self.D7_Date.setPlaceholderText('날짜를 추가해주세요 yyyyMMdd \nex) 대체공휴일, 창립기념일, 근로자의 날')
 
         ### 특정 계정명
         label_tree = QLabel('특정 계정명 : ', self.dialog7)
@@ -1997,6 +2011,13 @@ class MyApp(QWidget):
         layout2.addWidget(self.Effective)
         layout2.addWidget(self.Entry)
 
+        ### 비영업일 포함 여부 Layout
+        layoutDate = QHBoxLayout()
+        layoutDate.addWidget(labelSelect)
+        layoutDate.addWidget(self.checkSat)
+        layoutDate.addWidget(self.checkSun)
+        layoutDate.addWidget(self.checkHoli)
+
         ### 중간 Layout
         layout3 = QGridLayout()
         layout3.addWidget(labelDate, 0, 0)
@@ -2039,6 +2060,7 @@ class MyApp(QWidget):
         main_layout.addWidget(Titlelabel7)
         main_layout.addLayout(layout1)
         main_layout.addLayout(layout2)
+        main_layout.addLayout(layoutDate)
         main_layout.addLayout(layout3)
         main_layout.addLayout(self.Addnew7.sublayout1)
         main_layout.addLayout(layout_dc)
@@ -3975,10 +3997,10 @@ class MyApp(QWidget):
         ### 계정 트리
         cursor = self.cnxn.cursor()
         sql = '''
-                         SELECT 											
-                                *
-                         FROM  [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] COA											
-                    '''.format(field=self.selected_project_id)
+                                 SELECT 											
+                                        *
+                                 FROM  [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] COA											
+                            '''.format(field=self.selected_project_id)
         accountsname = pd.read_sql(sql, self.cnxn)
 
         self.new_tree = Form(self)
@@ -4037,6 +4059,7 @@ class MyApp(QWidget):
         self.btnDialog.setFont(font10)
 
         ### JE Line / JE 선택 라디오 버튼
+        self.rbtngroup1 = QButtonGroup()
         self.rbtn1 = QRadioButton('JE Line (Result)', self.dialog15)
         self.rbtn1.setStyleSheet("color: white;")
         font11 = self.rbtn1.font()
@@ -4049,6 +4072,32 @@ class MyApp(QWidget):
         font12 = self.rbtn2.font()
         font12.setBold(True)
         self.rbtn2.setFont(font12)
+
+        self.rbtngroup1.addButton(self.rbtn1)
+        self.rbtngroup1.addButton(self.rbtn2)
+
+        ### Month / Year 선택 라디오 버튼
+        self.rbtngroup2 = QButtonGroup()
+        labelMY = QLabel('Month / Year* : ', self.dialog15)
+        labelMY.setStyleSheet("color: yellow;")
+        fontMY = labelMY.font()
+        fontMY.setBold(True)
+        labelMY.setFont(fontMY)
+        self.rbtn3 = QRadioButton('Month', self.dialog15)
+        self.rbtn3.setStyleSheet("color: white;")
+        font11 = self.rbtn3.font()
+        font11.setBold(True)
+        self.rbtn3.setFont(font11)
+        self.rbtn3.setChecked(True)
+
+        self.rbtn4 = QRadioButton('Year', self.dialog15)
+        self.rbtn4.setStyleSheet("color: white;")
+        font12 = self.rbtn4.font()
+        font12.setBold(True)
+        self.rbtn4.setFont(font12)
+
+        self.rbtngroup2.addButton(self.rbtn3)
+        self.rbtngroup2.addButton(self.rbtn4)
 
         ### LineEdit 2 - 중요성 금액
         label_TE = QLabel('중요성 금액 : ', self.dialog15)
@@ -4115,16 +4164,23 @@ class MyApp(QWidget):
         layout1.addWidget(self.rbtn2, 0, 1)
         layout1.addWidget(labelSheet, 1, 0)
         layout1.addWidget(self.D15_Sheet, 1, 1)
-        layout1.addWidget(label_TE, 2, 0)
-        layout1.addWidget(self.D15_TE, 2, 1)
-        layout1.addWidget(label_tree, 3, 0)
-        layout1.addWidget(self.new_tree, 3, 1)
-        layout1.addWidget(self.Addnew15.btnMid, 4, 1)
-        layout1.addWidget(self.Addnew15.Acount, 5, 1)
-        layout1.addWidget(self.Addnew15.sourceLabel, 6, 0)
-        layout1.addWidget(self.Addnew15.source, 6, 1)
-        layout1.addWidget(self.Addnew15.UserLabel, 7, 0)
-        layout1.addWidget(self.Addnew15.User, 7, 1)
+
+        layoutMY = QHBoxLayout()
+        layoutMY.addWidget(labelMY)
+        layoutMY.addWidget(self.rbtn3)
+        layoutMY.addWidget(self.rbtn4)
+
+        layout3 = QGridLayout()
+        layout3.addWidget(label_TE, 1, 0)
+        layout3.addWidget(self.D15_TE, 1, 1)
+        layout3.addWidget(label_tree, 2, 0)
+        layout3.addWidget(self.new_tree, 2, 1)
+        layout3.addWidget(self.Addnew15.btnMid, 3, 1)
+        layout3.addWidget(self.Addnew15.Acount, 4, 1)
+        layout3.addWidget(self.Addnew15.sourceLabel, 5, 0)
+        layout3.addWidget(self.Addnew15.source, 5, 1)
+        layout3.addWidget(self.Addnew15.UserLabel, 6, 0)
+        layout3.addWidget(self.Addnew15.User, 6, 1)
 
         ### 데이터 추출 / 창 닫기 버튼 Layout
         layout2 = QHBoxLayout()
@@ -4151,6 +4207,8 @@ class MyApp(QWidget):
         main_layout.setAlignment(Qt.AlignTop)
         main_layout.addWidget(Titlelabel15)
         main_layout.addLayout(layout1)
+        main_layout.addLayout(layoutMY)
+        main_layout.addLayout(layout3)
         main_layout.addLayout(self.Addnew15.sublayout1)
         main_layout.addLayout(layout_dc)
         main_layout.addLayout(layout_am)
@@ -5023,34 +5081,96 @@ class MyApp(QWidget):
             self.alertbox_open21()
 
         else:
+            sql = '''
+                                SET NOCOUNT ON;
+                                SELECT MIN([EntryDate]) AS MINDate, MAX([EntryDate]) AS MAXDate,[AuditYear]
+                                FROM [{field}_Import_Dim].[dbo].[Distinct_EntryDate]
+                                WHERE [AuditYear] = 'CY'
+                                GROUP BY [AuditYear]
+                                         '''.format(field=self.selected_project_id)
+
+            self.dateDF = pd.read_sql(sql, self.cnxn)
+            self.minDate = self.dateDF.iloc[0]['MINDate']
+            self.maxDate = self.dateDF.iloc[0]['MAXDate']
+
+            ### 최소 최대 입력일
+            self.minYear = int(self.minDate.strftime("%Y"))
+            self.maxYear = int(self.maxDate.strftime("%Y"))
+
             self.holiday = []  # 공휴일 리스트
-            self.holiday_str = []  # 공휴일, 주말
-            self.realDate_List = []  # 중복 제거 전 SQL 쿼리에 들어갈 리스트
+            self.holiday_str = []  # 공휴일 최종 리스트 (String으로 변환)
+
+            self.saturday = []
+            self.sunday = []
+
+            self.realDateHoliday = []  # 중복 제거 전 SQL 쿼리에 들어갈 리스트
+            self.realDateSaturday = []
+            self.realDateSunday = []
+
+            self.realDate_List = []
             self.realDate_List_final = []  # SQL 쿼리에 들어갈 리스트
 
-            ### 공휴일 추가
-            self.holiday = [pytimekr.holidays(i) for i in range(2021, 2023)]
+            ### 공휴일 (self.holiday_str)
+            self.holiday = [pytimekr.holidays(i) for i in range(self.minYear, self.maxYear + 1)]
             for i in range(len(self.holiday)):
                 for d in range(0, len(self.holiday[i])):
                     self.date_str = self.holiday[i][d].strftime('%Y-%m-%d')
                     self.holiday_str.append(self.date_str)
 
-            ### 주말 추가
-            self.start_date = date(2020, 1, 1)
-            self.end_date = date(2022, 12, 31)
+            ### 토요일
+            self.start_date = date(self.minYear, 1, 1)
+            self.end_date = date(self.maxYear, 12, 31)
             self.delta = timedelta(days=1)
             while self.start_date <= self.end_date:
-                if self.start_date.weekday() == 5 or self.start_date.weekday() == 6:
+                if self.start_date.weekday() == 5:
                     self.a = self.start_date.strftime('%Y-%m-%d')
-                    self.holiday_str.append(self.a)
+                    self.saturday.append(self.a)
                 self.start_date += self.delta
 
-            ### 공휴일, 주말 yyyyMMdd 형식에 맞게 변환
+            ### 일요일
+            self.start_date_sun = date(self.minYear, 1, 1)
+            self.end_date_sun = date(self.maxYear, 12, 31)
+            self.delta = timedelta(days=1)
+            while self.start_date_sun <= self.end_date_sun:
+                if self.start_date_sun.weekday() == 6:
+                    self.b = self.start_date_sun.strftime('%Y-%m-%d')
+                    self.sunday.append(self.b)
+                self.start_date_sun += self.delta
+
+            ### 공휴일 yyyyMMdd 형식에 맞게 변환
             for i in range(0, len(self.holiday_str)):
                 self.tempDate = []
                 self.tempDate = str(self.holiday_str[i]).split('-')
                 self.realDate = self.tempDate[0] + self.tempDate[1] + self.tempDate[2]
-                self.realDate_List.append(self.realDate)
+                self.realDateHoliday.append(self.realDate)
+
+            ### 일요일 yyyyMMdd 형식에 맞게 변환
+            for i in range(0, len(self.sunday)):
+                self.tempDate = []
+                self.tempDate = str(self.sunday[i]).split('-')
+                self.realDate = self.tempDate[0] + self.tempDate[1] + self.tempDate[2]
+                self.realDateSunday.append(self.realDate)
+
+            ### 토요일 yyyyMMdd 형식에 맞게 변환
+            for i in range(0, len(self.saturday)):
+                self.tempDate = []
+                self.tempDate = str(self.saturday[i]).split('-')
+                self.realDate = self.tempDate[0] + self.tempDate[1] + self.tempDate[2]
+                self.realDateSaturday.append(self.realDate)
+
+            ### check 된 것 확인
+            if self.checkSat.isChecked():
+                for i in range(0, len(self.realDateSaturday)):
+                    print(self.realDateSaturday[i])
+                    self.realDate_List.append(self.realDateSaturday[i])
+
+            if self.checkSun.isChecked():
+                for i in range(0, len(self.realDateSunday)):
+                    self.realDate_List.append(self.realDateSunday[i])
+
+            if self.checkHoli.isChecked():
+                for i in range(0, len(self.realDateHoliday)):
+                    self.realDate_List.append(self.realDateHoliday[i])
 
             ### 사용자 입력 일자 추가
             if self.D7_Date.toPlainText() != '':
@@ -5129,63 +5249,63 @@ class MyApp(QWidget):
                     ### JE Line 추출
                     if self.rbtn1.isChecked():
                         sql = '''
-                                           SET NOCOUNT ON				
-                                            SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                            FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                            GROUP BY CoA.GLAccountNumber
-                                            SELECT COUNT(*) as cnt	
-                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                                #TMPCOA,			
-                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                            AND JournalEntries.JELINEID = Details.JENumberID 							
-                                            {Date}				
-                                            AND ABS(JournalEntries.Amount) >= {TE}		
-                                            {Account}			
-                                            {NewSQL}				
-                                            {DebitCredit}				
-                                            {AutoManual}											
-                                            DROP TABLE #TMPCOA				
-                                       '''.format(field=self.selected_project_id, TE=self.temp_TE,
-                                                  Date=self.tempState,
-                                                  Account=self.checked_account7, NewSQL=self.NewSQL,
-                                                  AutoManual=self.ManualAuto,
-                                                  DebitCredit=self.debitcredit)
+                                                   SET NOCOUNT ON				
+                                                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                                    GROUP BY CoA.GLAccountNumber
+                                                    SELECT COUNT(*) as cnt	
+                                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                        #TMPCOA,			
+                                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                                    AND JournalEntries.JELINEID = Details.JENumberID 							
+                                                    {Date}				
+                                                    AND ABS(JournalEntries.Amount) >= {TE}		
+                                                    {Account}			
+                                                    {NewSQL}				
+                                                    {DebitCredit}				
+                                                    {AutoManual}											
+                                                    DROP TABLE #TMPCOA				
+                                               '''.format(field=self.selected_project_id, TE=self.temp_TE,
+                                                          Date=self.tempState,
+                                                          Account=self.checked_account7, NewSQL=self.NewSQL,
+                                                          AutoManual=self.ManualAuto,
+                                                          DebitCredit=self.debitcredit)
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
 
                     ### JE 추출
                     elif self.rbtn2.isChecked():
                         sql = '''
-                                        SET NOCOUNT ON				
-                                        SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                        FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                        GROUP BY CoA.GLAccountNumber				
-                                        SELECT COUNT(*) as cnt	
-                                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                            #TMPCOA,			
-                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                        AND JournalEntries.JELINEID = Details.JENumberID 								
-                                        AND Details.JEIdentifierID IN				
-                                                (		
-                                                 SELECT DISTINCT Details.JEIdentifierID		
-                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
-                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
-                                                 WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                                 {Date}	
-                                                 AND ABS(JournalEntries.Amount) >= {TE}	
-                                                 {Account}		
-                                                 {NewSQL}		
-                                                 {DebitCredit}		
-                                                 {AutoManual}		
-                                                )						
-                                        DROP TABLE #TMPCOA				
-                                       '''.format(field=self.selected_project_id, TE=self.temp_TE,
-                                                  Date=self.tempState,
-                                                  Account=self.checked_account7, NewSQL=self.NewSQL,
-                                                  AutoManual=self.ManualAuto,
-                                                  DebitCredit=self.debitcredit)
+                                                SET NOCOUNT ON				
+                                                SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                                FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                                GROUP BY CoA.GLAccountNumber				
+                                                SELECT COUNT(*) as cnt	
+                                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                    #TMPCOA,			
+                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                                AND JournalEntries.JELINEID = Details.JENumberID 								
+                                                AND Details.JEIdentifierID IN				
+                                                        (		
+                                                         SELECT DISTINCT Details.JEIdentifierID		
+                                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
+                                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
+                                                         WHERE JournalEntries.JELINEID = Details.JENumberID 		
+                                                         {Date}	
+                                                         AND ABS(JournalEntries.Amount) >= {TE}	
+                                                         {Account}		
+                                                         {NewSQL}		
+                                                         {DebitCredit}		
+                                                         {AutoManual}		
+                                                        )						
+                                                DROP TABLE #TMPCOA				
+                                               '''.format(field=self.selected_project_id, TE=self.temp_TE,
+                                                          Date=self.tempState,
+                                                          Account=self.checked_account7, NewSQL=self.NewSQL,
+                                                          AutoManual=self.ManualAuto,
+                                                          DebitCredit=self.debitcredit)
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
 
@@ -5947,9 +6067,9 @@ class MyApp(QWidget):
         self.tempTE = self.D15_TE.text()  # 중요성 금액
 
         sql = '''
-                                    Select count(*) as UserdefinedCNT from
-                                    [{field}_Reporting_Details_Dim].[dbo].[DimUserDefined1]
-                                 '''.format(field=self.selected_project_id)
+                                            Select count(*) as UserdefinedCNT from
+                                            [{field}_Reporting_Details_Dim].[dbo].[DimUserDefined1]
+                                         '''.format(field=self.selected_project_id)
         dataframe_check = pd.read_sql(sql, self.cnxn)
 
         ### 차대변 체크박스 모두 선택 / 미선택 시, 차대변 조건 제거
@@ -5969,7 +6089,6 @@ class MyApp(QWidget):
             Temp = "'" + self.Addnew15.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
             self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
-
         if dataframe_check['UserdefinedCNT'][0] == 1:
             self.alertbox_open4("증빙일이 매핑되어 있지 않습니다.")
 
@@ -5983,66 +6102,135 @@ class MyApp(QWidget):
                     ### 중요성 금액 실수값인지 확인
                     float(self.tempTE)
                     cursor = self.cnxn.cursor()
-                    ### JE Line
-                    if self.rbtn1.isChecked():
-                        sql = '''
-                                    SET NOCOUNT ON				
-                                        SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                        FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                        GROUP BY CoA.GLAccountNumber				
-                                        SELECT COUNT(*) as cnt	       
-                                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                            #TMPCOA,			
-                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                        AND JournalEntries.JELINEID = Details.JENumberID 						
-                                        AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
-                                        AND ABS(JournalEntries.Amount) >= {TE} 				
-                                        {Account}					
-                                        {NewSQL} 			
-                                        {AutoManual}
-                                        {DebitCredit}	  									
-                                        DROP TABLE #TMPCOA						
-                                    '''.format(field=self.selected_project_id, TE=self.tempTE,
-                                               Account=self.checked_account15, NewSQL=self.NewSQL,
-                                               AutoManual=self.ManualAuto,
-                                               DebitCredit=self.debitcredit)
+                    ### Month 선택 경우
+                    if self.rbtn3.isChecked():
+                        ### JE Line
+                        if self.rbtn1.isChecked():
 
-                        self.dataframe = pd.read_sql(sql, self.cnxn)
+                            sql = '''
+                                                SET NOCOUNT ON				
+                                                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                                    GROUP BY CoA.GLAccountNumber				
+                                                    SELECT COUNT(*) AS cnt	       
+                                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                        #TMPCOA,			
+                                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                                    AND JournalEntries.JELINEID = Details.JENumberID 						
+                                                    AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
+                                                    AND ABS(JournalEntries.Amount) >= {TE} 				
+                                                    {Account}					
+                                                    {NewSQL} 			
+                                                    {AutoManual}
+                                                    {DebitCredit}	  										
+                                                    DROP TABLE #TMPCOA						
+                                                '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                                           Account=self.checked_account15, NewSQL=self.NewSQL,
+                                                           AutoManual=self.ManualAuto,
+                                                           DebitCredit=self.debitcredit)
 
-                    ### JE
-                    elif self.rbtn2.isChecked():
+                            self.dataframe = pd.read_sql(sql, self.cnxn)
 
-                        sql = '''
-                                    SET NOCOUNT ON				
-                                        SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                        FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                        GROUP BY CoA.GLAccountNumber				
-                                        SELECT COUNT(*) as cnt		 
-                                        FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                            #TMPCOA,			
-                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                        AND JournalEntries.JELINEID = Details.JENumberID 					
-                                        AND Details.JEIdentifierID IN				
-                                                (		
-                                                 SELECT DISTINCT Details.JEIdentifierID		
-                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
-                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
-                                                 WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                                 AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
-                                                 AND ABS(JournalEntries.Amount) >= {TE} 	
-                                                 {Account} 	
-                                                 {NewSQL}
-                                                 {AutoManual}
-                                                 {DebitCredit}	
-                                                )		
-                                        DROP TABLE #TMPCOA						
-                                    '''.format(field=self.selected_project_id, TE=self.tempTE,
-                                               Account=self.checked_account15, NewSQL=self.NewSQL,
-                                               AutoManual=self.ManualAuto,
-                                               DebitCredit=self.debitcredit)
-                        self.dataframe = pd.read_sql(sql, self.cnxn)
+                        ### JE
+                        elif self.rbtn2.isChecked():
+
+                            sql = '''
+                                                SET NOCOUNT ON				
+                                                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                                    GROUP BY CoA.GLAccountNumber				
+                                                    SELECT COUNT(*) AS cnt		 
+                                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                        #TMPCOA,			
+                                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                                    AND JournalEntries.JELINEID = Details.JENumberID 					
+                                                    AND Details.JEIdentifierID IN				
+                                                            (		
+                                                             SELECT DISTINCT Details.JEIdentifierID		
+                                                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
+                                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
+                                                             WHERE JournalEntries.JELINEID = Details.JENumberID 		
+                                                             AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
+                                                             AND ABS(JournalEntries.Amount) >= {TE} 	
+                                                             {Account} 	
+                                                             {NewSQL}
+                                                             {AutoManual}
+                                                             {DebitCredit}	
+                                                            )					
+                                                    DROP TABLE #TMPCOA						
+                                                '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                                           Account=self.checked_account15, NewSQL=self.NewSQL,
+                                                           AutoManual=self.ManualAuto,
+                                                           DebitCredit=self.debitcredit)
+                            self.dataframe = pd.read_sql(sql, self.cnxn)
+
+                    ### Year 선택 경우
+                    else:
+                        ### JE Line
+                        if self.rbtn1.isChecked():
+
+                            sql = '''
+                                                            SET NOCOUNT ON				
+                                                                SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                                                FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                                                GROUP BY CoA.GLAccountNumber				
+                                                                SELECT COUNT(*) AS cnt		       
+                                                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                                    #TMPCOA,			
+                                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                                                AND JournalEntries.JELINEID = Details.JENumberID 						
+                                                                AND Year(JournalEntries.UserDefined1) <> Year(JournalEntries.EffectiveDate) 				
+                                                                AND ABS(JournalEntries.Amount) >= {TE} 				
+                                                                {Account}					
+                                                                {NewSQL} 			
+                                                                {AutoManual}
+                                                                {DebitCredit}	  										
+                                                                DROP TABLE #TMPCOA						
+                                                            '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                                                       Account=self.checked_account15,
+                                                                       NewSQL=self.NewSQL,
+                                                                       AutoManual=self.ManualAuto,
+                                                                       DebitCredit=self.debitcredit)
+
+                            self.dataframe = pd.read_sql(sql, self.cnxn)
+
+                        ### JE
+                        elif self.rbtn2.isChecked():
+
+                            sql = '''
+                                                            SET NOCOUNT ON				
+                                                                SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                                                FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                                                GROUP BY CoA.GLAccountNumber				
+                                                                SELECT COUNT(*) AS cnt		 
+                                                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                                    #TMPCOA,			
+                                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                                                AND JournalEntries.JELINEID = Details.JENumberID 					
+                                                                AND Details.JEIdentifierID IN				
+                                                                        (		
+                                                                         SELECT DISTINCT Details.JEIdentifierID		
+                                                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
+                                                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
+                                                                         WHERE JournalEntries.JELINEID = Details.JENumberID 		
+                                                                         AND Year(JournalEntries.UserDefined1) <> Year(JournalEntries.EffectiveDate) 		
+                                                                         AND ABS(JournalEntries.Amount) >= {TE} 	
+                                                                         {Account} 	
+                                                                         {NewSQL}
+                                                                         {AutoManual}
+                                                                         {DebitCredit}	
+                                                                        )					
+                                                                DROP TABLE #TMPCOA						
+                                                            '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                                                       Account=self.checked_account15,
+                                                                       NewSQL=self.NewSQL,
+                                                                       AutoManual=self.ManualAuto,
+                                                                       DebitCredit=self.debitcredit)
+                            self.dataframe = pd.read_sql(sql, self.cnxn)
 
                     buttonReply = QMessageBox.information(self, '라인 수 확인',
                                                           '라인 수 : ' + str(self.dataframe['cnt'].loc[0]) + '<br>',
@@ -7943,34 +8131,96 @@ class MyApp(QWidget):
             self.alertbox_open21()
 
         else:
+            sql = '''
+                    SET NOCOUNT ON;
+                    SELECT MIN([EntryDate]) AS MINDate, MAX([EntryDate]) AS MAXDate,[AuditYear]
+                    FROM [{field}_Import_Dim].[dbo].[Distinct_EntryDate]
+                    WHERE [AuditYear] = 'CY'
+                    GROUP BY [AuditYear]
+                             '''.format(field=self.selected_project_id)
+
+            self.dateDF = pd.read_sql(sql, self.cnxn)
+            self.minDate = self.dateDF.iloc[0]['MINDate']
+            self.maxDate = self.dateDF.iloc[0]['MAXDate']
+
+            ### 최소 최대 입력일
+            self.minYear = int(self.minDate.strftime("%Y"))
+            self.maxYear = int(self.maxDate.strftime("%Y"))
+
             self.holiday = []  # 공휴일 리스트
-            self.holiday_str = []  # 공휴일, 주말
-            self.realDate_List = []  # 중복 제거 전 SQL 쿼리에 들어갈 리스트
+            self.holiday_str = []  # 공휴일 최종 리스트 (String으로 변환)
+
+            self.saturday = []
+            self.sunday = []
+
+            self.realDateHoliday = []  # 중복 제거 전 SQL 쿼리에 들어갈 리스트
+            self.realDateSaturday = []
+            self.realDateSunday = []
+
+            self.realDate_List = []
             self.realDate_List_final = []  # SQL 쿼리에 들어갈 리스트
 
-            ### 공휴일 추가
-            self.holiday = [pytimekr.holidays(i) for i in range(2021, 2023)]
+            ### 공휴일 (self.holiday_str)
+            self.holiday = [pytimekr.holidays(i) for i in range(self.minYear, self.maxYear + 1)]
             for i in range(len(self.holiday)):
                 for d in range(0, len(self.holiday[i])):
                     self.date_str = self.holiday[i][d].strftime('%Y-%m-%d')
                     self.holiday_str.append(self.date_str)
 
-            ### 주말 추가
-            self.start_date = date(2020, 1, 1)
-            self.end_date = date(2022, 12, 31)
+            ### 토요일
+            self.start_date = date(self.minYear, 1, 1)
+            self.end_date = date(self.maxYear, 12, 31)
             self.delta = timedelta(days=1)
             while self.start_date <= self.end_date:
-                if self.start_date.weekday() == 5 or self.start_date.weekday() == 6:
+                if self.start_date.weekday() == 5:
                     self.a = self.start_date.strftime('%Y-%m-%d')
-                    self.holiday_str.append(self.a)
+                    self.saturday.append(self.a)
                 self.start_date += self.delta
 
-            ### 공휴일, 주말 yyyyMMdd 형식에 맞게 변환
+            ### 일요일
+            self.start_date_sun = date(self.minYear, 1, 1)
+            self.end_date_sun = date(self.maxYear, 12, 31)
+            self.delta = timedelta(days=1)
+            while self.start_date_sun <= self.end_date_sun:
+                if self.start_date_sun.weekday() == 6:
+                    self.b = self.start_date_sun.strftime('%Y-%m-%d')
+                    self.sunday.append(self.b)
+                self.start_date_sun += self.delta
+
+            ### 공휴일 yyyyMMdd 형식에 맞게 변환
             for i in range(0, len(self.holiday_str)):
                 self.tempDate = []
                 self.tempDate = str(self.holiday_str[i]).split('-')
                 self.realDate = self.tempDate[0] + self.tempDate[1] + self.tempDate[2]
-                self.realDate_List.append(self.realDate)
+                self.realDateHoliday.append(self.realDate)
+
+            ### 일요일 yyyyMMdd 형식에 맞게 변환
+            for i in range(0, len(self.sunday)):
+                self.tempDate = []
+                self.tempDate = str(self.sunday[i]).split('-')
+                self.realDate = self.tempDate[0] + self.tempDate[1] + self.tempDate[2]
+                self.realDateSunday.append(self.realDate)
+
+            ### 토요일 yyyyMMdd 형식에 맞게 변환
+            for i in range(0, len(self.saturday)):
+                self.tempDate = []
+                self.tempDate = str(self.saturday[i]).split('-')
+                self.realDate = self.tempDate[0] + self.tempDate[1] + self.tempDate[2]
+                self.realDateSaturday.append(self.realDate)
+
+            ### check 된 것 확인
+            if self.checkSat.isChecked():
+                for i in range(0, len(self.realDateSaturday)):
+                    print(self.realDateSaturday[i])
+                    self.realDate_List.append(self.realDateSaturday[i])
+
+            if self.checkSun.isChecked():
+                for i in range(0, len(self.realDateSunday)):
+                    self.realDate_List.append(self.realDateSunday[i])
+
+            if self.checkHoli.isChecked():
+                for i in range(0, len(self.realDateHoliday)):
+                    self.realDate_List.append(self.realDateHoliday[i])
 
             ### 사용자 입력 일자 추가
             if self.D7_Date.toPlainText() != '':
@@ -12261,103 +12511,209 @@ class MyApp(QWidget):
     def extButtonClicked15(self):
         cursor = self.cnxn.cursor()
 
-        ### JE Line
-        if self.rbtn1.isChecked():
+        ### Month 선택 경우
+        if self.rbtn3.isChecked():
+            ### JE Line
+            if self.rbtn1.isChecked():
 
-            sql = '''
-                SET NOCOUNT ON				
-                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                    GROUP BY CoA.GLAccountNumber				
-                    SELECT				
-                        JournalEntries.BusinessUnit AS 회사코드			
-                        , JournalEntries.JENumber AS 전표번호			
-                        , JournalEntries.JELineNumber AS 전표라인번호			
-                        , JournalEntries.Year AS 회계연도			
-                        , JournalEntries.Period AS 회계기간			
-                        , JournalEntries.EffectiveDate AS 전기일			
-                        , CONVERT(CHAR(10), CONVERT(DATE, JournalEntries.UserDefined1), 23)  AS 증빙일		
-                        , JournalEntries.EntryDate AS 입력일			
-                        , JournalEntries.Amount AS 금액			
-                        , JournalEntries.FunctionalCurrencyCode AS 통화			
-                        , JournalEntries.GLAccountNumber AS 계정코드			
-                        , #TMPCOA.GLAccountName AS 계정명			
-                        , JournalEntries.Source AS 전표유형			
-                        , JournalEntries.PreparerID AS 입력자			
-                        , JournalEntries.ApproverID AS 승인자			
-                        , JournalEntries.JEDescription AS 전표헤더적요			
-                        , JournalEntries.JELineDescription AS 전표라인적요			
-                        {NewSelect}		       
-                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                        #TMPCOA,			
-                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                    AND JournalEntries.JELINEID = Details.JENumberID 						
-                    AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
-                    AND ABS(JournalEntries.Amount) >= {TE} 				
-                    {Account}					
-                    {NewSQL} 			
-                    {AutoManual}
-                    {DebitCredit}	  						
-                    ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
-                    DROP TABLE #TMPCOA						
-                '''.format(field=self.selected_project_id, TE=self.tempTE,
-                           Account=self.checked_account15, NewSQL=self.NewSQL,
-                           NewSelect=self.NewSelect, AutoManual=self.ManualAuto, DebitCredit=self.debitcredit)
+                sql = '''
+                            SET NOCOUNT ON				
+                                SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                GROUP BY CoA.GLAccountNumber				
+                                SELECT				
+                                    JournalEntries.BusinessUnit AS 회사코드			
+                                    , JournalEntries.JENumber AS 전표번호			
+                                    , JournalEntries.JELineNumber AS 전표라인번호			
+                                    , JournalEntries.Year AS 회계연도			
+                                    , JournalEntries.Period AS 회계기간			
+                                    , JournalEntries.EffectiveDate AS 전기일			
+                                    , CONVERT(CHAR(10), CONVERT(DATE, JournalEntries.UserDefined1), 23)  AS 증빙일		
+                                    , JournalEntries.EntryDate AS 입력일			
+                                    , JournalEntries.Amount AS 금액			
+                                    , JournalEntries.FunctionalCurrencyCode AS 통화			
+                                    , JournalEntries.GLAccountNumber AS 계정코드			
+                                    , #TMPCOA.GLAccountName AS 계정명			
+                                    , JournalEntries.Source AS 전표유형			
+                                    , JournalEntries.PreparerID AS 입력자			
+                                    , JournalEntries.ApproverID AS 승인자			
+                                    , JournalEntries.JEDescription AS 전표헤더적요			
+                                    , JournalEntries.JELineDescription AS 전표라인적요			
+                                    {NewSelect}		       
+                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                    #TMPCOA,			
+                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                AND JournalEntries.JELINEID = Details.JENumberID 						
+                                AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
+                                AND ABS(JournalEntries.Amount) >= {TE} 				
+                                {Account}					
+                                {NewSQL} 			
+                                {AutoManual}
+                                {DebitCredit}	  						
+                                ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
+                                DROP TABLE #TMPCOA						
+                            '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                       Account=self.checked_account15, NewSQL=self.NewSQL,
+                                       NewSelect=self.NewSelect, AutoManual=self.ManualAuto,
+                                       DebitCredit=self.debitcredit)
 
-            self.dataframe = pd.read_sql(sql, self.cnxn)
+                self.dataframe = pd.read_sql(sql, self.cnxn)
 
-        ### JE
-        elif self.rbtn2.isChecked():
+            ### JE
+            elif self.rbtn2.isChecked():
 
-            sql = '''
-                SET NOCOUNT ON				
-                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                    GROUP BY CoA.GLAccountNumber				
-                    SELECT				
-                        JournalEntries.BusinessUnit AS 회사코드			
-                        , JournalEntries.JENumber AS 전표번호			
-                        , JournalEntries.JELineNumber AS 전표라인번호			
-                        , JournalEntries.Year AS 회계연도			
-                        , JournalEntries.Period AS 회계기간			
-                        , JournalEntries.EffectiveDate AS 전기일			
-                        , CONVERT(CHAR(10), CONVERT(DATE, JournalEntries.UserDefined1), 23)  AS 증빙일		
-                        , JournalEntries.EntryDate AS 입력일			
-                        , JournalEntries.Amount AS 금액			
-                        , JournalEntries.FunctionalCurrencyCode AS 통화			
-                        , JournalEntries.GLAccountNumber AS 계정코드			
-                        , #TMPCOA.GLAccountName AS 계정명			
-                        , JournalEntries.Source AS 전표유형			
-                        , JournalEntries.PreparerID AS 입력자			
-                        , JournalEntries.ApproverID AS 승인자			
-                        , JournalEntries.JEDescription AS 전표헤더적요			
-                        , JournalEntries.JELineDescription AS 전표라인적요			
-                        {NewSelect}			 
-                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                        #TMPCOA,			
-                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                    AND JournalEntries.JELINEID = Details.JENumberID 					
-                    AND Details.JEIdentifierID IN				
-                            (		
-                             SELECT DISTINCT Details.JEIdentifierID		
-                             FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
-                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
-                             WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                             AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
-                             AND ABS(JournalEntries.Amount) >= {TE} 	
-                             {Account} 	
-                             {NewSQL}
-                             {AutoManual}
-                             {DebitCredit}	
-                            )		
-                    ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
-                    DROP TABLE #TMPCOA						
-                '''.format(field=self.selected_project_id, TE=self.tempTE,
-                           Account=self.checked_account15, NewSQL=self.NewSQL,
-                           NewSelect=self.NewSelect, AutoManual=self.ManualAuto, DebitCredit=self.debitcredit)
-            self.dataframe = pd.read_sql(sql, self.cnxn)
+                sql = '''
+                            SET NOCOUNT ON				
+                                SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                GROUP BY CoA.GLAccountNumber				
+                                SELECT				
+                                    JournalEntries.BusinessUnit AS 회사코드			
+                                    , JournalEntries.JENumber AS 전표번호			
+                                    , JournalEntries.JELineNumber AS 전표라인번호			
+                                    , JournalEntries.Year AS 회계연도			
+                                    , JournalEntries.Period AS 회계기간			
+                                    , JournalEntries.EffectiveDate AS 전기일			
+                                    , CONVERT(CHAR(10), CONVERT(DATE, JournalEntries.UserDefined1), 23)  AS 증빙일		
+                                    , JournalEntries.EntryDate AS 입력일			
+                                    , JournalEntries.Amount AS 금액			
+                                    , JournalEntries.FunctionalCurrencyCode AS 통화			
+                                    , JournalEntries.GLAccountNumber AS 계정코드			
+                                    , #TMPCOA.GLAccountName AS 계정명			
+                                    , JournalEntries.Source AS 전표유형			
+                                    , JournalEntries.PreparerID AS 입력자			
+                                    , JournalEntries.ApproverID AS 승인자			
+                                    , JournalEntries.JEDescription AS 전표헤더적요			
+                                    , JournalEntries.JELineDescription AS 전표라인적요			
+                                    {NewSelect}			 
+                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                    #TMPCOA,			
+                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                AND JournalEntries.JELINEID = Details.JENumberID 					
+                                AND Details.JEIdentifierID IN				
+                                        (		
+                                         SELECT DISTINCT Details.JEIdentifierID		
+                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
+                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
+                                         WHERE JournalEntries.JELINEID = Details.JENumberID 		
+                                         AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
+                                         AND ABS(JournalEntries.Amount) >= {TE} 	
+                                         {Account} 	
+                                         {NewSQL}
+                                         {AutoManual}
+                                         {DebitCredit}	
+                                        )		
+                                ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
+                                DROP TABLE #TMPCOA						
+                            '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                       Account=self.checked_account15, NewSQL=self.NewSQL,
+                                       NewSelect=self.NewSelect, AutoManual=self.ManualAuto,
+                                       DebitCredit=self.debitcredit)
+                self.dataframe = pd.read_sql(sql, self.cnxn)
+
+        ### Year 선택 경우
+        else:
+            ### JE Line
+            if self.rbtn1.isChecked():
+
+                sql = '''
+                                        SET NOCOUNT ON				
+                                            SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                            GROUP BY CoA.GLAccountNumber				
+                                            SELECT				
+                                                JournalEntries.BusinessUnit AS 회사코드			
+                                                , JournalEntries.JENumber AS 전표번호			
+                                                , JournalEntries.JELineNumber AS 전표라인번호			
+                                                , JournalEntries.Year AS 회계연도			
+                                                , JournalEntries.Period AS 회계기간			
+                                                , JournalEntries.EffectiveDate AS 전기일			
+                                                , CONVERT(CHAR(10), CONVERT(DATE, JournalEntries.UserDefined1), 23)  AS 증빙일		
+                                                , JournalEntries.EntryDate AS 입력일			
+                                                , JournalEntries.Amount AS 금액			
+                                                , JournalEntries.FunctionalCurrencyCode AS 통화			
+                                                , JournalEntries.GLAccountNumber AS 계정코드			
+                                                , #TMPCOA.GLAccountName AS 계정명			
+                                                , JournalEntries.Source AS 전표유형			
+                                                , JournalEntries.PreparerID AS 입력자			
+                                                , JournalEntries.ApproverID AS 승인자			
+                                                , JournalEntries.JEDescription AS 전표헤더적요			
+                                                , JournalEntries.JELineDescription AS 전표라인적요			
+                                                {NewSelect}		       
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                #TMPCOA,			
+                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                            AND JournalEntries.JELINEID = Details.JENumberID 						
+                                            AND Year(JournalEntries.UserDefined1) <> Year(JournalEntries.EffectiveDate) 				
+                                            AND ABS(JournalEntries.Amount) >= {TE} 				
+                                            {Account}					
+                                            {NewSQL} 			
+                                            {AutoManual}
+                                            {DebitCredit}	  						
+                                            ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
+                                            DROP TABLE #TMPCOA						
+                                        '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                                   Account=self.checked_account15, NewSQL=self.NewSQL,
+                                                   NewSelect=self.NewSelect, AutoManual=self.ManualAuto,
+                                                   DebitCredit=self.debitcredit)
+
+                self.dataframe = pd.read_sql(sql, self.cnxn)
+
+            ### JE
+            elif self.rbtn2.isChecked():
+
+                sql = '''
+                                        SET NOCOUNT ON				
+                                            SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                            GROUP BY CoA.GLAccountNumber				
+                                            SELECT				
+                                                JournalEntries.BusinessUnit AS 회사코드			
+                                                , JournalEntries.JENumber AS 전표번호			
+                                                , JournalEntries.JELineNumber AS 전표라인번호			
+                                                , JournalEntries.Year AS 회계연도			
+                                                , JournalEntries.Period AS 회계기간			
+                                                , JournalEntries.EffectiveDate AS 전기일			
+                                                , CONVERT(CHAR(10), CONVERT(DATE, JournalEntries.UserDefined1), 23)  AS 증빙일		
+                                                , JournalEntries.EntryDate AS 입력일			
+                                                , JournalEntries.Amount AS 금액			
+                                                , JournalEntries.FunctionalCurrencyCode AS 통화			
+                                                , JournalEntries.GLAccountNumber AS 계정코드			
+                                                , #TMPCOA.GLAccountName AS 계정명			
+                                                , JournalEntries.Source AS 전표유형			
+                                                , JournalEntries.PreparerID AS 입력자			
+                                                , JournalEntries.ApproverID AS 승인자			
+                                                , JournalEntries.JEDescription AS 전표헤더적요			
+                                                , JournalEntries.JELineDescription AS 전표라인적요			
+                                                {NewSelect}			 
+                                            FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                                #TMPCOA,			
+                                                 [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                            WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                            AND JournalEntries.JELINEID = Details.JENumberID 					
+                                            AND Details.JEIdentifierID IN				
+                                                    (		
+                                                     SELECT DISTINCT Details.JEIdentifierID		
+                                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
+                                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
+                                                     WHERE JournalEntries.JELINEID = Details.JENumberID 		
+                                                     AND Year(JournalEntries.UserDefined1) <> Year(JournalEntries.EffectiveDate) 		
+                                                     AND ABS(JournalEntries.Amount) >= {TE} 	
+                                                     {Account} 	
+                                                     {NewSQL}
+                                                     {AutoManual}
+                                                     {DebitCredit}	
+                                                    )		
+                                            ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
+                                            DROP TABLE #TMPCOA						
+                                        '''.format(field=self.selected_project_id, TE=self.tempTE,
+                                                   Account=self.checked_account15, NewSQL=self.NewSQL,
+                                                   NewSelect=self.NewSelect, AutoManual=self.ManualAuto,
+                                                   DebitCredit=self.debitcredit)
+                self.dataframe = pd.read_sql(sql, self.cnxn)
 
         ### 마지막 시트 쿼리 내역 추가
         if self.rbtn1.isChecked():
