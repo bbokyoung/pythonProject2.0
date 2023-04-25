@@ -4926,10 +4926,8 @@ class MyApp(QWidget):
                                                 GROUP BY CoA.GLAccountNumber				
                                                 SELECT	COUNT(*) as cnt
                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                                    #TMPCOA,			
-                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                                AND JournalEntries.JELINEID = Details.JENumberID			
+                                                    #TMPCOA			
+                                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 	
                                                 AND JournalEntries.EntryDate >= {period1}				
                                                 AND JournalEntries.EntryDate <= {period2}				
                                                 AND ABS(JournalEntries.Amount) >= {TE}			
@@ -4955,17 +4953,13 @@ class MyApp(QWidget):
                                                 GROUP BY CoA.GLAccountNumber				
                                                 SELECT	COUNT(*) as cnt			
                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                                    #TMPCOA,			
-                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                                AND JournalEntries.JELINEID = Details.JENumberID 							
-                                                AND Details.JEIdentifierID IN				
+                                                    #TMPCOA			
+                                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber						
+                                                AND JournalEntries.JENumber IN				
                                                         (		
-                                                         SELECT DISTINCT Details.JEIdentifierID		
-                                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
-                                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
-                                                         WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                                         AND JournalEntries.EntryDate >= {period1}	
+                                                         SELECT DISTINCT JournalEntries.JENumber		
+                                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries
+                                                         WHERE JournalEntries.EntryDate >= {period1}	
                                                          AND JournalEntries.EntryDate <= {period2}	
                                                          AND ABS(JournalEntries.Amount) >= {TE}	
                                                          {Account}	
@@ -9629,10 +9623,8 @@ class MyApp(QWidget):
                             , JournalEntries.JELineDescription AS 전표라인적요						
                             {NewSelect}
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                            #TMPCOA,			
-                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                        AND JournalEntries.JELINEID = Details.JENumberID			
+                            #TMPCOA				
+                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 						
                         AND JournalEntries.EntryDate >= {period1}				
                         AND JournalEntries.EntryDate <= {period2}				
                         AND ABS(JournalEntries.Amount) >= {TE}			
@@ -9675,17 +9667,13 @@ class MyApp(QWidget):
                             , JournalEntries.JELineDescription AS 전표라인적요
                             {NewSelect}			
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                            #TMPCOA,			
-                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                        AND JournalEntries.JELINEID = Details.JENumberID 							
-                        AND Details.JEIdentifierID IN				
+                            #TMPCOA			
+                        WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				 							
+                        AND JournalEntries.JENumber IN				
                                 (		
-                                 SELECT DISTINCT Details.JEIdentifierID		
-                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
-                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
-                                 WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                 AND JournalEntries.EntryDate >= {period1}	
+                                 SELECT DISTINCT JournalEntries.JENumber		
+                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries    		
+                                 WHERE JournalEntries.EntryDate >= {period1}	
                                  AND JournalEntries.EntryDate <= {period2}	
                                  AND ABS(JournalEntries.Amount) >= {TE}	
                                  {Account}	
