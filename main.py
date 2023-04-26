@@ -592,6 +592,15 @@ class MyApp(QWidget):
         self.alt.setText('계정 코드 쿼리문을 확인하시길 바랍니다.')
         self.alt.exec_()
 
+    def alertbox_open23(self):
+        """어떠한 비영업일도 입력되어 있지 않을 시 경고창 생성 함수"""
+        self.alt = QMessageBox()
+        self.alt.setIcon(QMessageBox.Information)
+        self.alt.setWindowTitle('비영업일 선택 오류')
+        self.alt.setWindowIcon(QIcon(self.resource_path('./EY_logo.png')))
+        self.alt.setText('어떠한 비영업일도 선택 및 입력되어 있지 않습니다.')
+        self.alt.exec_()
+
     def check_account(self, acc, nonecheck = ''):
         """특정 계정코드 조건값에 이상이 있는지 확인하는 함수"""
         ## 예외 처리 - 콤마(,)가 정상적으로 입력되지 않은 경우
@@ -8214,6 +8223,10 @@ class MyApp(QWidget):
         elif (self.Entry.isChecked() and self.Effective.isChecked()) or (
                 not (self.Entry.isChecked()) and not (self.Effective.isChecked())):
             self.alertbox_open21()
+
+        ### 어떠한 비영업일도 없을 때 검토
+        elif not (self.checkSun.isChecked()) and not (self.checkSat.isChecked()) and not (self.checkHoli.isChecked()) and self.D7_Date.toPlainText() == '' :
+            self.alertbox_open23()
 
         else:
             sql = '''
