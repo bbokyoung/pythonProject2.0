@@ -9721,7 +9721,9 @@ class MyApp(QWidget):
                     SELECT                                        
                     #TMPCOA.GLAccountNumber AS 당기생성계정코드                        
                     , MAX(#TMPCOA.GLAccountName) AS 계정명
-                    , COUNT(JournalEntries.GLAccountNumber) AS CNT                         
+                    , COUNT(JournalEntries.GLAccountNumber) AS CNT
+                    , SUM(Debit) Sum_of_Debit
+                    , SUM(Credit) Sum_of_Credit		       
                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] JournalEntries
                     join [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] Details on JournalEntries.JELINEID = Details.JENumberID    
                     right outer join #TMPCOA on JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber
