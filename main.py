@@ -10515,7 +10515,9 @@ class MyApp(QWidget):
                                 MAX(Users.FullName) AS 입력자명, 			
                                 MAX(Users.Title) AS 직급, 			
                                 MAX(Users.Department) AS 부서,			
-                                COUNT(JournalEntries.PreparerID) AS CNT
+                                COUNT(JournalEntries.PreparerID) AS CNT,
+                                SUM(Debit) Sum_of_Debit,
+                                SUM(Credit) Sum_of_Credit		  
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                             #TMPCOA,			
                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details,			
