@@ -11654,7 +11654,7 @@ class MyApp(QWidget):
                     Close cur;																
                     Deallocate cur																
                     --****************************************************Filtered Result_1***************************************************																
-                    SELECT distinct 																
+                    SELECT																
                         BusinessUnit AS 회사코드,															
                         TMPJENumber AS 전표번호, 															
                         JELineNumber AS 전표라인번호,															
@@ -12034,7 +12034,7 @@ class MyApp(QWidget):
                         Close cur;																
                         Deallocate cur																                                                                
                         --****************************************************Filtered Result_1***************************************************																
-                        SELECT DISTINCT																
+                        SELECT														
                             BusinessUnit AS 회사코드,															
                             TMPJENumber AS 전표번호, 															
                             JELineNumber AS 전표라인번호,															
