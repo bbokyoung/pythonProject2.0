@@ -1423,8 +1423,7 @@ class MyApp(QWidget):
     ### 시나리오 2. 당기 생성된 계정리스트 추출
     def Dialog5(self):
         self.Addnew5 = AddForm()
-        self.Addnew5.Acount.setPlaceholderText('※ 당기에 새로 생성된 계정들을 입력하세요\n [NONE] 입력 시'
-                                               '전기 대비 당기에만 사용딘 계정이 추출 됩니다.')
+        self.Addnew5.Acount.setPlaceholderText('※ 당기에 새로 생성된 계정들을 입력하세요\n [NONE] 입력 시, 전기 대비 당기에만 사용된 계정이 추출 됩니다.')
 
         ### 상단 라벨
         Titlelabel5 = QLabel('2. 당기 생성된 계정리스트 추출\n')
