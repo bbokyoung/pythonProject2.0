@@ -1423,8 +1423,7 @@ class MyApp(QWidget):
     ### 시나리오 2. 당기 생성된 계정리스트 추출
     def Dialog5(self):
         self.Addnew5 = AddForm()
-        self.Addnew5.Acount.setPlaceholderText('※ 당기에 새로 생성된 계정들을 입력하세요\n [NONE] 입력 시'
-                                               '전기 대비 당기에만 사용딘 계정이 추출 됩니다.')
+        self.Addnew5.Acount.setPlaceholderText('※ 당기에 새로 생성된 계정들을 입력하세요\n [NONE] 입력 시, 전기 대비 당기에만 사용된 계정이 추출 됩니다.')
 
         ### 상단 라벨
         Titlelabel5 = QLabel('2. 당기 생성된 계정리스트 추출\n')
@@ -4882,7 +4881,7 @@ class MyApp(QWidget):
                                                        field='{field}',
                                                        TE='{TE}',
                                                        DebitCredit='{DebitCredit}',
-                                                       NewSQL='{DebitCredit}',
+                                                       NewSQL='{NewSQL}',
                                                        AutoManual='{AutoManual}',
                                                        ).format(field = self.selected_project_id,
                                                        TE = self.temp_TE,
@@ -4922,7 +4921,7 @@ class MyApp(QWidget):
                                                        field='{field}',
                                                        TE='{TE}',
                                                        DebitCredit='{DebitCredit}',
-                                                       NewSQL='{DebitCredit}',
+                                                       NewSQL='{NewSQL}',
                                                        AutoManual='{AutoManual}',
                                                        ).format(field = self.selected_project_id,
                                                        TE = self.temp_TE,
@@ -7033,8 +7032,7 @@ class MyApp(QWidget):
 
                 ### 추출 데이터가 존재하지 않을 경우
                 elif 'No Data' in self.dataframe.columns.tolist():
-                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
-                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기에 생성된 계정을 사용한 전표가 '
                                                           + str(len(self.dataframe) - 1)
                                                           + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                           + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
@@ -7044,8 +7042,7 @@ class MyApp(QWidget):
                 ### 추출 데이터가 300건 초과일 경우
                 elif len(self.dataframe) > 300:
 
-                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
-                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기에 생성된 계정을 사용한 전표가 '
                                                           + str(len(self.dataframe))
                                                           + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                           + str(
@@ -7054,8 +7051,7 @@ class MyApp(QWidget):
                     if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
                 else:
-                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
-                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기에 생성된 계정을 사용한 전표가 '
                                                           + str(len(self.dataframe))
                                                           + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                           + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
@@ -7089,8 +7085,7 @@ class MyApp(QWidget):
                 if len(self.dataframe) > 500000: self.alertbox_open1()
                 ### 추출 데이터가 존재하지 않을 경우
                 if 'No Data' in self.dataframe.columns.tolist():
-                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기('
-                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '- 당기에 생성된 계정을 사용한 전표가 '
                                                           + str(len(self.dataframe) - 1)
                                                           + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                           + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
@@ -7098,8 +7093,7 @@ class MyApp(QWidget):
                     if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
 
                 else:
-                    buttonReply = QMessageBox.information(self, '라인수 추출', '-당기('
-                                                          + str(self.pname_year) + ')에 생성된 계정을 사용한 전표가 '
+                    buttonReply = QMessageBox.information(self, '라인수 추출', '-당기에 생성된 계정을 사용한 전표가 '
                                                           + str(len(self.dataframe))
                                                           + ' 건 추출되었습니다. <br> - 중요성 금액('
                                                           + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표번호 기준]'
