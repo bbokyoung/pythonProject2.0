@@ -4824,8 +4824,10 @@ class MyApp(QWidget):
 
         elif self.Addnew5.Acount.toPlainText() == '[NONE]':
             nonecheck = '[NONE]'
-            self.checked_account5 = 'AND JournalEntries.GLAccountNumber NOT IN (' \
-                                    'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)'
+            self.checked_withTable = 'with PYGla as (SELECT GLAccountNumber FROM [{field}_Import_Dim].[dbo].[Distinct_GLAccountNumber]' \
+                                     'where audityear = \'CY\' and source = \'pbcJE\' and GLAccountNumber not in ' \
+                                     '(Select GLAccountNumber FROM [{field}_Import_Dim].[dbo].[Distinct_GLAccountNumber] where audityear = \'PY\' and source = \'pbcJE\'))'
+            self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (SELECT [GLAccountNumber] FROM PYGla)'
 
         ## 당기 생성 계정이 존재하는 경우
         else:
@@ -4861,10 +4863,14 @@ class MyApp(QWidget):
                 ### JE Line
                 if self.rbtn1.isChecked():
                     sql_query = """
-                                    SET NOCOUNT ON				
+                                    SET NOCOUNT ON;
+                                    				
                                     SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
                                     FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                    GROUP BY CoA.GLAccountNumber				
+                                    GROUP BY CoA.GLAccountNumber;
+                                    
+                                    {With}
+                                    				
                                     SELECT COUNT(*) as cnt            
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                                         #TMPCOA,			
@@ -4883,6 +4889,7 @@ class MyApp(QWidget):
                                                        DebitCredit='{DebitCredit}',
                                                        NewSQL='{NewSQL}',
                                                        AutoManual='{AutoManual}',
+                                                       With= self.checked_withTable
                                                        ).format(field = self.selected_project_id,
                                                        TE = self.temp_TE,
                                                        DebitCredit=self.debitcredit,
@@ -4894,10 +4901,14 @@ class MyApp(QWidget):
                 ### JE
                 elif self.rbtn2.isChecked():
                     sql_query = """
-                                    SET NOCOUNT ON				
+                                    SET NOCOUNT ON;			
+                                    	
                                     SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
                                     FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                    GROUP BY CoA.GLAccountNumber				
+                                    GROUP BY CoA.GLAccountNumber ;
+                                    
+                                    {With}		
+                                    		
                                     SELECT COUNT(*) as cnt		
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                                         #TMPCOA,			
@@ -4923,6 +4934,7 @@ class MyApp(QWidget):
                                                        DebitCredit='{DebitCredit}',
                                                        NewSQL='{NewSQL}',
                                                        AutoManual='{AutoManual}',
+                                                       With=self.checked_withTable
                                                        ).format(field = self.selected_project_id,
                                                        TE = self.temp_TE,
                                                        DebitCredit=self.debitcredit,
@@ -8028,8 +8040,10 @@ class MyApp(QWidget):
 
         elif self.Addnew5.Acount.toPlainText() == '[NONE]':
             nonecheck = '[NONE]'
-            self.checked_account5 = 'AND JournalEntries.GLAccountNumber NOT IN (' \
-                                    'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)'
+            self.checked_withTable = 'with PYGla as (SELECT GLAccountNumber FROM [{field}_Import_Dim].[dbo].[Distinct_GLAccountNumber]' \
+                                     ' where audityear = \'CY\' and source = \'pbcJE\' and GLAccountNumber not in ' \
+                                     '(Select GLAccountNumber FROM [{field}_Import_Dim].[dbo].[Distinct_GLAccountNumber] where audityear = \'PY\' and source = \'pbcJE\'))'
+            self.checked_account5 = 'AND JournalEntries.GLAccountNumber IN (SELECT [GLAccountNumber] FROM PYGla)'
 
         ## 당기 생성 계정이 존재하는 경우
         else:
@@ -9707,10 +9721,13 @@ class MyApp(QWidget):
         if self.rbtn1.isChecked():
 
             sql_refer = """
-                    SET NOCOUNT ON        
+                    SET NOCOUNT ON ;
+                           
                     SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA                
                     FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA                
-                    GROUP BY CoA.GLAccountNumber        
+                    GROUP BY CoA.GLAccountNumber ;  
+                    
+                    {With}     
                     
                     SELECT                                        
                     #TMPCOA.GLAccountNumber AS 당기생성계정코드                        
@@ -9735,16 +9752,22 @@ class MyApp(QWidget):
                                  TE='{TE}',
                                  DebitCredit='{DebitCredit}',
                                  NewSQL='{NewSQL}',
-                                 AutoManual='{AutoManual}').format(field=self.selected_project_id,
+                                 AutoManual='{AutoManual}',
+                                 With=self.checked_withTable
+                                 ).format(field=self.selected_project_id,
                                  TE=self.temp_TE,
                                  DebitCredit=self.debitcredit,
                                  NewSQL=self.NewSQL,
                                  AutoManual=self.ManualAuto)
             sql_query = """
-                        SET NOCOUNT ON				
+                        SET NOCOUNT ON	;
+                        			
                         SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
                         FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                        GROUP BY CoA.GLAccountNumber				
+                        GROUP BY CoA.GLAccountNumber	;
+                        
+                        {With}
+                        			
                         SELECT				
                             JournalEntries.BusinessUnit AS 회사코드			
                             , JournalEntries.JENumber AS 전표번호			
@@ -9781,7 +9804,9 @@ class MyApp(QWidget):
                                  TE='{TE}',
                                  DebitCredit='{DebitCredit}',
                                  NewSQL='{NewSQL}',
-                                 AutoManual='{AutoManual}').format(field=self.selected_project_id,
+                                 AutoManual='{AutoManual}',
+                                 With=self.checked_withTable
+                                 ).format(field=self.selected_project_id,
                                  TE=self.temp_TE,
                                  DebitCredit=self.debitcredit,
                                  NewSQL=self.NewSQL,
@@ -9795,10 +9820,14 @@ class MyApp(QWidget):
         elif self.rbtn2.isChecked():
 
             sql_query = """
-                        SET NOCOUNT ON				
+                        SET NOCOUNT ON		;
+                        		
                         SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
                         FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                        GROUP BY CoA.GLAccountNumber				
+                        GROUP BY CoA.GLAccountNumber;
+                        
+                        {With}
+                        				
                         SELECT				
                             JournalEntries.BusinessUnit AS 회사코드			
                             , JournalEntries.JENumber AS 전표번호			
@@ -9842,7 +9871,9 @@ class MyApp(QWidget):
                                  TE='{TE}',
                                  DebitCredit='{DebitCredit}',
                                  NewSQL='{NewSQL}',
-                                 AutoManual='{AutoManual}').format(field=self.selected_project_id,
+                                 AutoManual='{AutoManual}',
+                                 With=self.checked_withTable
+                                 ).format(field=self.selected_project_id,
                                  TE=self.temp_TE,
                                  DebitCredit=self.debitcredit,
                                  NewSQL=self.NewSQL,
