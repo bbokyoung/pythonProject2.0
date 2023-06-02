@@ -1688,8 +1688,8 @@ class MyApp(QWidget):
         self.Manual.setStyleSheet("color: white;")
         self.Auto.setStyleSheet("color: white;")
 
-        ### 입력일
-        label_p = QLabel('입력일 *     :            ', self.dialog6)
+        ### 전기일/입력일
+        label_p = QLabel('전기일/입력일* :     ', self.dialog6)
         label_p.setStyleSheet("color: yellow;")
         font11 = label_p.font()
         font11.setBold(True)
@@ -1700,6 +1700,12 @@ class MyApp(QWidget):
         self.period2 = QLineEdit(self.dialog6)
         self.period2.setStyleSheet("background-color: white;")
         self.period2.setPlaceholderText('종료 시점을 입력하세요 yyyyMMdd')
+
+        ### 전기일 / 입력일 선택 박스
+        self.Entry = QCheckBox('입력일', self.dialog6)
+        self.Entry.setStyleSheet("color: white; font-weight: bold;")
+        self.Effective = QCheckBox('전기일', self.dialog6)
+        self.Effective.setStyleSheet("color: white; font-weight: bold;")
 
         ### 계정 선택 라벨
         label_tree = QLabel('특정 계정명 : ', self.dialog6)
@@ -1761,11 +1767,17 @@ class MyApp(QWidget):
         layout_am.addWidget(self.Manual)
         layout_am.addWidget(self.Auto)
 
-        ### 입력일 Layout
+        ### 전기일 / 입력일 Layout
         layout4 = QHBoxLayout()
         layout4.addWidget(label_p)
         layout4.addWidget(self.period1)
         layout4.addWidget(self.period2)
+
+        ### 전기일 / 입력일 선택 Layout
+        layout5 = QHBoxLayout()
+        layout5.addWidget(self.Entry)
+        layout5.addWidget(self.Effective)
+        layout5.addWidget(temp_lineedit)
 
         ### 최상단 Layout
         layout0 = QGridLayout()
@@ -1806,6 +1818,7 @@ class MyApp(QWidget):
         main_layout.addWidget(Titlelabel6)
         main_layout.addLayout(layout0)
         main_layout.addLayout(layout1)
+        main_layout.addLayout(layout5)
         main_layout.addLayout(layout4)
         main_layout.addLayout(layout2)
         main_layout.addLayout(self.Addnew6.sublayout1)
@@ -4971,6 +4984,10 @@ class MyApp(QWidget):
         if self.period1.text() == '' or  self.period2.text() == '':
             self.alertbox_open()
 
+            ### 입력일 / 전기일 모두 선택/미선택 여부 검토
+        elif (self.Entry.isChecked() and self.Effective.isChecked()) or (not (self.Entry.isChecked()) and not (self.Effective.isChecked())):
+            self.alertbox_open21()
+
         else:
             ### 중요성 금액 미입력시 0원
             if self.temp_TE == '':
@@ -5005,19 +5022,19 @@ class MyApp(QWidget):
                     ### 시작/종료 날짜 정수로 입력했는지 확인
                     int(self.period1.text())
                     int(self.period2.text())
-
-                    ### 시작/종료 시점 쿼리문에 적용할 수 있도록 변환
-                    self.tempDate1 = "'" + self.period1.text() + "'"
-                    self.tempDate2 = "'" + self.period2.text() + "'"
-
                     ### 시점 자릿수 확인(' 포함 10자리 여부 확인)
-                    if len(str(self.tempDate1)) != 10:
+                    if len(str(self.period1.text())) != 8:
                         self.alertbox_open19()
-                    elif len(str(self.tempDate2)) != 10:
+                    elif len(str(self.period1.text())) != 8:
                         self.alertbox_open19()
-                    else:
-                        cursor = self.cnxn.cursor()
+                    else :
+                        ### 시작/종료 시점 쿼리문에 적용할 수 있도록 변환
+                        if self.Effective.isChecked():
+                            self.tempDate = "And JournalEntries.EffectiveDate Between '" + self.period1.text() + "' and '" + self.period2.text() + "'"
+                        else:
+                            self.tempDate = "And JournalEntries.EntryDate Between '" + self.period1.text() + "' and '" + self.period2.text() + "'"
 
+                        cursor = self.cnxn.cursor()
                         ### JE Line 추출
                         if self.rbtn1.isChecked():
                             sql = '''
@@ -5029,9 +5046,8 @@ class MyApp(QWidget):
                                                 FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                                                     #TMPCOA			
                                                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 	
-                                                AND JournalEntries.EntryDate >= {period1}				
-                                                AND JournalEntries.EntryDate <= {period2}				
-                                                AND ABS(JournalEntries.Amount) >= {TE}			
+                                                AND ABS(JournalEntries.Amount) >= {TE}	
+                                                {period}				
                                                 {Account}			
                                                 {NewSQL}				
                                                 {DebitCredit}				
@@ -5039,7 +5055,7 @@ class MyApp(QWidget):
                                                 DROP TABLE #TMPCOA				
                                             '''.format(field=self.selected_project_id, Account=self.checked_account6,
                                                        TE=self.temp_TE,
-                                                       period1=str(self.tempDate1), period2=str(self.tempDate2),
+                                                       period=self.tempDate,
                                                        NewSQL=self.NewSQL, DebitCredit=self.debitcredit,
                                                        AutoManual=self.ManualAuto)
 
@@ -5060,9 +5076,8 @@ class MyApp(QWidget):
                                                         (		
                                                          SELECT DISTINCT JournalEntries.JENumber		
                                                          FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries
-                                                         WHERE JournalEntries.EntryDate >= {period1}	
-                                                         AND JournalEntries.EntryDate <= {period2}	
-                                                         AND ABS(JournalEntries.Amount) >= {TE}	
+                                                         WHERE ABS(JournalEntries.Amount) >= {TE}	
+                                                         {period}
                                                          {Account}	
                                                          {NewSQL}		
                                                          {DebitCredit}		
@@ -5071,7 +5086,7 @@ class MyApp(QWidget):
                                                 DROP TABLE #TMPCOA						
                                             '''.format(field=self.selected_project_id, Account=self.checked_account6,
                                                        TE=self.temp_TE,
-                                                       period1=str(self.tempDate1), period2=str(self.tempDate2),
+                                                       period=self.tempDate,
                                                        NewSQL=self.NewSQL, DebitCredit=self.debitcredit,
                                                        AutoManual=self.ManualAuto)
 
@@ -8124,6 +8139,10 @@ class MyApp(QWidget):
         elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
             self.alertbox_open5()
 
+        ### 입력일 / 전기일 모두 선택/미선택 여부 검토
+        elif (self.Entry.isChecked() and self.Effective.isChecked()) or (not (self.Entry.isChecked()) and not (self.Effective.isChecked())):
+            self.alertbox_open21()
+
         else:
             ### 중요성 금액 미입력시 0원
             if self.temp_TE == '':
@@ -8160,13 +8179,15 @@ class MyApp(QWidget):
                     int(self.period2.text())
 
                     ### 시작/종료 시점 쿼리문에 적용할 수 있도록 변환
-                    self.tempDate1 = "'" + self.period1.text() + "'"
-                    self.tempDate2 = "'" + self.period2.text() + "'"
+                    if self.Effective.isChecked():
+                        self.tempDate = "And JournalEntries.EffectiveDate Between '" + self.period1.text() + "' and '" + self.period2.text() + "'"
+                    else :
+                        self.tempDate = "And JournalEntries.EntryDate Between '" + self.period1.text() + "' and '" + self.period2.text() + "'"
 
                     ### 시점 자릿수 확인(' 포함 10자리 여부 확인)
-                    if len(str(self.tempDate1)) != 10:
+                    if len(str(self.period1.text())) != 8:
                         self.alertbox_open19()
-                    elif len(str(self.tempDate2)) != 10:
+                    elif len(str(self.period2.text())) != 8:
                         self.alertbox_open19()
                     else:
                         self.doAction()
@@ -10018,9 +10039,8 @@ class MyApp(QWidget):
                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                             #TMPCOA				
                         WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 						
-                        AND JournalEntries.EntryDate >= {period1}				
-                        AND JournalEntries.EntryDate <= {period2}				
-                        AND ABS(JournalEntries.Amount) >= {TE}			
+                        AND ABS(JournalEntries.Amount) >= {TE}
+                        {period}			
                         {Account}			
                         {NewSQL}				
                         {DebitCredit}				
@@ -10028,7 +10048,7 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				
                     '''.format(field=self.selected_project_id, Account=self.checked_account6, TE=self.temp_TE,
-                               period1=str(self.tempDate1), period2=str(self.tempDate2),
+                               period=self.tempDate,
                                NewSQL=self.NewSQL, DebitCredit=self.debitcredit, NewSelect=self.NewSelect,
                                AutoManual=self.ManualAuto)
 
@@ -10066,9 +10086,8 @@ class MyApp(QWidget):
                                 (		
                                  SELECT DISTINCT JournalEntries.JENumber		
                                  FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries    		
-                                 WHERE JournalEntries.EntryDate >= {period1}	
-                                 AND JournalEntries.EntryDate <= {period2}	
-                                 AND ABS(JournalEntries.Amount) >= {TE}	
+                                 WHERE ABS(JournalEntries.Amount) >= {TE}
+                                 {period}	
                                  {Account}	
                                  {NewSQL}		
                                  {DebitCredit}		
@@ -10077,7 +10096,7 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA						
                     '''.format(field=self.selected_project_id, Account=self.checked_account6, TE=self.temp_TE,
-                               period1=str(self.tempDate1), period2=str(self.tempDate2),
+                               period=self.tempDate,
                                NewSQL=self.NewSQL, DebitCredit=self.debitcredit, NewSelect=self.NewSelect,
                                AutoManual=self.ManualAuto)
 
