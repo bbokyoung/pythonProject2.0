@@ -5120,6 +5120,7 @@ class MyApp(QWidget):
                             self.alertbox_open2('입력일과 중요성 금액')  ### 중요성 금액과 입력일의 형식이 잘못되었을 경우
 
     def lineCount7(self):
+        ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew7.SegmentBox1,
                                                                            self.Addnew7.SegmentBox2,
                                                                            self.Addnew7.SegmentBox3,
@@ -5134,18 +5135,39 @@ class MyApp(QWidget):
         ### 중요성 금액
         self.temp_TE = self.D7_TE.text()
 
-        if (self.Entry.isChecked() and self.Effective.isChecked()) or (
+        ### 시나리오 번호
+        self.tempSheet = self.D7_Sheet.text()
+
+        ### 필수 입력값 누락 검토
+        if self.tempSheet == '':
+            self.alertbox_open()
+
+        ### Result 시나리오 번호(시트명) 중복 검토
+        elif self.rbtn1.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Result') != -1:
+            self.alertbox_open5()
+
+        ### Journals 시나리오 번호(시트명) 중복 검토
+        elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
+            self.alertbox_open5()
+
+        ### 입력일 / 전기일 모두 선택/미선택 여부 검토
+        elif (self.Entry.isChecked() and self.Effective.isChecked()) or (
                 not (self.Entry.isChecked()) and not (self.Effective.isChecked())):
             self.alertbox_open21()
 
+        ### 어떠한 비영업일도 없을 때 검토
+        elif not (self.checkSun.isChecked()) and not (self.checkSat.isChecked()) and not (
+                self.checkHoli.isChecked()) and self.D7_Date.toPlainText() == '':
+            self.alertbox_open23()
+
         else:
             sql = '''
-                                SET NOCOUNT ON;
-                                SELECT MIN([EntryDate]) AS MINDate, MAX([EntryDate]) AS MAXDate,[AuditYear]
-                                FROM [{field}_Import_Dim].[dbo].[Distinct_EntryDate]
-                                WHERE [AuditYear] = 'CY'
-                                GROUP BY [AuditYear]
-                                         '''.format(field=self.selected_project_id)
+                            SET NOCOUNT ON;
+                            SELECT MIN([EntryDate]) AS MINDate, MAX([EntryDate]) AS MAXDate,[AuditYear]
+                            FROM [{field}_Import_Dim].[dbo].[Distinct_EntryDate]
+                            WHERE [AuditYear] = 'CY'
+                            GROUP BY [AuditYear]
+                                     '''.format(field=self.selected_project_id)
 
             self.dateDF = pd.read_sql(sql, self.cnxn)
             self.minDate = self.dateDF.iloc[0]['MINDate']
@@ -5219,7 +5241,6 @@ class MyApp(QWidget):
             ### check 된 것 확인
             if self.checkSat.isChecked():
                 for i in range(0, len(self.realDateSaturday)):
-                    print(self.realDateSaturday[i])
                     self.realDate_List.append(self.realDateSaturday[i])
 
             if self.checkSun.isChecked():
@@ -5300,70 +5321,65 @@ class MyApp(QWidget):
                 try:
                     ### 중요성 금액 실수값인지 확인
                     float(self.temp_TE)
-
-                    ### Count 쿼리문
                     cursor = self.cnxn.cursor()
 
-                    ### JE Line 추출
                     if self.rbtn1.isChecked():
                         sql = '''
-                                                   SET NOCOUNT ON				
-                                                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                                    GROUP BY CoA.GLAccountNumber
-                                                    SELECT COUNT(*) as cnt	
-                                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                                        #TMPCOA,			
-                                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                                    AND JournalEntries.JELINEID = Details.JENumberID 							
-                                                    {Date}				
-                                                    AND ABS(JournalEntries.Amount) >= {TE}		
-                                                    {Account}			
-                                                    {NewSQL}				
-                                                    {DebitCredit}				
-                                                    {AutoManual}											
-                                                    DROP TABLE #TMPCOA				
-                                               '''.format(field=self.selected_project_id, TE=self.temp_TE,
-                                                          Date=self.tempState,
-                                                          Account=self.checked_account7, NewSQL=self.NewSQL,
-                                                          AutoManual=self.ManualAuto,
-                                                          DebitCredit=self.debitcredit)
+                                   SET NOCOUNT ON				
+                                    SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                    FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                    GROUP BY CoA.GLAccountNumber
+                                    SELECT COUNT(*) as cnt		
+                                    FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                        #TMPCOA,			
+                                         [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                    WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                    AND JournalEntries.JELINEID = Details.JENumberID 							
+                                    {Date}				
+                                    AND ABS(JournalEntries.Amount) >= {TE}		
+                                    {Account}			
+                                    {NewSQL}				
+                                    {DebitCredit}				
+                                    {AutoManual}										
+                                    DROP TABLE #TMPCOA				
+                               '''.format(field=self.selected_project_id, TE=self.temp_TE, Date=self.tempState,
+                                          Account=self.checked_account7, NewSQL=self.NewSQL,
+                                          AutoManual=self.ManualAuto, NewSelect=self.NewSelect,
+                                          DebitCredit=self.debitcredit)
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
 
                     ### JE 추출
                     elif self.rbtn2.isChecked():
                         sql = '''
-                                                SET NOCOUNT ON				
-                                                SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
-                                                FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
-                                                GROUP BY CoA.GLAccountNumber				
-                                                SELECT COUNT(*) as cnt	
-                                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
-                                                    #TMPCOA,			
-                                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
-                                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
-                                                AND JournalEntries.JELINEID = Details.JENumberID 								
-                                                AND Details.JEIdentifierID IN				
-                                                        (		
-                                                         SELECT DISTINCT Details.JEIdentifierID		
-                                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
-                                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
-                                                         WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                                         {Date}	
-                                                         AND ABS(JournalEntries.Amount) >= {TE}	
-                                                         {Account}		
-                                                         {NewSQL}		
-                                                         {DebitCredit}		
-                                                         {AutoManual}		
-                                                        )						
-                                                DROP TABLE #TMPCOA				
-                                               '''.format(field=self.selected_project_id, TE=self.temp_TE,
-                                                          Date=self.tempState,
-                                                          Account=self.checked_account7, NewSQL=self.NewSQL,
-                                                          AutoManual=self.ManualAuto,
-                                                          DebitCredit=self.debitcredit)
+                                SET NOCOUNT ON				
+                                SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
+                                FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
+                                GROUP BY CoA.GLAccountNumber				
+                                SELECT COUNT(*) as cnt			
+                                FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
+                                    #TMPCOA,			
+                                     [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
+                                WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
+                                AND JournalEntries.JELINEID = Details.JENumberID 								
+                                AND Details.JEIdentifierID IN				
+                                        (		
+                                         SELECT DISTINCT Details.JEIdentifierID		
+                                         FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
+                                             [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
+                                         WHERE JournalEntries.JELINEID = Details.JENumberID 		
+                                         {Date}	
+                                         AND ABS(JournalEntries.Amount) >= {TE}	
+                                         {Account}		
+                                         {NewSQL}		
+                                         {DebitCredit}		
+                                         {AutoManual}		
+                                        )					
+                                DROP TABLE #TMPCOA				
+                               '''.format(field=self.selected_project_id, TE=self.temp_TE, Date=self.tempState,
+                                          Account=self.checked_account7, NewSQL=self.NewSQL,
+                                          AutoManual=self.ManualAuto, NewSelect=self.NewSelect,
+                                          DebitCredit=self.debitcredit)
 
                         self.dataframe = pd.read_sql(sql, self.cnxn)
 
