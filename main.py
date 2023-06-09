@@ -6126,7 +6126,7 @@ class MyApp(QWidget):
                     except:
                         self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')  # 중요성금액이 실수가 아닌 경우
 
-    def lineCount15(self):
+    def lineCount15(self): # 비영업일 관련 시나리오
         ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew15.SegmentBox1,
                                                                            self.Addnew15.SegmentBox2,
