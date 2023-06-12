@@ -601,11 +601,11 @@ class MyApp(QWidget):
         self.alt.setText('어떠한 비영업일도 선택 및 입력되어 있지 않습니다.')
         self.alt.exec_()
 
-    def check_account(self, acc, nonecheck = ''):
+    def check_account(self, acc, nonecheck=''):
         """특정 계정코드 조건값에 이상이 있는지 확인하는 함수"""
         ## 예외 처리 - 콤마(,)가 정상적으로 입력되지 않은 경우
-        if nonecheck == '[NONE]' :
-           return True
+        if nonecheck == '[NONE]':
+            return True
         elif acc.strip() != '' and (acc.count(',') + 1) * 2 != acc.count("'"):
             self.alertbox_open22()
             return False
@@ -1046,10 +1046,10 @@ class MyApp(QWidget):
         ##서버 선택 콤보박스
         self.cb_server = QComboBox(self)
         self.cb_server.addItem('--서버 목록--')
-        for i in [1, 2, 3, 4, 6, 7, 8,9]:
+        for i in [1, 2, 3, 4, 6, 7, 8, 9]:
             self.cb_server.addItem(f'KRSEOVMPPACSQ0{i}\INST1')
 
-        for i in [10,11,12,13,14,15]:
+        for i in [10, 11, 12, 13, 14, 15]:
             self.cb_server.addItem(f'KRSEOVMPPACSQ{i}\INST1')
 
         ### Scenario 유형 콤보박스 - 소분류
@@ -4708,7 +4708,7 @@ class MyApp(QWidget):
             self.debitcredit = 'AND JournalEntries.Debit = 0'
 
         ### 예외처리 1 - 필수값 입력 누락
-        if self.temp_N == '' :
+        if self.temp_N == '':
             self.alertbox_open()
 
         ### 쿼리 연동
@@ -4877,13 +4877,13 @@ class MyApp(QWidget):
                 if self.rbtn1.isChecked():
                     sql_query = """
                                     SET NOCOUNT ON;
-                                    				
+
                                     SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
                                     FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
                                     GROUP BY CoA.GLAccountNumber;
-                                    
+
                                     {With}
-                                    				
+
                                     SELECT COUNT(*) as cnt            
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                                         #TMPCOA,			
@@ -4902,12 +4902,12 @@ class MyApp(QWidget):
                                                        DebitCredit='{DebitCredit}',
                                                        NewSQL='{NewSQL}',
                                                        AutoManual='{AutoManual}',
-                                                       With= self.checked_withTable
-                                                       ).format(field = self.selected_project_id,
-                                                       TE = self.temp_TE,
-                                                       DebitCredit=self.debitcredit,
-                                                       NewSQL=self.NewSQL,
-                                                       AutoManual=self.ManualAuto)
+                                                       With=self.checked_withTable
+                                                       ).format(field=self.selected_project_id,
+                                                                TE=self.temp_TE,
+                                                                DebitCredit=self.debitcredit,
+                                                                NewSQL=self.NewSQL,
+                                                                AutoManual=self.ManualAuto)
 
                     self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
@@ -4915,13 +4915,13 @@ class MyApp(QWidget):
                 elif self.rbtn2.isChecked():
                     sql_query = """
                                     SET NOCOUNT ON;			
-                                    	
+
                                     SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
                                     FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
                                     GROUP BY CoA.GLAccountNumber ;
-                                    
+
                                     {With}		
-                                    		
+
                                     SELECT COUNT(*) as cnt		
                                     FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,				
                                         #TMPCOA,			
@@ -4948,11 +4948,11 @@ class MyApp(QWidget):
                                                        NewSQL='{NewSQL}',
                                                        AutoManual='{AutoManual}',
                                                        With=self.checked_withTable
-                                                       ).format(field = self.selected_project_id,
-                                                       TE = self.temp_TE,
-                                                       DebitCredit=self.debitcredit,
-                                                       NewSQL=self.NewSQL,
-                                                       AutoManual=self.ManualAuto)
+                                                       ).format(field=self.selected_project_id,
+                                                                TE=self.temp_TE,
+                                                                DebitCredit=self.debitcredit,
+                                                                NewSQL=self.NewSQL,
+                                                                AutoManual=self.ManualAuto)
                     self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
                 buttonReply = QMessageBox.information(self, '라인 수 확인',
@@ -4981,11 +4981,12 @@ class MyApp(QWidget):
         self.temp_TE = self.D6_TE.text()
 
         ### 필수 입력값 누락 검토
-        if self.period1.text() == '' or  self.period2.text() == '':
+        if self.period1.text() == '' or self.period2.text() == '':
             self.alertbox_open()
 
             ### 입력일 / 전기일 모두 선택/미선택 여부 검토
-        elif (self.Entry.isChecked() and self.Effective.isChecked()) or (not (self.Entry.isChecked()) and not (self.Effective.isChecked())):
+        elif (self.Entry.isChecked() and self.Effective.isChecked()) or (
+                not (self.Entry.isChecked()) and not (self.Effective.isChecked())):
             self.alertbox_open21()
 
         else:
@@ -5027,7 +5028,7 @@ class MyApp(QWidget):
                         self.alertbox_open19()
                     elif len(str(self.period1.text())) != 8:
                         self.alertbox_open19()
-                    else :
+                    else:
                         ### 시작/종료 시점 쿼리문에 적용할 수 있도록 변환
                         if self.Effective.isChecked():
                             self.tempDate = "And JournalEntries.EffectiveDate Between '" + self.period1.text() + "' and '" + self.period2.text() + "'"
@@ -6126,7 +6127,7 @@ class MyApp(QWidget):
                     except:
                         self.alertbox_open4('중요성금액 값을 숫자로만 입력해주시기 바랍니다.')  # 중요성금액이 실수가 아닌 경우
 
-    def lineCount15(self): # 비영업일 관련 시나리오
+    def lineCount15(self):  # 비영업일 관련 시나리오
         ### Segment, UserDefine, 전표입력자, Source, 수자동 설정
         self.NewSQL, self.NewSelect, self.ManualAuto = self.NewQueryConcat(self.Addnew15.SegmentBox1,
                                                                            self.Addnew15.SegmentBox2,
@@ -6141,8 +6142,10 @@ class MyApp(QWidget):
         self.tempTE = self.D15_TE.text()  # 중요성 금액
 
         sql = '''
-                                            Select count(*) as UserdefinedCNT from
-                                            [{field}_Reporting_Details_Dim].[dbo].[DimUserDefined1]
+                SELECT *
+                FROM [{field}_Import_CY_01].[dbo].[ColumnNames]
+                WHERE [ColumnName] = 'UserDefined1'
+                AND [Mapped] = '0'
                                          '''.format(field=self.selected_project_id)
         dataframe_check = pd.read_sql(sql, self.cnxn)
 
@@ -6163,7 +6166,7 @@ class MyApp(QWidget):
             Temp = "'" + self.Addnew15.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
             self.checked_account15 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
-        if dataframe_check['UserdefinedCNT'][0] == 1:
+        if dataframe_check.shape[0] == 1 :
             self.alertbox_open4("증빙일이 매핑되어 있지 않습니다.")
 
         else:
@@ -7006,7 +7009,8 @@ class MyApp(QWidget):
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open1()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7037,9 +7041,10 @@ class MyApp(QWidget):
         if self.rbtn1.isChecked():
             ### 전기대비 당기에만 사용된 전표 추출 시
             if self.checked_account5 == 'AND JournalEntries.GLAccountNumber NOT IN (' \
-                                    'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)':
+                                        'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)':
                 ### 결과값이 50만건 초과일 경우
-                if len(self.dataframe) > 500000: self.alertbox_open3()
+                if len(self.dataframe) > 500000:
+                    self.alertbox_open3()
 
                 ### 추출 데이터가 존재하지 않을 경우
                 elif 'No Data' in self.dataframe.columns.tolist():
@@ -7068,7 +7073,7 @@ class MyApp(QWidget):
                                                           + str(self.temp_TE) + ')을 적용하였습니다. <br> [전표라인번호 기준]'
                                                           , QMessageBox.Ok)
                     if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
-            else :
+            else:
                 ### 결과값이 50만건 초과일 경우
                 if len(self.dataframe) > 500000:
                     self.alertbox_open3()
@@ -7105,7 +7110,7 @@ class MyApp(QWidget):
         elif self.rbtn2.isChecked():
             ### 전기대비 당기에만 사용된 전표 추출 시
             if self.checked_account5 == 'AND JournalEntries.GLAccountNumber NOT IN (' \
-                                    'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)':
+                                        'SELECT GLAccountNumber FROM [{field}_Import_PY_01].[dbo].[pbcJournalEntries] GROUP BY GLAccountNumber)':
                 if len(self.dataframe) > 500000: self.alertbox_open1()
                 ### 추출 데이터가 존재하지 않을 경우
                 if 'No Data' in self.dataframe.columns.tolist():
@@ -7124,7 +7129,7 @@ class MyApp(QWidget):
                                                           , QMessageBox.Ok)
 
                     if buttonReply == QMessageBox.Ok: self.dialog5.activateWindow()
-            else :
+            else:
                 if len(self.dataframe) > 500000: self.alertbox_open1()
                 ### 추출 데이터가 존재하지 않을 경우
                 if 'No Data' in self.dataframe.columns.tolist():
@@ -7153,7 +7158,8 @@ class MyApp(QWidget):
         ### JE Line 기준 추출 시
         if self.rbtn1.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open3()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7191,7 +7197,8 @@ class MyApp(QWidget):
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open1()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7225,7 +7232,8 @@ class MyApp(QWidget):
         ### JE Line 기준 추출 시
         if self.rbtn1.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open3()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7256,7 +7264,8 @@ class MyApp(QWidget):
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open1()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7285,7 +7294,8 @@ class MyApp(QWidget):
         ### JE Line 기준 추출 시
         if self.rbtn1.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open3()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7319,7 +7329,8 @@ class MyApp(QWidget):
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open1()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7350,8 +7361,10 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            if self.rbtn1.isChecked(): self.alertbox_open3()
-            elif self.rbtn2.isChecked() : self.alertbox_open1()
+            if self.rbtn1.isChecked():
+                self.alertbox_open3()
+            elif self.rbtn2.isChecked():
+                self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
         elif len(self.dataframe) == 0:
@@ -7431,8 +7444,10 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            if self.rbtn1.isChecked(): self.alertbox_open3()
-            elif self.rbtn2.isChecked() : self.alertbox_open1()
+            if self.rbtn1.isChecked():
+                self.alertbox_open3()
+            elif self.rbtn2.isChecked():
+                self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
         elif len(self.dataframe) == 0:
@@ -7558,8 +7573,10 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            if self.rbtn1.isChecked(): self.alertbox_open3()
-            elif self.rbtn2.isChecked() : self.alertbox_open1()
+            if self.rbtn1.isChecked():
+                self.alertbox_open3()
+            elif self.rbtn2.isChecked():
+                self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
         elif len(self.dataframe) == 0:
@@ -7623,7 +7640,8 @@ class MyApp(QWidget):
 
         if self.rbtn1.isChecked():
             ### 예외처리 3 - 최대 추출 라인수
-            if len(self.dataframe) > 500000: self.alertbox_open3()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open3()
 
             elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7652,7 +7670,8 @@ class MyApp(QWidget):
                 if buttonReply == QMessageBox.Ok: self.dialog13.activateWindow()
 
         elif self.rbtn2.isChecked():
-            if len(self.dataframe) > 500000: self.alertbox_open1()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open1()
 
             elif 'No Data' in self.dataframe.columns.tolist():
                 buttonReply = QMessageBox.information(self, '라인수 추출',
@@ -7697,8 +7716,10 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            if self.rbtn1.isChecked(): self.alertbox_open3()
-            elif self.rbtn2.isChecked() : self.alertbox_open1()
+            if self.rbtn1.isChecked():
+                self.alertbox_open3()
+            elif self.rbtn2.isChecked():
+                self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
         elif len(self.dataframe) == 0:
@@ -7776,8 +7797,10 @@ class MyApp(QWidget):
 
         ### 결과값이 50만건 초과일 경우
         if len(self.dataframe) > 500000:
-            if self.rbtn1.isChecked(): self.alertbox_open3()
-            elif self.rbtn2.isChecked() : self.alertbox_open1()
+            if self.rbtn1.isChecked():
+                self.alertbox_open3()
+            elif self.rbtn2.isChecked():
+                self.alertbox_open1()
 
         ### 추출 데이터가 존재하지 않을 경우
         elif len(self.dataframe) == 0:
@@ -7847,7 +7870,8 @@ class MyApp(QWidget):
         ### JE Line 기준 추출 시
         if self.rbtn1.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open3()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7882,7 +7906,8 @@ class MyApp(QWidget):
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open1()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7914,7 +7939,8 @@ class MyApp(QWidget):
         ### JE Line 기준 추출 시
         if self.rbtn1.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open3()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open3()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7947,7 +7973,8 @@ class MyApp(QWidget):
         ### JE 기준 추출 시
         elif self.rbtn2.isChecked():
             ### 결과값이 50만건 초과일 경우
-            if len(self.dataframe) > 500000: self.alertbox_open1()
+            if len(self.dataframe) > 500000:
+                self.alertbox_open1()
 
             ### 추출 데이터가 존재하지 않을 경우
             elif 'No Data' in self.dataframe.columns.tolist():
@@ -7989,7 +8016,7 @@ class MyApp(QWidget):
             self.checked_account4 = ''
 
         else:
-            Temp = "'" + self.Addnew4.Acount.toPlainText().replace(",", "','").replace(" ","") + "'"
+            Temp = "'" + self.Addnew4.Acount.toPlainText().replace(",", "','").replace(" ", "") + "'"
             self.checked_account4 = 'AND JournalEntries.GLAccountNumber IN (' + Temp + ')'
 
         if (self.checkD.isChecked() and self.checkC.isChecked()) or (
@@ -8156,7 +8183,8 @@ class MyApp(QWidget):
             self.alertbox_open5()
 
         ### 입력일 / 전기일 모두 선택/미선택 여부 검토
-        elif (self.Entry.isChecked() and self.Effective.isChecked()) or (not (self.Entry.isChecked()) and not (self.Effective.isChecked())):
+        elif (self.Entry.isChecked() and self.Effective.isChecked()) or (
+                not (self.Entry.isChecked()) and not (self.Effective.isChecked())):
             self.alertbox_open21()
 
         else:
@@ -8197,7 +8225,7 @@ class MyApp(QWidget):
                     ### 시작/종료 시점 쿼리문에 적용할 수 있도록 변환
                     if self.Effective.isChecked():
                         self.tempDate = "And JournalEntries.EffectiveDate Between '" + self.period1.text() + "' and '" + self.period2.text() + "'"
-                    else :
+                    else:
                         self.tempDate = "And JournalEntries.EntryDate Between '" + self.period1.text() + "' and '" + self.period2.text() + "'"
 
                     ### 시점 자릿수 확인(' 포함 10자리 여부 확인)
@@ -8270,7 +8298,8 @@ class MyApp(QWidget):
             self.alertbox_open21()
 
         ### 어떠한 비영업일도 없을 때 검토
-        elif not (self.checkSun.isChecked()) and not (self.checkSat.isChecked()) and not (self.checkHoli.isChecked()) and self.D7_Date.toPlainText() == '' :
+        elif not (self.checkSun.isChecked()) and not (self.checkSat.isChecked()) and not (
+        self.checkHoli.isChecked()) and self.D7_Date.toPlainText() == '':
             self.alertbox_open23()
 
         else:
@@ -8792,7 +8821,6 @@ class MyApp(QWidget):
             except ValueError:
                 self.alertbox_open2('중요성 금액')  ### 중요성 금액이 실수가 아닌 경우
 
-
     ### extraction버튼 클릭 시 유효성 확인 및 Thread 시작 (시나리오 8-1번)
     def Thread12(self):
         ## 수자동 선택 버튼을 모두 클릭하거나 모두 클릭하지 않은 경우
@@ -9221,8 +9249,10 @@ class MyApp(QWidget):
         self.tempSheet = self.D15_Sheet.text()  # 시나리오 번호
 
         sql = '''
-                            Select count(*) as UserdefinedCNT from
-                            [{field}_Reporting_Details_Dim].[dbo].[DimUserDefined1]
+                            SELECT *
+                            FROM [{field}_Import_CY_01].[dbo].[ColumnNames]
+                            WHERE [ColumnName] = 'UserDefined1'
+                            AND [Mapped] = '0'
                          '''.format(field=self.selected_project_id)
         dataframe_check = pd.read_sql(sql, self.cnxn)
 
@@ -9256,7 +9286,7 @@ class MyApp(QWidget):
         elif self.rbtn2.isChecked() and self.combo_sheet.findText(self.tempSheet + '_Journals') != -1:
             self.alertbox_open5()
 
-        elif dataframe_check['UserdefinedCNT'][0] == 1:
+        elif dataframe_check.shape[0] == 1 :
             self.alertbox_open4("증빙일이 매핑되어 있지 않습니다.")
 
         else:
@@ -9759,13 +9789,13 @@ class MyApp(QWidget):
 
             sql_refer = """
                     SET NOCOUNT ON ;
-                           
+
                     SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA                
                     FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA                
                     GROUP BY CoA.GLAccountNumber ;  
-                    
+
                     {With}     
-                    
+
                     SELECT                                        
                     #TMPCOA.GLAccountNumber AS 당기생성계정코드                        
                     , MAX(#TMPCOA.GLAccountName) AS 계정명
@@ -9786,25 +9816,25 @@ class MyApp(QWidget):
                     DROP TABLE #TMPCOA
                         """.format(Account=self.checked_account5,
                                    field='{field}',
-                                 TE='{TE}',
-                                 DebitCredit='{DebitCredit}',
-                                 NewSQL='{NewSQL}',
-                                 AutoManual='{AutoManual}',
-                                 With=self.checked_withTable
-                                 ).format(field=self.selected_project_id,
-                                 TE=self.temp_TE,
-                                 DebitCredit=self.debitcredit,
-                                 NewSQL=self.NewSQL,
-                                 AutoManual=self.ManualAuto)
+                                   TE='{TE}',
+                                   DebitCredit='{DebitCredit}',
+                                   NewSQL='{NewSQL}',
+                                   AutoManual='{AutoManual}',
+                                   With=self.checked_withTable
+                                   ).format(field=self.selected_project_id,
+                                            TE=self.temp_TE,
+                                            DebitCredit=self.debitcredit,
+                                            NewSQL=self.NewSQL,
+                                            AutoManual=self.ManualAuto)
             sql_query = """
                         SET NOCOUNT ON	;
-                        			
+
                         SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
                         FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
                         GROUP BY CoA.GLAccountNumber	;
-                        
+
                         {With}
-                        			
+
                         SELECT				
                             JournalEntries.BusinessUnit AS 회사코드			
                             , JournalEntries.JENumber AS 전표번호			
@@ -9836,19 +9866,19 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber,JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				
                                 """.format(Account=self.checked_account5,
-                                   NewSelect='{NewSelect}',
-                                   field='{field}',
-                                 TE='{TE}',
-                                 DebitCredit='{DebitCredit}',
-                                 NewSQL='{NewSQL}',
-                                 AutoManual='{AutoManual}',
-                                 With=self.checked_withTable
-                                 ).format(field=self.selected_project_id,
-                                 TE=self.temp_TE,
-                                 DebitCredit=self.debitcredit,
-                                 NewSQL=self.NewSQL,
-                                 AutoManual=self.ManualAuto,
-                                 NewSelect=self.NewSelect)
+                                           NewSelect='{NewSelect}',
+                                           field='{field}',
+                                           TE='{TE}',
+                                           DebitCredit='{DebitCredit}',
+                                           NewSQL='{NewSQL}',
+                                           AutoManual='{AutoManual}',
+                                           With=self.checked_withTable
+                                           ).format(field=self.selected_project_id,
+                                                    TE=self.temp_TE,
+                                                    DebitCredit=self.debitcredit,
+                                                    NewSQL=self.NewSQL,
+                                                    AutoManual=self.ManualAuto,
+                                                    NewSelect=self.NewSelect)
 
             self.dataframe_refer = pd.read_sql(sql_refer, self.cnxn)
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
@@ -9858,13 +9888,13 @@ class MyApp(QWidget):
 
             sql_query = """
                         SET NOCOUNT ON		;
-                        		
+
                         SELECT CoA.GLAccountNumber, MAX(CoA.GLAccountName) AS GLAccountName INTO #TMPCOA				
                         FROM [{field}_Import_CY_01].[dbo].[pbcChartOfAccounts] AS CoA				
                         GROUP BY CoA.GLAccountNumber;
-                        
+
                         {With}
-                        				
+
                         SELECT				
                             JournalEntries.BusinessUnit AS 회사코드			
                             , JournalEntries.JENumber AS 전표번호			
@@ -9903,19 +9933,19 @@ class MyApp(QWidget):
                         ORDER BY JournalEntries.JENumber, JournalEntries.JELineNumber				
                         DROP TABLE #TMPCOA				                                                                       
                                 """.format(Account=self.checked_account5,
-                                   NewSelect='{NewSelect}',
-                                   field='{field}',
-                                 TE='{TE}',
-                                 DebitCredit='{DebitCredit}',
-                                 NewSQL='{NewSQL}',
-                                 AutoManual='{AutoManual}',
-                                 With=self.checked_withTable
-                                 ).format(field=self.selected_project_id,
-                                 TE=self.temp_TE,
-                                 DebitCredit=self.debitcredit,
-                                 NewSQL=self.NewSQL,
-                                 AutoManual=self.ManualAuto,
-                                 NewSelect=self.NewSelect)
+                                           NewSelect='{NewSelect}',
+                                           field='{field}',
+                                           TE='{TE}',
+                                           DebitCredit='{DebitCredit}',
+                                           NewSQL='{NewSQL}',
+                                           AutoManual='{AutoManual}',
+                                           With=self.checked_withTable
+                                           ).format(field=self.selected_project_id,
+                                                    TE=self.temp_TE,
+                                                    DebitCredit=self.debitcredit,
+                                                    NewSQL=self.NewSQL,
+                                                    AutoManual=self.ManualAuto,
+                                                    NewSelect=self.NewSelect)
             self.dataframe = pd.read_sql(sql_query, self.cnxn)
 
         ### 마지막 시트 쿼리 내역 추가
