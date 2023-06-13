@@ -6195,7 +6195,7 @@ class MyApp(QWidget):
                                                          [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                                                     WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                                                     AND JournalEntries.JELINEID = Details.JENumberID 						
-                                                    AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
+                                                    AND (YEAR(JournalEntries.UserDefined1) + Month(JournalEntries.UserDefined1)) <> (YEAR(JournalEntries.EffectiveDate) + Month(JournalEntries.EffectiveDate)) 				
                                                     AND ABS(JournalEntries.Amount) >= {TE} 				
                                                     {Account}					
                                                     {NewSQL} 			
@@ -6229,7 +6229,7 @@ class MyApp(QWidget):
                                                              FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                                                  [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                                                              WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                                             AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
+                                                             AND (YEAR(JournalEntries.UserDefined1) + Month(JournalEntries.UserDefined1)) <> (YEAR(JournalEntries.EffectiveDate) + Month(JournalEntries.EffectiveDate))	
                                                              AND ABS(JournalEntries.Amount) >= {TE} 	
                                                              {Account} 	
                                                              {NewSQL}
@@ -12755,7 +12755,7 @@ class MyApp(QWidget):
                                      [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details			
                                 WHERE JournalEntries.GLAccountNumber = #TMPCOA.GLAccountNumber 				
                                 AND JournalEntries.JELINEID = Details.JENumberID 						
-                                AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 				
+                                AND (YEAR(JournalEntries.UserDefined1) + Month(JournalEntries.UserDefined1)) <> (YEAR(JournalEntries.EffectiveDate) + Month(JournalEntries.EffectiveDate)) 				
                                 AND ABS(JournalEntries.Amount) >= {TE} 				
                                 {Account}					
                                 {NewSQL} 			
@@ -12808,7 +12808,7 @@ class MyApp(QWidget):
                                          FROM [{field}_Import_CY_01].[dbo].[pbcJournalEntries] AS JournalEntries,		
                                              [{field}_Reporting_Details_CY_01].[dbo].[JournalEntries] AS Details	
                                          WHERE JournalEntries.JELINEID = Details.JENumberID 		
-                                         AND Month(JournalEntries.UserDefined1) <> Month(JournalEntries.EffectiveDate) 		
+                                         AND (YEAR(JournalEntries.UserDefined1) + Month(JournalEntries.UserDefined1)) <> (YEAR(JournalEntries.EffectiveDate) + Month(JournalEntries.EffectiveDate)) 		
                                          AND ABS(JournalEntries.Amount) >= {TE} 	
                                          {Account} 	
                                          {NewSQL}
