@@ -911,12 +911,12 @@ class MyApp(QWidget):
         ecode = self.line_ecode.text().strip()
         ecode = "'" + ecode + "'"
         user = 'guest'
-        server = self.selected_server_name
+        server = self.server_edit.text().strip()
         db = 'master'
 
-        # 예외처리 - 서버 선택
-        if server == "--서버 목록--":
-            self.MessageBox_Open("서버가 선택되어 있지 않습니다.")
+        # 예외처리 - 서버 입력
+        if server == "":
+            self.MessageBox_Open("서버가 입력되어 있지 않습니다.")
             return
 
         server_path = f"DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};uid={user};pwd={password};DATABASE={db};trusted_connection=yes"
@@ -979,9 +979,8 @@ class MyApp(QWidget):
         self.clickCount = 0
         gc.collect()
 
-    def Server_ComboBox_Selected(self, text):
-        """콤보박스에서 선택된 SQL 서버를 class 변수에 담는 함수"""
-        self.selected_server_name = text
+    #def Server_ComboBox_Selected(self, text):
+    #    self.selected_server_name = text
 
     def Project_ComboBox_Selected(self, text):
         """콤보박스에서 선택된 프로젝트 정보를 class 변수에 담는 함수"""
@@ -1043,14 +1042,8 @@ class MyApp(QWidget):
         label3.setStyleSheet("color: white;")
         label4.setStyleSheet("color: white;")
 
-        ##서버 선택 콤보박스
-        self.cb_server = QComboBox(self)
-        self.cb_server.addItem('--서버 목록--')
-        for i in [1, 2, 3, 4, 6, 7, 8, 9]:
-            self.cb_server.addItem(f'KRSEOVMPPACSQ0{i}\INST1')
-
-        for i in [10, 11, 12, 13, 14, 15]:
-            self.cb_server.addItem(f'KRSEOVMPPACSQ{i}\INST1')
+        self.server_edit = QLineEdit(self)
+        self.server_edit.setStyleSheet("background-color: white;")
 
         ### Scenario 유형 콤보박스 - 소분류
         self.comboScenario = QComboBox(self)
@@ -1092,7 +1085,7 @@ class MyApp(QWidget):
 
         ### Signal 함수들
         self.comboScenario.activated[str].connect(self.ComboSmall_Selected)
-        self.cb_server.activated[str].connect(self.Server_ComboBox_Selected)
+        #self.cb_server.activated[str].connect(self.Server_ComboBox_Selected)
         btn_connect.clicked.connect(self.connectButtonClicked)
         btn_connect.setShortcut("Ctrl+P")  # remove sheet 업데이트 부분
         self.ProjectCombobox.activated[str].connect(self.Project_ComboBox_Selected)
@@ -1104,7 +1097,7 @@ class MyApp(QWidget):
         grid.addWidget(label2, 1, 0)
         grid.addWidget(label3, 2, 0)
         grid.addWidget(label4, 3, 0)
-        grid.addWidget(self.cb_server, 0, 1)
+        grid.addWidget(self.server_edit, 0, 1)
         grid.addWidget(btn_connect, 1, 2)
         grid.addWidget(self.comboScenario, 3, 1)
         grid.addWidget(btn_condition, 3, 2)
